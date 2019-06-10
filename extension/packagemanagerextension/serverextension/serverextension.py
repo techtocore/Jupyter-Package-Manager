@@ -1,7 +1,7 @@
 from notebook.base.handlers import IPythonHandler
 import sys
 import os
-import subprocess 
+import subprocess
 import json
 
 # For now write logs in ~/packgeManager-monitoring.txt
@@ -19,7 +19,12 @@ class PackageManagerHandler(IPythonHandler):
         if action == 'pip_list':
             self.pip_list()
             return
-        
+
+        if action == 'conda_list':
+            env = str(self.get_argument('env', 'none'))
+            self.conda_list(env)
+            return
+
         result = 'API Status: Live'
         self.send_to_client(result)
         return
@@ -27,11 +32,20 @@ class PackageManagerHandler(IPythonHandler):
     def pip_list(self):
         info = subprocess.check_output(["pip", "list", "--format=json"])
         json_str = json.dumps(info)
-        self.send_to_client(json.loads(json_str)) 
+        self.send_to_client(json.loads(json_str))
 
-    
+    def conda_list(self, env):
+        if env == "none":
+            info = subprocess.check_output(["conda", "list", "--json"])
+        else:
+            info = subprocess.check_output(
+                ["conda", "list", "-n", env, "--json"])
+        json_str = json.dumps(info)
+        self.send_to_client(json.loads(json_str))
+
     def send_to_client(self, result):
         # Send `result` to client via Jupyter's Tornado server.
+        self.set_header("Content-Type", 'application/json')
         self.write(result)
         self.flush()
         self.finish()
