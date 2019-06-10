@@ -16,6 +16,11 @@ class PackageManagerHandler(IPythonHandler):
         This method handles all the `GET` requests recieved on the server extension. 
         """
         action = str(self.get_argument('action', 'none'))
+
+        if action == 'list_info':
+            self.list_info()
+            return
+
         if action == 'pip_list':
             self.pip_list()
             return
@@ -28,6 +33,11 @@ class PackageManagerHandler(IPythonHandler):
         result = 'API Status: Live'
         self.send_to_client(result)
         return
+
+    def list_info(self):
+        info = subprocess.check_output(["conda", "info", "--json"])
+        json_str = json.dumps(info)
+        self.send_to_client(json.loads(json_str))
 
     def pip_list(self):
         info = subprocess.check_output(["pip", "list", "--format=json"])
