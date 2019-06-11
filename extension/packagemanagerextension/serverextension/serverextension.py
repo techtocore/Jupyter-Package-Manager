@@ -34,6 +34,22 @@ class PackageManagerHandler(IPythonHandler):
         self.send_to_client(result)
         return
 
+    def post(self):
+        """
+        This method handles all the `POST` requests recieved on the server extension. 
+        """
+        action = str(self.get_body_argument('action', 'none'))
+
+        if action == 'install':
+            name = str(self.get_body_argument('name', 'none'))
+            version = str(self.get_body_argument('version', 'none'))
+            env = str(self.get_body_argument('env', 'none'))
+            self.install(name, env, version)
+
+        result = 'API Status: Live'
+        self.send_to_client(result)
+        return
+
     def list_info(self):
         info = subprocess.check_output(["conda", "info", "--json"])
         json_str = json.dumps(info)
@@ -50,6 +66,16 @@ class PackageManagerHandler(IPythonHandler):
         else:
             info = subprocess.check_output(
                 ["conda", "list", "-n", env, "--json"])
+        json_str = json.dumps(info)
+        self.send_to_client(json.loads(json_str))
+
+    def install(self, name, env, version):
+        if env == "none":
+            info = subprocess.check_output(
+                ["conda", "install", "--json", name])
+        else:
+            info = subprocess.check_output(
+                ["conda", "install", "-n", env, "--json", name])
         json_str = json.dumps(info)
         self.send_to_client(json.loads(json_str))
 
