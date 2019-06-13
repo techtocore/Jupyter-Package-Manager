@@ -50,6 +50,21 @@ class PackageManagerHandler(IPythonHandler):
         self.send_to_client(result)
         return
 
+    def delete(self):
+        """
+        This method handles all the `DELETE` requests recieved on the server extension. 
+        """
+        action = str(self.get_body_argument('action', 'none'))
+
+        if action == 'uninstall':
+            name = str(self.get_body_argument('name', 'none'))
+            env = str(self.get_body_argument('env', 'none'))
+            self.uninstall(name, env)
+
+        result = 'API Status: Live'
+        self.send_to_client(result)
+        return
+
     def list_info(self):
         info = subprocess.check_output(["conda", "info", "--json"])
         json_str = json.dumps(info)
@@ -76,6 +91,16 @@ class PackageManagerHandler(IPythonHandler):
         else:
             info = subprocess.check_output(
                 ["conda", "install", "-n", env, "--json", name])
+        json_str = json.dumps(info)
+        self.send_to_client(json.loads(json_str))
+
+    def uninstall(self, name, env):
+        if env == "none":
+            info = subprocess.check_output(
+                ["conda", "remove", "--json", name])
+        else:
+            info = subprocess.check_output(
+                ["conda", "remove", "-n", env, "--json", name])
         json_str = json.dumps(info)
         self.send_to_client(json.loads(json_str))
 
