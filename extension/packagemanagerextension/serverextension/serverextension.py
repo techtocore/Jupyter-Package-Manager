@@ -134,5 +134,4 @@ class PackageManagerHandler(IPythonHandler):
         self.set_header("Content-Type", 'application/json')
         self.write(result)
         self.flush()
-        self.finish()
         return
