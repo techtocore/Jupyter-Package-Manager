@@ -5,6 +5,7 @@ This Jupyter notebook extension will allow the users to specify python modules (
 ## Instructions
 
 - Please find the install instructions [here](extension/install.md)
+- For the purpose of API testing and development, please allow cross-site requests by adding `c.NotebookApp.disable_check_xsrf = True` (in ~/.jupyter/jupyter_notebook_config.py)
 
 ## About
 
