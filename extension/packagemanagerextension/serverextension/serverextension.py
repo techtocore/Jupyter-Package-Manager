@@ -65,6 +65,21 @@ class PackageManagerHandler(IPythonHandler):
         self.send_to_client(result)
         return
 
+    def patch(self):
+        """
+        This method handles all the `PATCH` requests recieved on the server extension. 
+        """
+        action = str(self.get_body_argument('action', 'none'))
+
+        if action == 'update':
+            name = str(self.get_body_argument('name', 'none'))
+            env = str(self.get_body_argument('env', 'none'))
+            self.update_pkg(name, env)
+
+        result = 'API Status: Live'
+        self.send_to_client(result)
+        return
+
     def list_info(self):
         info = subprocess.check_output(["conda", "info", "--json"])
         json_str = json.dumps(info)
@@ -101,6 +116,16 @@ class PackageManagerHandler(IPythonHandler):
         else:
             info = subprocess.check_output(
                 ["conda", "remove", "-n", env, "--json", name])
+        json_str = json.dumps(info)
+        self.send_to_client(json.loads(json_str))
+
+    def update_pkg(self, name, env):
+        if env == "none":
+            info = subprocess.check_output(
+                ["conda", "update", "--json", name])
+        else:
+            info = subprocess.check_output(
+                ["conda", "update", "-n", env, "--json", name])
         json_str = json.dumps(info)
         self.send_to_client(json.loads(json_str))
 
