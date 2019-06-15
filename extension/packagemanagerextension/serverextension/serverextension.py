@@ -41,6 +41,11 @@ class EnvBaseHandler(APIHandler):
         return self.settings['env_manager']
 
 
+# -----------------------------------------------------------------------------
+# ENV Management APIs
+# -----------------------------------------------------------------------------
+
+
 class MainEnvHandler(EnvBaseHandler):
     """
     Handler for `GET /environments` which lists the environments.
@@ -51,55 +56,33 @@ class MainEnvHandler(EnvBaseHandler):
         self.finish(json.dumps(self.env_manager.list_envs()))
 
 
-class EnvHandler(EnvBaseHandler):
+class ExportEnvHandler(EnvBaseHandler):
     """
-    Handler for `GET /environments/<name>` which lists
-    the packages in the specified environment.
+    Handler for `GET /environment_export/<name>` which
+    exports the specified environment.
     """
 
     @json_errors
     def get(self, env):
-        self.finish(json.dumps(self.env_manager.env_packages(env)))
+        # export requirements file
+        self.set_header('Content-Disposition',
+                        'attachment; filename="%s"' % (env + '.txt'))
+        self.finish(self.env_manager.export_env(env))
 
 
-class EnvActionHandler(EnvBaseHandler):
+class CloneEnvHandler(EnvBaseHandler):
     """
-    Handler for `GET /environments/<name>/export` which
-    exports the specified environment, and
-    `POST /environments/<name>/{delete,clone,create}`
-    which performs the requested action on the environment.
+    Handler for `POST /environment_clone` which
+    exports the specified environment.
     """
 
     @json_errors
-    def get(self, env, action):
-        if action == 'export':
-            # export requirements file
-            self.set_header('Content-Disposition',
-                            'attachment; filename="%s"' % (env + '.txt'))
-            self.finish(self.env_manager.export_env(env))
-        else:
-            raise web.HTTPError(400)
-
-    @json_errors
-    def post(self, env, action):
-        status = None
-
-        if action == 'delete':
-            data = self.env_manager.delete_env(env)
-        elif action == 'clone':
-            name = self.get_argument('name', default=None)
-            if not name:
-                name = '{}-copy'.format(env)
-            data = self.env_manager.clone_env(env, name)
-            if 'error' not in data:
-                status = 201  # CREATED
-        elif action == 'create':
-            env_type = self.get_argument('type', default=None)
-            if env_type not in package_map:
-                raise web.HTTPError(400)
-            data = self.env_manager.create_env(env, env_type)
-            if 'error' not in data:
-                status = 201  # CREATED
+    def post(self):
+        env = str(self.get_body_argument('env', default=None))
+        new_env = str(self.get_body_argument('new_env', default=None))
+        data = self.env_manager.clone_env(env, new_env)
+        if 'error' not in data:
+            status = 201  # CREATED
 
         # catch-all ok
         if 'error' in data:
@@ -109,39 +92,118 @@ class EnvActionHandler(EnvBaseHandler):
         self.finish(json.dumps(data))
 
 
-class EnvPkgActionHandler(EnvBaseHandler):
+class CreateEnvHandler(EnvBaseHandler):
     """
-    Handler for
-    `POST /environments/<name>/packages/{install,update,check,remove}`
-    which performs the requested action on the packages in the specified
-    environment.
+    Handler for `POST /environment_create` which
+    exports the specified environment.
     """
 
     @json_errors
-    def post(self, env, action):
-        self.log.debug('req body: %s', self.request.body)
-        packages = self.get_arguments('packages[]')
-
-        # don't allow arbitrary switches
-        packages = [pkg for pkg in packages if re.match(_pkg_regex, pkg)]
-
-        if not packages:
-            if action in ["install", "remove"]:
-                raise web.HTTPError(400)
-            else:
-                packages = ["--all"]
-
-        if action == 'install':
-            resp = self.env_manager.install_packages(env, packages)
-        elif action == 'update':
-            resp = self.env_manager.update_packages(env, packages)
-        elif action == 'check':
-            resp = self.env_manager.check_update(env, packages)
-        elif action == 'remove':
-            resp = self.env_manager.remove_packages(env, packages)
-        else:
+    def post(self):
+        env = str(self.get_body_argument('env', default=None))
+        env_type = self.get_argument('type', default=None)
+        if env_type not in package_map:
             raise web.HTTPError(400)
+        data = self.env_manager.create_env(env, env_type)
+        if 'error' not in data:
+            status = 201  # CREATED
 
+        # catch-all ok
+        if 'error' in data:
+            status = 400
+
+        self.set_status(status or 200)
+        self.finish(json.dumps(data))
+
+
+class DeleteEnvHandler(EnvBaseHandler):
+    """
+    Handler for `DELETE /environment_delete` which
+    exports the specified environment.
+    """
+
+    @json_errors
+    def delete(self):
+        env = str(self.get_body_argument('env', default=None))
+        data = self.env_manager.delete_env(env)
+
+        # catch-all ok
+        if 'error' in data:
+            status = 400
+
+        self.set_status(status or 200)
+        self.finish(json.dumps(data))
+
+
+# -----------------------------------------------------------------------------
+# Package Management APIs
+# -----------------------------------------------------------------------------
+
+
+class ListPkgHandler(EnvBaseHandler):
+    """
+    Handler for `GET /list_packages/<name>` which lists
+    the packages in the specified environment.
+    """
+
+    @json_errors
+    def get(self, env):
+        self.finish(json.dumps(self.env_manager.env_packages(env)))
+
+
+class InstallPkgHandler(EnvBaseHandler):
+    """
+    Handler for `POST /install_packages` which lists
+    the packages in the specified environment.
+    """
+
+    @json_errors
+    def post(self):
+        env = str(self.get_body_argument('env', default=None))
+        packages = str(self.get_body_argument('packages', default=None))
+        resp = self.env_manager.install_packages(env, packages)
+        self.finish(json.dumps(resp))
+
+
+class UpdatePkgHandler(EnvBaseHandler):
+    """
+    Handler for `PATCH /update_packages` which lists
+    the packages in the specified environment.
+    """
+
+    @json_errors
+    def patch(self):
+        env = str(self.get_body_argument('env', default=None))
+        packages = str(self.get_body_argument('packages', default=None))
+        resp = self.env_manager.update_packages(env, packages)
+        self.finish(json.dumps(resp))
+
+
+class CheckUpdatePkgHandler(EnvBaseHandler):
+    """
+    Handler for `POST /check_update_packages` which lists
+    the packages in the specified environment.
+    """
+
+    @json_errors
+    def post(self):
+        env = str(self.get_body_argument('env', default=None))
+        packages = str(self.get_body_argument('packages', default=None))
+        resp = self.env_manager.check_update(env, packages)
+        self.finish(json.dumps(resp))
+
+
+class DeletePkgHandler(EnvBaseHandler):
+    """
+    Handler for `DELETE /delete_packages` which lists
+    the packages in the specified environment.
+    """
+
+    @json_errors
+    def delete(self):
+        env = str(self.get_body_argument('env', 'none'))
+        packages = str(self.get_body_argument('packages', 'none'))
+        resp = self.env_manager.remove_packages(env, packages)
         self.finish(json.dumps(resp))
 
 
@@ -254,8 +316,6 @@ class SearchHandler(EnvBaseHandler):
 # -----------------------------------------------------------------------------
 
 
-_env_action_regex = r"(?P<action>create|export|clone|delete)"
-
 # there is almost no text that is invalid, but no hyphens up front, please
 # neither all these suspicious but valid caracthers...
 _env_regex = r"(?P<env>[^/&+$?@<>%*-][^/&+$?@<>%*]*)"
@@ -263,18 +323,14 @@ _env_regex = r"(?P<env>[^/&+$?@<>%*-][^/&+$?@<>%*]*)"
 # no hyphens up front, please
 _pkg_regex = r"(?P<pkg>[^\-][\-\da-zA-Z\._]+)"
 
-_pkg_action_regex = r"(?P<action>install|update|check|remove)"
 
 default_handlers = [
     (r"/environments", MainEnvHandler),
-    (r"/environments/%s/packages/%s" % (_env_regex, _pkg_action_regex),
-        EnvPkgActionHandler),
-    (r"/environments/%s/%s" % (_env_regex, _env_action_regex),
-        EnvActionHandler),
-    (r"/environments/%s" % _env_regex, EnvHandler),
+    (r"/list_packages/%s" % _env_regex, ListPkgHandler),
     (r"/packages/available", AvailablePackagesHandler),
     (r"/packages/search", SearchHandler),
 ]
+
 
 def PackageManagerHandler(nbapp):
     """Load the nbserver extension"""
