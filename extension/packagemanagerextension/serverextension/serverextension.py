@@ -326,7 +326,15 @@ _pkg_regex = r"(?P<pkg>[^\-][\-\da-zA-Z\._]+)"
 
 default_handlers = [
     (r"/environments", MainEnvHandler),
+    (r"/environment_export/%s" % _env_regex, ExportEnvHandler),
+    (r"/environment_clone", CloneEnvHandler),
+    (r"/environment_create", CreateEnvHandler),
+    (r"/environment_delete", DeleteEnvHandler),
     (r"/list_packages/%s" % _env_regex, ListPkgHandler),
+    (r"/install_packages", InstallPkgHandler),
+    (r"/update_packages", UpdatePkgHandler),
+    (r"/check_update_packages", CheckUpdatePkgHandler),
+    (r"/delete_packages", DeleteEnvHandler),
     (r"/packages/available", AvailablePackagesHandler),
     (r"/packages/search", SearchHandler),
 ]
