@@ -1,6 +1,7 @@
 
 # Package-Manager-API
 
+This document contains the API Specification along with a sample payload for each request.
 
 
 ## Indices
@@ -338,4 +339,3 @@ URL: http://localhost:8888/api/packagemanager/packages/search
 
 ---
 [Back to top](#package-manager-api)
-> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2019-06-15 15:57:05 by [docgen](https://github.com/thedevsaddam/docgen)
