@@ -166,6 +166,8 @@ class InstallPkgHandler(EnvBaseHandler):
         env = data['env']
         packages = data['packages']
         resp = self.env_manager.install_packages(env, packages)
+        if resp.get("error"):
+            self.set_status(500)
         self.finish(json.dumps(resp))
 
 
@@ -181,6 +183,8 @@ class UpdatePkgHandler(EnvBaseHandler):
         env = data['env']
         packages = data['packages']
         resp = self.env_manager.update_packages(env, packages)
+        if resp.get("error"):
+            self.set_status(500)
         self.finish(json.dumps(resp))
 
 
@@ -196,6 +200,8 @@ class CheckUpdatePkgHandler(EnvBaseHandler):
         env = data['env']
         packages = data['packages']
         resp = self.env_manager.check_update(env, packages)
+        if resp.get("error"):
+            self.set_status(500)
         self.finish(json.dumps(resp))
 
 
@@ -211,6 +217,8 @@ class DeletePkgHandler(EnvBaseHandler):
         env = data['env']
         packages = data['packages']
         resp = self.env_manager.remove_packages(env, packages)
+        if resp.get("error"):
+            self.set_status(500)
         self.finish(json.dumps(resp))
 
 
@@ -341,7 +349,7 @@ default_handlers = [
     (r"/install_packages", InstallPkgHandler),
     (r"/update_packages", UpdatePkgHandler),
     (r"/check_update_packages", CheckUpdatePkgHandler),
-    (r"/delete_packages", DeleteEnvHandler),
+    (r"/delete_packages", DeletePkgHandler),
     (r"/packages/available", AvailablePackagesHandler),
     (r"/packages/search", SearchHandler),
 ]
