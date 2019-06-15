@@ -1,0 +1,400 @@
+{
+	"info": {
+		"_postman_id": "a5caa9f9-6613-4088-8572-69311e725821",
+		"name": "Package-Manager-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Environment Management",
+			"item": [
+				{
+					"name": "List Environments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/environments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"environments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Export Environment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/environment_export/myenv",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"environment_export",
+								"myenv"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create  Environment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"env\": \"myenv\",\n\t\"env_type\": \"python3\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/environment_create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"environment_create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Clone Environment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"env\": \"myenv\",\n\t\"new_env\": \"myenv1\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/environment_clone",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"environment_clone"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Environment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"env\": \"myenv\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/environment_delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"environment_delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Package Management",
+			"item": [
+				{
+					"name": "List Packages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/list_packages/myenv",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"list_packages",
+								"myenv"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Install Packages",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"env\": \"myenv\",\n\t\"packages\": [\"dnspython\", \"pillow\"]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/install_packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"install_packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Uninstall Packages",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"env\": \"myenv\",\n\t\"packages\": [\"sqlite\"]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/delete_packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"delete_packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Updates for Packages",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"env\": \"myenv\",\n\t\"packages\": [\"tk\"]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/check_update_packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"check_update_packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Packages",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"env\": \"myenv\",\n\t\"packages\": [\"tk\"]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/update_packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"update_packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Available Packages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/packages/available",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"packages",
+								"available"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Packages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/packages/search?q=numpy",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"packages",
+								"search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "numpy"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "a03159ad-09ad-4264-8fc8-3f10e979f157",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "e63cc583-2603-4d65-8e7c-4746ab04acb4",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
