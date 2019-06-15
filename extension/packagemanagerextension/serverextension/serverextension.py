@@ -17,7 +17,7 @@ from notebook.base.handlers import (
     APIHandler,
     json_errors,
 )
-from tornado import web
+from tornado import web, escape
 
 if sys.version_info >= (3, 0):
     from .envmanager import EnvManager, package_map
@@ -78,18 +78,19 @@ class CloneEnvHandler(EnvBaseHandler):
 
     @json_errors
     def post(self):
-        env = str(self.get_body_argument('env', default=None))
-        new_env = str(self.get_body_argument('new_env', default=None))
-        data = self.env_manager.clone_env(env, new_env)
-        if 'error' not in data:
+        data = escape.json_decode(self.request.body)
+        env = data['env']
+        new_env = data['new_env']
+        resp = self.env_manager.clone_env(env, new_env)
+        if 'error' not in resp:
             status = 201  # CREATED
 
         # catch-all ok
-        if 'error' in data:
+        if 'error' in resp:
             status = 400
 
         self.set_status(status or 200)
-        self.finish(json.dumps(data))
+        self.finish(json.dumps(resp))
 
 
 class CreateEnvHandler(EnvBaseHandler):
@@ -100,20 +101,21 @@ class CreateEnvHandler(EnvBaseHandler):
 
     @json_errors
     def post(self):
-        env = str(self.get_body_argument('env', default=None))
-        env_type = self.get_argument('type', default=None)
+        data = escape.json_decode(self.request.body)
+        env = data['env']
+        env_type = data['env_type']
         if env_type not in package_map:
             raise web.HTTPError(400)
-        data = self.env_manager.create_env(env, env_type)
-        if 'error' not in data:
+        resp = self.env_manager.create_env(env, env_type)
+        if 'error' not in resp:
             status = 201  # CREATED
 
         # catch-all ok
-        if 'error' in data:
+        if 'error' in resp:
             status = 400
 
         self.set_status(status or 200)
-        self.finish(json.dumps(data))
+        self.finish(json.dumps(resp))
 
 
 class DeleteEnvHandler(EnvBaseHandler):
@@ -124,15 +126,16 @@ class DeleteEnvHandler(EnvBaseHandler):
 
     @json_errors
     def delete(self):
-        env = str(self.get_body_argument('env', default=None))
-        data = self.env_manager.delete_env(env)
+        data = escape.json_decode(self.request.body)
+        env = data['env']
+        resp = self.env_manager.delete_env(env)
 
         # catch-all ok
-        if 'error' in data:
+        if 'error' in resp:
             status = 400
 
         self.set_status(status or 200)
-        self.finish(json.dumps(data))
+        self.finish(json.dumps(resp))
 
 
 # -----------------------------------------------------------------------------
@@ -159,8 +162,9 @@ class InstallPkgHandler(EnvBaseHandler):
 
     @json_errors
     def post(self):
-        env = str(self.get_body_argument('env', default=None))
-        packages = str(self.get_body_argument('packages', default=None))
+        data = escape.json_decode(self.request.body)
+        env = data['env']
+        packages = data['packages']
         resp = self.env_manager.install_packages(env, packages)
         self.finish(json.dumps(resp))
 
@@ -173,8 +177,9 @@ class UpdatePkgHandler(EnvBaseHandler):
 
     @json_errors
     def patch(self):
-        env = str(self.get_body_argument('env', default=None))
-        packages = str(self.get_body_argument('packages', default=None))
+        data = escape.json_decode(self.request.body)
+        env = data['env']
+        packages = data['packages']
         resp = self.env_manager.update_packages(env, packages)
         self.finish(json.dumps(resp))
 
@@ -187,8 +192,9 @@ class CheckUpdatePkgHandler(EnvBaseHandler):
 
     @json_errors
     def post(self):
-        env = str(self.get_body_argument('env', default=None))
-        packages = str(self.get_body_argument('packages', default=None))
+        data = escape.json_decode(self.request.body)
+        env = data['env']
+        packages = data['packages']
         resp = self.env_manager.check_update(env, packages)
         self.finish(json.dumps(resp))
 
@@ -201,8 +207,9 @@ class DeletePkgHandler(EnvBaseHandler):
 
     @json_errors
     def delete(self):
-        env = str(self.get_body_argument('env', 'none'))
-        packages = str(self.get_body_argument('packages', 'none'))
+        data = escape.json_decode(self.request.body)
+        env = data['env']
+        packages = data['packages']
         resp = self.env_manager.remove_packages(env, packages)
         self.finish(json.dumps(resp))
 
