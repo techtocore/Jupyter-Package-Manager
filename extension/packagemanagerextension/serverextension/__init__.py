@@ -12,12 +12,5 @@ else:
 
 
 def load_jupyter_server_extension(nb_server_app):
-    web_app = nb_server_app.web_app
-    host_pattern = '.*$'
-
-    # handler for API.
-    web_app.add_handlers(host_pattern, [
-        (url_path_join(web_app.settings['base_url'], r'/api/packagemanager'),
-         PackageManagerHandler)
-    ])
-    print("JupyterPackageManager: ServerExtension Loaded")
+    PackageManagerHandler(nb_server_app)
+    print("Jupyter-Package-Manager: ServerExtension Loaded")
