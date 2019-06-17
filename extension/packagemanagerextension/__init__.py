@@ -7,7 +7,7 @@ def _jupyter_nbextension_paths():
         # directory in the `nbextension/` namespace
         dest="packagemanagerextension",
         # _also_ in the `nbextension/` namespace
-        require="packagemanagerextension/extension"),
+        require="packagemanagerextension/main"),
 
         dict(
         section="tree",
@@ -16,7 +16,7 @@ def _jupyter_nbextension_paths():
         # directory in the `nbextension/` namespace
         dest="packagemanagerextension",
         # _also_ in the `nbextension/` namespace
-        require="packagemanagerextension/extension")]
+        require="packagemanagerextension/tree")]
 
 
 def _jupyter_server_extension_paths():
