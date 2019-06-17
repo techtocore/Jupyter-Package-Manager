@@ -56,7 +56,7 @@ define([
 					$('#package_manager').css("display", "none");
 				}
 			});
-			// $('#package_manager').show();
+			// $('#package_manager_html_id').show();
 		}
 
 		/**

@@ -81,8 +81,7 @@ class EnvManager(LoggingConfigurable):
             }
 
         return {
-            "environments": [root_env] + [get_info(env)
-                                          for env in info['envs']]
+            "environments": [root_env] + [get_info(env) for env in info['envs'] if env != info['root_prefix']]
         }
 
     def delete_env(self, env):
