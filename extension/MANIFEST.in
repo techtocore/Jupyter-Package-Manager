@@ -1,2 +1,2 @@
-graft gangaextension/nbextension
+graft packagemanagerextension/nbextension
 include VERSION
