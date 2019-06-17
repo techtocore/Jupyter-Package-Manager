@@ -115,7 +115,21 @@ define([
         */
 
         if (action === "install") {
+            var settings = common.AjaxSettings({
+                data: JSON.stringify({
+                    env: environments.selected.name,
+                    packages: packages
+                }),
+                dataType: 'json',
+                type: 'POST',
+                contentType: "application/json",
+                success: common.SuccessWrapper(on_success, on_error),
+                error: on_error
+            });
 
+            var url = urls.api_url + utils.url_join_encode(
+                'install_packages');
+            return utils.ajax(url, settings);
         }
         else if (action === "update") {
 
