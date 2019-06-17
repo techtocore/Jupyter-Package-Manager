@@ -94,13 +94,14 @@ define([
         },
 
         export: function(env) {
-            return urls.api_url + utils.url_join_encode('environments', env.name, 'export');
+            return urls.api_url + utils.url_join_encode('environment_export', env.name);
         }
     };
 
     function conda_package_action(packages, action, on_success, on_error) {
         // Helper function to access the /environments/ENV/packages/ACTION endpoint
 
+        /*
         var settings = common.AjaxSettings({
             data:    { packages: packages },
             type:    'POST',
@@ -111,11 +112,31 @@ define([
         var url = urls.api_url + utils.url_join_encode(
           'environments', environments.selected.name, 'packages', action);
         return utils.ajax(url, settings);
+        */
+
+        if(action === "install")
+        {
+
+        }
+        else if(action === "update")
+        {
+
+        }
+        else if(action === "check")
+        {
+
+        }
+        else if(action === "remove")
+        {
+
+        }
+        
     }
 
     function conda_env_action(env, action, on_success, on_error, data) {
         // Helper function to access the /environments/ENV/ACTION endpoint
 
+        /*
         var settings = common.AjaxSettings({
             data:    data || {},
             type:    'POST',
@@ -126,6 +147,19 @@ define([
         var url = urls.api_url + utils.url_join_encode(
             'environments', env.name, action);
         return utils.ajax(url, settings);
+        */
+       if(action === "create")
+        {
+
+        }
+        else if(action === "clone")
+        {
+
+        }
+        else if(action === "delete")
+        {
+
+        }
     }
 
     var available = {
@@ -236,7 +270,7 @@ define([
         },
 
         conda_list: function(query) {
-            // Load the package list via ajax to the /packages/search endpoint
+            // Load the package list via ajax to the /list_packages endpoint
             var that = this;
 
             function handle_response(data, status, xhr) {
@@ -262,7 +296,7 @@ define([
             });
 
             var url = urls.api_url + utils.url_join_encode(
-                'environments', query);
+                'list_packages', query);
             return utils.ajax(url, settings);
         },
 

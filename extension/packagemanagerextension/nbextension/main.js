@@ -7,7 +7,7 @@ define(function(require) {
     var urls = require('./urls');
     var dialog = require('base/js/dialog');
     var utils = require('base/js/utils');
-    var $view = $('#conda');
+    var $view = $('#package_manager');
 
     jQuery.fn.center = function () {
         this.css("position","absolute");
@@ -42,7 +42,7 @@ define(function(require) {
                 success: function(tab_html, status, xhr) {
                     // Load the 'conda tab', hide the Environments portion
                     $view = $(tab_html);
-                    $view.find('#conda').removeClass('tab-pane').hide();
+                    $view.find('#package_manager').removeClass('tab-pane').hide();
                     $view.find('#environments').hide();
                     $('body').append($view);
 
@@ -113,7 +113,7 @@ define(function(require) {
             success: function(menu_html, status, xhr) {
                 // Configure Conda items in Kernel menu
                 $("#kernel_menu").append($(menu_html));
-                $('#conda_menu_item').click(load_conda_view);
+                $('#package_manager_menu_item').click(load_conda_view);
             }
         });
     }
