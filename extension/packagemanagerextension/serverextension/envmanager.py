@@ -52,10 +52,12 @@ class EnvManager(LoggingConfigurable):
         try:
             output = check_output(cmdline)
         except CalledProcessError as exc:
-            self.log.debug('[packagemanagerextension] exit code: %s', exc.returncode)
+            self.log.debug(
+                '[packagemanagerextension] exit code: %s', exc.returncode)
             output = exc.output
 
-        self.log.debug('[packagemanagerextension] output: %s', output[:MAX_LOG_OUTPUT])
+        self.log.debug('[packagemanagerextension] output: %s',
+                       output[:MAX_LOG_OUTPUT])
 
         if len(output) > MAX_LOG_OUTPUT:
             self.log.debug('[packagemanagerextension] ...')
@@ -68,9 +70,9 @@ class EnvManager(LoggingConfigurable):
         default_env = info['default_prefix']
 
         root_env = {
-                'name': 'root',
-                'dir': info['root_prefix'],
-                'is_default': info['root_prefix'] == default_env
+            'name': 'root',
+            'dir': info['root_prefix'],
+            'is_default': info['root_prefix'] == default_env
         }
 
         def get_info(env):
@@ -94,7 +96,8 @@ class EnvManager(LoggingConfigurable):
         try:
             return json.loads('\n'.join(lines))
         except Exception as err:
-            self.log.warn('[packagemanagerextension] JSON parse fail:\n%s', err)
+            self.log.warn(
+                '[packagemanagerextension] JSON parse fail:\n%s', err)
 
         # try to remove bad lines
         lines = [line for line in lines if re.match(JSONISH_RE)]
@@ -102,7 +105,8 @@ class EnvManager(LoggingConfigurable):
         try:
             return json.loads('\n'.join(lines))
         except Exception as err:
-            self.log.error('[packagemanagerextension] JSON clean/parse fail:\n%s', err)
+            self.log.error(
+                '[packagemanagerextension] JSON clean/parse fail:\n%s', err)
 
         return {"error": True}
 

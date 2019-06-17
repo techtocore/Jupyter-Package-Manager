@@ -1,4 +1,4 @@
-define(function(require) {
+define(function (require) {
     "use strict";
     var $ = require('jquery');
     var Jupyter = require('base/js/namespace');
@@ -10,11 +10,11 @@ define(function(require) {
     var $view = $('#package_manager_html_id');
 
     jQuery.fn.center = function () {
-        this.css("position","absolute");
+        this.css("position", "absolute");
         this.css("top", Math.max(0, (($(window).height() - $(this).outerHeight()) / 2) +
-                                                    $(window).scrollTop()) + "px");
+            $(window).scrollTop()) + "px");
         this.css("left", Math.max(0, (($(window).width() - $(this).outerWidth()) / 2) +
-                                                    $(window).scrollLeft()) + "px");
+            $(window).scrollLeft()) + "px");
         return this;
     }
 
@@ -22,24 +22,24 @@ define(function(require) {
         var d = dialog.modal({
             title: 'Conda Packages',
             body: $view,
-            open: function() {
+            open: function () {
                 $('#searchbox').focus();
             },
             keyboard_manager: Jupyter.notebook.keyboard_manager
         });
-        d.on('hide.bs.modal', function() {
+        d.on('hide.bs.modal', function () {
             // detach the conda view so it isn't destroyed with the dialog box
             $view.detach();
         });
-        d.find('.modal-dialog').css({width: "80vw"});
+        d.find('.modal-dialog').css({ width: "80vw" });
     }
 
     function load_conda_view() {
-        if($view.length === 0) {
+        if ($view.length === 0) {
             // Not loaded yet
             utils.ajax(urls.static_url + 'tab.html', {
                 dataType: 'html',
-                success: function(tab_html, status, xhr) {
+                success: function (tab_html, status, xhr) {
                     // Load the 'conda tab', hide the Environments portion
                     $view = $(tab_html);
                     $view.find('#package_manager_html_id').removeClass('tab-pane').hide();
@@ -86,7 +86,7 @@ define(function(require) {
             kernel_env_re = /^conda-(env-)?(.+?)(-[^\-]*)?$/,
             m = kernel_env_re.exec(kernel_name);
 
-        if(m) {
+        if (m) {
             return models.environments.select({ name: m[2] });
         }
         else {
@@ -103,14 +103,14 @@ define(function(require) {
         if (!Jupyter.notebook) return;
         $('head').append(
             $('<link>')
-            .attr('rel', 'stylesheet')
-            .attr('type', 'text/css')
-            .attr('href', urls.static_url + 'conda.css')
+                .attr('rel', 'stylesheet')
+                .attr('type', 'text/css')
+                .attr('href', urls.static_url + 'conda.css')
         );
 
         utils.ajax(urls.static_url + 'menu.html', {
             dataType: 'html',
-            success: function(menu_html, status, xhr) {
+            success: function (menu_html, status, xhr) {
                 // Configure Conda items in Kernel menu
                 $("#kernel_menu").append($(menu_html));
                 $('#package_manager_menu_item').click(load_conda_view);

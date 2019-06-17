@@ -365,4 +365,4 @@ def PackageManagerHandler(nbapp):
         (ujoin(base_url, NS, pat), handler)
         for pat, handler in default_handlers
     ])
-    nbapp.log.info("Jupyter-Package-Manager: Handlers enabled")
+    nbapp.log.info("packagemanagerextension: Handlers enabled")

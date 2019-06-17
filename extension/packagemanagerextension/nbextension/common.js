@@ -1,14 +1,14 @@
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
 if (!String.prototype.endsWith) {
-  String.prototype.endsWith = function(searchString, position) {
-      var subjectString = this.toString();
-      if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
-        position = subjectString.length;
-      }
-      position -= searchString.length;
-      var lastIndex = subjectString.indexOf(searchString, position);
-      return lastIndex !== -1 && lastIndex === position;
-  };
+    String.prototype.endsWith = function (searchString, position) {
+        var subjectString = this.toString();
+        if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
+            position = subjectString.length;
+        }
+        position -= searchString.length;
+        var lastIndex = subjectString.indexOf(searchString, position);
+        return lastIndex !== -1 && lastIndex === position;
+    };
 }
 
 
@@ -17,12 +17,12 @@ define([
     'base/js/utils',
     'base/js/dialog',
     'base/js/keyboard',
-], function($, utils, dialog, keyboard) {
+], function ($, utils, dialog, keyboard) {
     "use strict";
 
     function SuccessWrapper(success_callback, error_callback) {
-        return function(data, status, xhr) {
-            if(data.error || data.message) {
+        return function (data, status, xhr) {
+            if (data.error || data.message) {
                 // Conda returned a dict with error info
                 error_callback(xhr, status, data.error || data.message);
             }
@@ -33,7 +33,7 @@ define([
     }
 
     function MakeErrorCallback(title, msg) {
-        return function(xhr, status, e) {
+        return function (xhr, status, e) {
             dialog.modal({
                 title: title,
 
@@ -55,7 +55,7 @@ define([
     }
 
     function icon(name) {
-        return $('<i/>'  ).addClass('icon-button fa fa-' + name);
+        return $('<i/>').addClass('icon-button fa fa-' + name);
     }
 
     function column(name, width) {
@@ -64,8 +64,8 @@ define([
 
     function button(title, icon_name) {
         return $('<span class="pull-right">' +
-                 '<button title="' + title + '" class="btn btn-default btn-xs">' +
-                 '<i class="fa fa-' + icon_name + '"></i></button></span>');
+            '<button title="' + title + '" class="btn btn-default btn-xs">' +
+            '<i class="fa fa-' + icon_name + '"></i></button></span>');
     }
 
     function link(url, text) {
@@ -76,7 +76,7 @@ define([
         settings.cache = false;
         settings.dataType = 'json';
 
-        if(! settings.type) {
+        if (!settings.type) {
             settings.type = 'GET';
         }
         return settings;
@@ -97,7 +97,7 @@ define([
 
         var d;
 
-        if(input !== undefined) {
+        if (input !== undefined) {
             opts.open = function () {
                 // Upon ENTER, click the OK button.
                 input.keydown(function (event) {
@@ -119,10 +119,10 @@ define([
             $('<form/>').append(
                 $('<fieldset/>').append(
                     $('<label/>')
-                    .attr('for','prompt_name')
-                    .text(label)
+                        .attr('for', 'prompt_name')
+                        .text(label)
                 )
-                .append(input)
+                    .append(input)
             )
         );
 
@@ -138,15 +138,15 @@ define([
         var plural = (count !== 1);
         var word;
 
-        if(plural) {
-            if(plural_word) {
+        if (plural) {
+            if (plural_word) {
                 word = plural_word;
             }
             else {
-                if(single_word.endsWith('s') || single_word.endsWith('sh') || single_word.endsWith('ch')) {
+                if (single_word.endsWith('s') || single_word.endsWith('sh') || single_word.endsWith('ch')) {
                     word = single_word + 'es';
                 }
-                else if(single_word.endsWith('y')) {
+                else if (single_word.endsWith('y')) {
                     word = single_word.slice(0, -1) + 'ies';
                 }
                 else {

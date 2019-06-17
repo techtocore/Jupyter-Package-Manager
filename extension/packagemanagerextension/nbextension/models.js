@@ -4,19 +4,19 @@ define([
     'base/js/utils',
     './common',
     './urls',
-], function($, utils, common, urls) {
+], function ($, utils, common, urls) {
     "use strict";
 
     var NullView = {
-        refresh: function() {}
+        refresh: function () { }
     };
 
     var environments = {
-        all:      [],
+        all: [],
         selected: null,
-        view:     NullView,
+        view: NullView,
 
-        load: function() {
+        load: function () {
             // Load the list via ajax to the /environments endpoint
             var that = this;
             var error_callback = common.MakeErrorCallback('Error', 'An error occurred while listing Conda environments.');
@@ -29,12 +29,12 @@ define([
                 that.all = envs;
 
                 // Select the default environment as current
-                $.each(envs, function(index, env) {
-                    if(env.is_default) {
+                $.each(envs, function (index, env) {
+                    if (env.is_default) {
                         default_env = env;
                     }
 
-                    if(that.selected && that.selected.name == env.name) {
+                    if (that.selected && that.selected.name == env.name) {
                         // selected env still exists
                         keep_selection = true;
                     }
@@ -42,7 +42,7 @@ define([
 
                 that.view.refresh(envs);
 
-                if(! keep_selection) {
+                if (!keep_selection) {
                     // Lost selected env, pick a different one
                     that.select(default_env);
                 }
@@ -50,20 +50,20 @@ define([
 
             var settings = common.AjaxSettings({
                 success: common.SuccessWrapper(handle_response, error_callback),
-                error:   error_callback
+                error: error_callback
             });
 
             return utils.ajax(urls.api_url + 'environments', settings);
         },
 
-        select: function(env) {
+        select: function (env) {
             this.selected = _.findWhere(this.all, env);
 
             // refresh list of packages installed in the selected environment
             return installed.load();
         },
 
-        create: function(name, type) {
+        create: function (name, type) {
             var error_callback = common.MakeErrorCallback('Error Creating Environment', 'An error occurred while creating "' + name + '"');
 
             function create_success() {
@@ -73,7 +73,7 @@ define([
             return conda_env_action({ name: name }, 'create', create_success, error_callback, { type: type });
         },
 
-        clone: function(env, new_name) {
+        clone: function (env, new_name) {
             var error_callback = common.MakeErrorCallback('Error Cloning Environment', 'An error occurred while cloning "' + env.name + '"');
 
             function clone_success() {
@@ -83,7 +83,7 @@ define([
             return conda_env_action(env, 'clone', clone_success, error_callback, { name: new_name });
         },
 
-        remove: function(env) {
+        remove: function (env) {
             var error_callback = common.MakeErrorCallback('Error Removing Environment', 'An error occurred while removing "' + env.name + '"');
 
             function remove_success() {
@@ -93,7 +93,7 @@ define([
             return conda_env_action(env, 'delete', remove_success, error_callback);
         },
 
-        export: function(env) {
+        export: function (env) {
             return urls.api_url + utils.url_join_encode('environment_export', env.name);
         }
     };
@@ -114,23 +114,19 @@ define([
         return utils.ajax(url, settings);
         */
 
-        if(action === "install")
-        {
+        if (action === "install") {
 
         }
-        else if(action === "update")
-        {
+        else if (action === "update") {
 
         }
-        else if(action === "check")
-        {
+        else if (action === "check") {
 
         }
-        else if(action === "remove")
-        {
+        else if (action === "remove") {
 
         }
-        
+
     }
 
     function conda_env_action(env, action, on_success, on_error, data) {
@@ -148,38 +144,35 @@ define([
             'environments', env.name, action);
         return utils.ajax(url, settings);
         */
-       if(action === "create")
-        {
+        if (action === "create") {
 
         }
-        else if(action === "clone")
-        {
+        else if (action === "clone") {
 
         }
-        else if(action === "delete")
-        {
+        else if (action === "delete") {
 
         }
     }
 
     var available = {
         packages: [],
-        view:     NullView,
+        view: NullView,
 
-        load: function() {
+        load: function () {
             // Load the package list via ajax to the /packages/available endpoint
             var that = this;
 
             function handle_response(data, status, xhr) {
                 var packages = data.packages;
-                if(xhr.status == 202) {
+                if (xhr.status == 202) {
                     // "Accepted" - try back later on this async request
-                    setTimeout(function() {
+                    setTimeout(function () {
                         that.load();
                     }, 1000);
                 }
                 else {
-                    $.each(packages, function(index, pkg) {
+                    $.each(packages, function (index, pkg) {
                         pkg.selected = false;
                     });
 
@@ -191,8 +184,8 @@ define([
             var error_callback = common.MakeErrorCallback('Error', 'An error occurred while retrieving package information.');
 
             var settings = common.AjaxSettings({
-                success : common.SuccessWrapper(handle_response, error_callback),
-                error : error_callback
+                success: common.SuccessWrapper(handle_response, error_callback),
+                error: error_callback
             });
 
             var url = urls.api_url + utils.url_path_join(
@@ -200,29 +193,29 @@ define([
             return utils.ajax(url, settings);
         },
 
-        get_selection: function() {
-            return this.packages.filter(function(pkg) {
+        get_selection: function () {
+            return this.packages.filter(function (pkg) {
                 return pkg.selected;
             });
         },
 
-        select_none: function() {
-            $.each(this.packages, function(index, pkg) {
+        select_none: function () {
+            $.each(this.packages, function (index, pkg) {
                 pkg.selected = false;
             });
         },
 
-        get_selected_names: function() {
-            return this.get_selection().map(function(pkg) {
+        get_selected_names: function () {
+            return this.get_selection().map(function (pkg) {
                 return pkg.name;
             });
         },
 
-        conda_install: function() {
+        conda_install: function () {
             var that = this;
             var packages = this.get_selected_names();
 
-            if(packages.length == 0) {
+            if (packages.length == 0) {
                 return;
             }
 
@@ -241,11 +234,11 @@ define([
 
     var installed = {
         packages: [],
-        by_name:  {},
-        view:     NullView,
+        by_name: {},
+        view: NullView,
 
-        load: function() {
-            if(environments.selected !== null) {
+        load: function () {
+            if (environments.selected !== null) {
                 return this.conda_list(environments.selected.name);
             }
             else {
@@ -257,19 +250,19 @@ define([
             }
         },
 
-        get_selection: function() {
-            return this.packages.filter(function(pkg) {
+        get_selection: function () {
+            return this.packages.filter(function (pkg) {
                 return pkg.selected;
             });
         },
 
-        get_selected_names: function() {
-            return this.get_selection().map(function(pkg) {
+        get_selected_names: function () {
+            return this.get_selection().map(function (pkg) {
                 return pkg.name;
             });
         },
 
-        conda_list: function(query) {
+        conda_list: function (query) {
             // Load the package list via ajax to the /list_packages endpoint
             var that = this;
 
@@ -277,14 +270,14 @@ define([
                 var packages = data.packages || [];
                 var by_name = {};
 
-                $.each(packages, function(index, pkg) {
+                $.each(packages, function (index, pkg) {
                     pkg.selected = false;
                     pkg.available = '';
                     by_name[pkg.name] = pkg;
                 });
 
                 that.packages = packages;
-                that.by_name  = by_name;
+                that.by_name = by_name;
                 that.view.refresh(that.packages);
             }
 
@@ -292,7 +285,7 @@ define([
 
             var settings = common.AjaxSettings({
                 success: common.SuccessWrapper(handle_response, error_callback),
-                error:   error_callback
+                error: error_callback
             });
 
             var url = urls.api_url + utils.url_join_encode(
@@ -300,13 +293,13 @@ define([
             return utils.ajax(url, settings);
         },
 
-        _update: function(dry_run, handler) {
+        _update: function (dry_run, handler) {
             // Load the package list via ajax to the /environments/ENV/check endpoint
             var that = this;
 
             var packages = this.get_selected_names();
 
-            if(packages.length == 0) {
+            if (packages.length == 0) {
                 // If no packages are selected, update all
                 packages = [];
             }
@@ -314,7 +307,7 @@ define([
             var action;
             var msg;
 
-            if(dry_run) {
+            if (dry_run) {
                 action = 'check';
                 msg = 'An error occurred while checking for package updates.';
             }
@@ -327,17 +320,17 @@ define([
             return conda_package_action(packages, action, handler, error_callback);
         },
 
-        conda_check_updates: function() {
+        conda_check_updates: function () {
             var that = this;
 
             function handle_response(response, status, xhr) {
-                $.each(response.updates, function(index, pkg) {
+                $.each(response.updates, function (index, pkg) {
                     var existing = that.by_name[pkg.name];
 
                     // See if there is an existing entry.
                     // Usually there will be, but an update
                     // might pull in a new package as a dependency.
-                    if(existing) {
+                    if (existing) {
                         existing.available = pkg.version + '-' + pkg.build;
                     }
                 });
@@ -348,7 +341,7 @@ define([
             return this._update(true, handle_response);
         },
 
-        conda_update: function() {
+        conda_update: function () {
             var that = this;
 
             function handle_response(packages, status, xhr) {
@@ -359,11 +352,11 @@ define([
             return this._update(false, handle_response);
         },
 
-        conda_remove: function() {
+        conda_remove: function () {
             var that = this;
             var packages = this.get_selected_names();
 
-            if(packages.length == 0) {
+            if (packages.length == 0) {
                 return;
             }
 
@@ -379,7 +372,7 @@ define([
 
     return {
         'environments': environments,
-        'available':    available,
-        'installed':    installed
+        'available': available,
+        'installed': installed
     };
 });
