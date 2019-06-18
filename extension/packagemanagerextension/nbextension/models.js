@@ -70,7 +70,7 @@ define([
                 // Refresh list of environments since there is a new one
                 environments.load();
             }
-            return conda_env_action({ name: name }, 'create', create_success, error_callback, { type: type });
+            return conda_env_action(name, 'create', create_success, error_callback, type);
         },
 
         clone: function (env, new_name) {
@@ -80,7 +80,7 @@ define([
                 // Refresh list of environments since there is a new one
                 environments.load();
             }
-            return conda_env_action(env, 'clone', clone_success, error_callback, { name: new_name });
+            return conda_env_action(env, 'clone', clone_success, error_callback, new_name);
         },
 
         remove: function (env) {
@@ -94,7 +94,7 @@ define([
         },
 
         export: function (env) {
-            return urls.api_url + utils.url_join_encode('environment_export', env.name);
+            return conda_env_action(env, 'export', remove_success, error_callback);
         }
     };
 
@@ -115,7 +115,7 @@ define([
             });
 
             var url = urls.api_url + utils.url_join_encode(
-                'install_packages');
+                'packages');
             return utils.ajax(url, settings);
         }
         else if (action === "update") {
@@ -132,7 +132,7 @@ define([
             });
 
             var url = urls.api_url + utils.url_join_encode(
-                'update_packages');
+                'packages');
             return utils.ajax(url, settings);
         }
         else if (action === "check") {
@@ -149,7 +149,7 @@ define([
             });
 
             var url = urls.api_url + utils.url_join_encode(
-                'check_update_packages');
+                'packages/check_update');
             return utils.ajax(url, settings);
         }
         else if (action === "remove") {
@@ -166,35 +166,73 @@ define([
             });
 
             var url = urls.api_url + utils.url_join_encode(
-                'delete_packages');
+                'packages');
             return utils.ajax(url, settings);
         }
 
     }
 
     function conda_env_action(env, action, on_success, on_error, data) {
-        // Helper function to access the /environments/ENV/ACTION endpoint
+        // Helper function to access the environment management endpoints
 
-        /*
-        var settings = common.AjaxSettings({
-            data:    data || {},
-            type:    'POST',
-            success: common.SuccessWrapper(on_success, on_error),
-            error:   on_error
-        });
-
-        var url = urls.api_url + utils.url_join_encode(
-            'environments', env.name, action);
-        return utils.ajax(url, settings);
-        */
         if (action === "create") {
+            var settings = common.AjaxSettings({
+                data: JSON.stringify({
+                    env: env,
+                    env_type: data
+                }),
+                type: 'POST',
+                contentType: "application/json",
+                success: common.SuccessWrapper(on_success, on_error),
+                error: on_error
+            });
 
+            var url = urls.api_url + utils.url_join_encode(
+                'environments', env.name);
+            return utils.ajax(url, settings);
         }
         else if (action === "clone") {
+            var settings = common.AjaxSettings({
+                data: JSON.stringify({
+                    env: env,
+                    new_env: data
+                }),
+                type: 'POST',
+                contentType: "application/json",
+                success: common.SuccessWrapper(on_success, on_error),
+                error: on_error
+            });
 
+            var url = urls.api_url + utils.url_join_encode(
+                'environment_clone', env.name, action);
+            return utils.ajax(url, settings);
         }
         else if (action === "delete") {
+            var settings = common.AjaxSettings({
+                data: JSON.stringify({
+                    env: env
+                }),
+                type: 'DELETE',
+                contentType: "application/json",
+                success: common.SuccessWrapper(on_success, on_error),
+                error: on_error
+            });
 
+            var url = urls.api_url + utils.url_join_encode(
+                'environments', env.name, action);
+            return utils.ajax(url, settings);
+        }
+        else if (action === "export") {
+            var settings = common.AjaxSettings({
+                type: 'GET',
+                contentType: "text/plain",
+                success: common.SuccessWrapper(on_success, on_error),
+                error: on_error
+            });
+
+            var url = urls.api_url + utils.url_join_encode(
+                'environments', env.name, action);
+            return utils.ajax(url, settings);
         }
     }
 
