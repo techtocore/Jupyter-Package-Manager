@@ -99,20 +99,7 @@ define([
     };
 
     function conda_package_action(packages, action, on_success, on_error) {
-        // Helper function to access the /environments/ENV/packages/ACTION endpoint
-
-        /*
-        var settings = common.AjaxSettings({
-            data:    { packages: packages },
-            type:    'POST',
-            success: common.SuccessWrapper(on_success, on_error),
-            error:   on_error
-        });
-
-        var url = urls.api_url + utils.url_join_encode(
-          'environments', environments.selected.name, 'packages', action);
-        return utils.ajax(url, settings);
-        */
+        // Helper function to access the package management endpoints
 
         if (action === "install") {
             var settings = common.AjaxSettings({
@@ -132,13 +119,55 @@ define([
             return utils.ajax(url, settings);
         }
         else if (action === "update") {
+            var settings = common.AjaxSettings({
+                data: JSON.stringify({
+                    env: environments.selected.name,
+                    packages: packages
+                }),
+                dataType: 'json',
+                type: 'PATCH',
+                contentType: "application/json",
+                success: common.SuccessWrapper(on_success, on_error),
+                error: on_error
+            });
 
+            var url = urls.api_url + utils.url_join_encode(
+                'update_packages');
+            return utils.ajax(url, settings);
         }
         else if (action === "check") {
+            var settings = common.AjaxSettings({
+                data: JSON.stringify({
+                    env: environments.selected.name,
+                    packages: packages
+                }),
+                dataType: 'json',
+                type: 'POST',
+                contentType: "application/json",
+                success: common.SuccessWrapper(on_success, on_error),
+                error: on_error
+            });
 
+            var url = urls.api_url + utils.url_join_encode(
+                'check_update_packages');
+            return utils.ajax(url, settings);
         }
         else if (action === "remove") {
+            var settings = common.AjaxSettings({
+                data: JSON.stringify({
+                    env: environments.selected.name,
+                    packages: packages
+                }),
+                dataType: 'json',
+                type: 'DELETE',
+                contentType: "application/json",
+                success: common.SuccessWrapper(on_success, on_error),
+                error: on_error
+            });
 
+            var url = urls.api_url + utils.url_join_encode(
+                'delete_packages');
+            return utils.ajax(url, settings);
         }
 
     }
