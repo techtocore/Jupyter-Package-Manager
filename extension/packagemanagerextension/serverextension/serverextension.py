@@ -73,7 +73,7 @@ class ExportEnvHandler(EnvBaseHandler):
 class CloneEnvHandler(EnvBaseHandler):
     """
     Handler for `POST /environment_clone` which
-    exports the specified environment.
+    clones the specified environment.
     """
 
     @json_errors
@@ -96,7 +96,7 @@ class CloneEnvHandler(EnvBaseHandler):
 class CreateEnvHandler(EnvBaseHandler):
     """
     Handler for `POST /environment_create` which
-    exports the specified environment.
+    creates the specified environment.
     """
 
     @json_errors
@@ -121,7 +121,7 @@ class CreateEnvHandler(EnvBaseHandler):
 class DeleteEnvHandler(EnvBaseHandler):
     """
     Handler for `DELETE /environment_delete` which
-    exports the specified environment.
+    deletes the specified environment.
     """
 
     @json_errors
@@ -145,7 +145,7 @@ class DeleteEnvHandler(EnvBaseHandler):
 
 class ListPkgHandler(EnvBaseHandler):
     """
-    Handler for `GET /list_packages/<name>` which lists
+    Handler for `GET /list_packages/<name>` which lists all
     the packages in the specified environment.
     """
 
@@ -156,8 +156,8 @@ class ListPkgHandler(EnvBaseHandler):
 
 class InstallPkgHandler(EnvBaseHandler):
     """
-    Handler for `POST /install_packages` which lists
-    the packages in the specified environment.
+    Handler for `POST /install_packages` which installs all
+    the selected packages in the specified environment.
     """
 
     @json_errors
@@ -173,8 +173,8 @@ class InstallPkgHandler(EnvBaseHandler):
 
 class UpdatePkgHandler(EnvBaseHandler):
     """
-    Handler for `PATCH /update_packages` which lists
-    the packages in the specified environment.
+    Handler for `PATCH /update_packages` which updates all
+    the selected packages in the specified environment.
     """
 
     @json_errors
@@ -190,8 +190,8 @@ class UpdatePkgHandler(EnvBaseHandler):
 
 class CheckUpdatePkgHandler(EnvBaseHandler):
     """
-    Handler for `POST /check_update_packages` which lists
-    the packages in the specified environment.
+    Handler for `POST /check_update_packages` which checks for updates of all
+    the selected packages in the specified environment.
     """
 
     @json_errors
@@ -207,8 +207,8 @@ class CheckUpdatePkgHandler(EnvBaseHandler):
 
 class DeletePkgHandler(EnvBaseHandler):
     """
-    Handler for `DELETE /delete_packages` which lists
-    the packages in the specified environment.
+    Handler for `DELETE /delete_packages` which deletes all
+    the selected packages in the specified environment.
     """
 
     @json_errors
