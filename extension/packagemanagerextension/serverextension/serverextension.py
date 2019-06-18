@@ -80,7 +80,7 @@ class ManageEnvHandler(EnvBaseHandler):
         self.finish(json.dumps(resp))
 
     """
-    Handler for `DELETE /environment` which
+    Handler for `DELETE /environments` which
     deletes the specified environment.
     """
 

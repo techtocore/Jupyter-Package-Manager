@@ -1,8 +1,7 @@
 
 # Package-Manager-API
 
-This document contains the API Specification along with a sample payload for each request.
-
+This file outlines the API specifications for the endpoints used by Jupyter Package Manager
 
 ## Indices
 
@@ -55,8 +54,15 @@ URL: http://localhost:8888/api/packagemanager/environments
 ```bash
 Method: GET
 Type: RAW
-URL: http://localhost:8888/api/packagemanager/environment_export/myenv
+URL: http://localhost:8888/api/packagemanager/environments/myenv
 ```
+
+
+***Headers:***
+
+| Key | Value | Description |
+| --- | ------|-------------|
+| Content-Type | text/plain | To retrive the content as a text file |
 
 
 
@@ -69,7 +75,7 @@ URL: http://localhost:8888/api/packagemanager/environment_export/myenv
 ```bash
 Method: POST
 Type: RAW
-URL: http://localhost:8888/api/packagemanager/environment_create
+URL: http://localhost:8888/api/packagemanager/environments
 ```
 
 
@@ -131,9 +137,9 @@ URL: http://localhost:8888/api/packagemanager/environment_clone
 ***Endpoint:***
 
 ```bash
-Method: POST
+Method: DELETE
 Type: RAW
-URL: http://localhost:8888/api/packagemanager/environment_delete
+URL: http://localhost:8888/api/packagemanager/environments
 ```
 
 
@@ -168,8 +174,15 @@ URL: http://localhost:8888/api/packagemanager/environment_delete
 ```bash
 Method: GET
 Type: RAW
-URL: http://localhost:8888/api/packagemanager/list_packages/myenv
+URL: http://localhost:8888/api/packagemanager/environments/myenv
 ```
+
+
+***Headers:***
+
+| Key | Value | Description |
+| --- | ------|-------------|
+| Content-Type | application/json | To retrive the result as a JSON |
 
 
 
@@ -182,7 +195,7 @@ URL: http://localhost:8888/api/packagemanager/list_packages/myenv
 ```bash
 Method: POST
 Type: RAW
-URL: http://localhost:8888/api/packagemanager/install_packages
+URL: http://localhost:8888/api/packagemanager/packages
 ```
 
 
@@ -214,7 +227,7 @@ URL: http://localhost:8888/api/packagemanager/install_packages
 ```bash
 Method: DELETE
 Type: RAW
-URL: http://localhost:8888/api/packagemanager/delete_packages
+URL: http://localhost:8888/api/packagemanager/packages
 ```
 
 
@@ -246,7 +259,7 @@ URL: http://localhost:8888/api/packagemanager/delete_packages
 ```bash
 Method: POST
 Type: RAW
-URL: http://localhost:8888/api/packagemanager/check_update_packages
+URL: http://localhost:8888/api/packagemanager/packages/check_update
 ```
 
 
@@ -263,7 +276,7 @@ URL: http://localhost:8888/api/packagemanager/check_update_packages
 ```js        
 {
 	"env": "myenv",
-	"packages": ["tk"]
+	"packages": ["sqlite"]
 }
 ```
 
@@ -278,7 +291,7 @@ URL: http://localhost:8888/api/packagemanager/check_update_packages
 ```bash
 Method: PATCH
 Type: RAW
-URL: http://localhost:8888/api/packagemanager/update_packages
+URL: http://localhost:8888/api/packagemanager/packages
 ```
 
 
@@ -295,7 +308,7 @@ URL: http://localhost:8888/api/packagemanager/update_packages
 ```js        
 {
 	"env": "myenv",
-	"packages": ["tk"]
+	"packages": ["sqlite"]
 }
 ```
 
