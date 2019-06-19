@@ -13,4 +13,4 @@ else:
 
 def load_jupyter_server_extension(nb_server_app):
     PackageManagerHandler(nb_server_app)
-    print("Jupyter-Package-Manager: ServerExtension Loaded")
+    print("packagemanagerextension: Server Extension Loaded")

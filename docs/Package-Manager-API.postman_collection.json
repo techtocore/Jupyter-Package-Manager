@@ -2,6 +2,7 @@
 	"info": {
 		"_postman_id": "a5caa9f9-6613-4088-8572-69311e725821",
 		"name": "Package-Manager-API",
+		"description": "This file outlines the API specifications for the endpoints used by Jupyter Package Manager",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -37,13 +38,20 @@
 					"name": "Export Environment",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "text/plain",
+								"description": "To retrive the content as a text file",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/environment_export/myenv",
+							"raw": "http://localhost:8888/api/packagemanager/environments/myenv",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -52,7 +60,7 @@
 							"path": [
 								"api",
 								"packagemanager",
-								"environment_export",
+								"environments",
 								"myenv"
 							]
 						}
@@ -76,7 +84,7 @@
 							"raw": "{\n\t\"env\": \"myenv\",\n\t\"env_type\": \"python3\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/environment_create",
+							"raw": "http://localhost:8888/api/packagemanager/environments",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -85,7 +93,7 @@
 							"path": [
 								"api",
 								"packagemanager",
-								"environment_create"
+								"environments"
 							]
 						}
 					},
@@ -126,7 +134,7 @@
 				{
 					"name": "Delete Environment",
 					"request": {
-						"method": "POST",
+						"method": "DELETE",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -140,7 +148,7 @@
 							"raw": "{\n\t\"env\": \"myenv\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/environment_delete",
+							"raw": "http://localhost:8888/api/packagemanager/environments",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -149,7 +157,7 @@
 							"path": [
 								"api",
 								"packagemanager",
-								"environment_delete"
+								"environments"
 							]
 						}
 					},
@@ -164,13 +172,20 @@
 					"name": "List Packages",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "To retrive the result as a JSON",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/list_packages/myenv",
+							"raw": "http://localhost:8888/api/packagemanager/environments/myenv",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -179,7 +194,7 @@
 							"path": [
 								"api",
 								"packagemanager",
-								"list_packages",
+								"environments",
 								"myenv"
 							]
 						}
@@ -203,7 +218,7 @@
 							"raw": "{\n\t\"env\": \"myenv\",\n\t\"packages\": [\"dnspython\", \"pillow\"]\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/install_packages",
+							"raw": "http://localhost:8888/api/packagemanager/packages",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -212,7 +227,7 @@
 							"path": [
 								"api",
 								"packagemanager",
-								"install_packages"
+								"packages"
 							]
 						}
 					},
@@ -235,7 +250,7 @@
 							"raw": "{\n\t\"env\": \"myenv\",\n\t\"packages\": [\"sqlite\"]\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/delete_packages",
+							"raw": "http://localhost:8888/api/packagemanager/packages",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -244,7 +259,7 @@
 							"path": [
 								"api",
 								"packagemanager",
-								"delete_packages"
+								"packages"
 							]
 						}
 					},
@@ -264,10 +279,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"env\": \"myenv\",\n\t\"packages\": [\"tk\"]\n}"
+							"raw": "{\n\t\"env\": \"myenv\",\n\t\"packages\": [\"sqlite\"]\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/check_update_packages",
+							"raw": "http://localhost:8888/api/packagemanager/packages/check_update",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -276,7 +291,8 @@
 							"path": [
 								"api",
 								"packagemanager",
-								"check_update_packages"
+								"packages",
+								"check_update"
 							]
 						}
 					},
@@ -296,10 +312,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"env\": \"myenv\",\n\t\"packages\": [\"tk\"]\n}"
+							"raw": "{\n\t\"env\": \"myenv\",\n\t\"packages\": [\"sqlite\"]\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/update_packages",
+							"raw": "http://localhost:8888/api/packagemanager/packages",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -308,7 +324,7 @@
 							"path": [
 								"api",
 								"packagemanager",
-								"update_packages"
+								"packages"
 							]
 						}
 					},

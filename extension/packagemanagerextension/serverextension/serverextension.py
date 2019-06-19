@@ -46,7 +46,8 @@ class EnvBaseHandler(APIHandler):
 # -----------------------------------------------------------------------------
 
 
-class MainEnvHandler(EnvBaseHandler):
+class ManageEnvHandler(EnvBaseHandler):
+
     """
     Handler for `GET /environments` which lists the environments.
     """
@@ -55,48 +56,9 @@ class MainEnvHandler(EnvBaseHandler):
     def get(self):
         self.finish(json.dumps(self.env_manager.list_envs()))
 
-
-class ExportEnvHandler(EnvBaseHandler):
     """
-    Handler for `GET /environment_export/<name>` which
-    exports the specified environment.
-    """
-
-    @json_errors
-    def get(self, env):
-        # export requirements file
-        self.set_header('Content-Disposition',
-                        'attachment; filename="%s"' % (env + '.txt'))
-        self.finish(self.env_manager.export_env(env))
-
-
-class CloneEnvHandler(EnvBaseHandler):
-    """
-    Handler for `POST /environment_clone` which
-    exports the specified environment.
-    """
-
-    @json_errors
-    def post(self):
-        data = escape.json_decode(self.request.body)
-        env = data['env']
-        new_env = data['new_env']
-        resp = self.env_manager.clone_env(env, new_env)
-        if 'error' not in resp:
-            status = 201  # CREATED
-
-        # catch-all ok
-        if 'error' in resp:
-            status = 400
-
-        self.set_status(status or 200)
-        self.finish(json.dumps(resp))
-
-
-class CreateEnvHandler(EnvBaseHandler):
-    """
-    Handler for `POST /environment_create` which
-    exports the specified environment.
+    Handler for `POST /environments` which
+    creates the specified environment.
     """
 
     @json_errors
@@ -117,11 +79,9 @@ class CreateEnvHandler(EnvBaseHandler):
         self.set_status(status or 200)
         self.finish(json.dumps(resp))
 
-
-class DeleteEnvHandler(EnvBaseHandler):
     """
-    Handler for `DELETE /environment_delete` which
-    exports the specified environment.
+    Handler for `DELETE /environments` which
+    deletes the specified environment.
     """
 
     @json_errors
@@ -138,26 +98,62 @@ class DeleteEnvHandler(EnvBaseHandler):
         self.finish(json.dumps(resp))
 
 
+class ExportEnvHandler(EnvBaseHandler):
+
+    """
+    Handler for `GET /environments/<name>` which
+    exports the specified environment as a text file or simply lists all
+    the packages in the specified environment, based on the Content-Type header. 
+    """
+
+    @json_errors
+    def get(self, env):
+
+        if self.request.headers['Content-Type'] == 'text/plain':
+            # export requirements file
+            self.set_header('Content-Disposition',
+                            'attachment; filename="%s"' % (env + '.txt'))
+            self.finish(self.env_manager.export_env(env))
+
+        if self.request.headers['Content-Type'] == 'application/json':
+            # send list of all packages
+            self.finish(json.dumps(self.env_manager.env_packages(env)))
+
+
+class CloneEnvHandler(EnvBaseHandler):
+
+    """
+    Handler for `POST /environment_clone` which
+    clones the specified environment.
+    """
+
+    @json_errors
+    def post(self):
+        data = escape.json_decode(self.request.body)
+        env = data['env']
+        new_env = data['new_env']
+        resp = self.env_manager.clone_env(env, new_env)
+        if 'error' not in resp:
+            status = 201  # CREATED
+
+        # catch-all ok
+        if 'error' in resp:
+            status = 400
+
+        self.set_status(status or 200)
+        self.finish(json.dumps(resp))
+
+
 # -----------------------------------------------------------------------------
 # Package Management APIs
 # -----------------------------------------------------------------------------
 
 
-class ListPkgHandler(EnvBaseHandler):
-    """
-    Handler for `GET /list_packages/<name>` which lists
-    the packages in the specified environment.
-    """
+class PkgHandler(EnvBaseHandler):
 
-    @json_errors
-    def get(self, env):
-        self.finish(json.dumps(self.env_manager.env_packages(env)))
-
-
-class InstallPkgHandler(EnvBaseHandler):
     """
-    Handler for `POST /install_packages` which lists
-    the packages in the specified environment.
+    Handler for `POST /packages` which installs all
+    the selected packages in the specified environment.
     """
 
     @json_errors
@@ -170,11 +166,9 @@ class InstallPkgHandler(EnvBaseHandler):
             self.set_status(500)
         self.finish(json.dumps(resp))
 
-
-class UpdatePkgHandler(EnvBaseHandler):
     """
-    Handler for `PATCH /update_packages` which lists
-    the packages in the specified environment.
+    Handler for `PATCH /packages` which updates all
+    the selected packages in the specified environment.
     """
 
     @json_errors
@@ -187,28 +181,9 @@ class UpdatePkgHandler(EnvBaseHandler):
             self.set_status(500)
         self.finish(json.dumps(resp))
 
-
-class CheckUpdatePkgHandler(EnvBaseHandler):
     """
-    Handler for `POST /check_update_packages` which lists
-    the packages in the specified environment.
-    """
-
-    @json_errors
-    def post(self):
-        data = escape.json_decode(self.request.body)
-        env = data['env']
-        packages = data['packages']
-        resp = self.env_manager.check_update(env, packages)
-        if resp.get("error"):
-            self.set_status(500)
-        self.finish(json.dumps(resp))
-
-
-class DeletePkgHandler(EnvBaseHandler):
-    """
-    Handler for `DELETE /delete_packages` which lists
-    the packages in the specified environment.
+    Handler for `DELETE /packages` which deletes all
+    the selected packages in the specified environment.
     """
 
     @json_errors
@@ -222,7 +197,26 @@ class DeletePkgHandler(EnvBaseHandler):
         self.finish(json.dumps(resp))
 
 
+class CheckUpdatePkgHandler(EnvBaseHandler):
+
+    """
+    Handler for `POST /packages/check_update` which checks for updates of all
+    the selected packages in the specified environment.
+    """
+
+    @json_errors
+    def post(self):
+        data = escape.json_decode(self.request.body)
+        env = data['env']
+        packages = data['packages']
+        resp = self.env_manager.check_update(env, packages)
+        if resp.get("error"):
+            self.set_status(500)
+        self.finish(json.dumps(resp))
+
+
 class CondaSearcher(object):
+
     """
     Helper object that runs `conda search` to retrieve the
     list of packages available in the current conda channels.
@@ -233,6 +227,7 @@ class CondaSearcher(object):
         self.conda_temp = None
 
     def list_available(self, handler=None):
+
         """
         List the available conda packages by kicking off a background
         conda process. Will return None. Call again to poll the process
@@ -240,6 +235,7 @@ class CondaSearcher(object):
         returned upon success. On failure, the results of `conda search --json`
         will be returned (this will be a dict containing error information).
         """
+
         self.log = handler.log
 
         if self.conda_process is not None:
@@ -296,6 +292,7 @@ searcher = CondaSearcher()
 
 
 class AvailablePackagesHandler(EnvBaseHandler):
+
     """
     Handler for `GET /packages/available`, which uses CondaSearcher
     to list the packages available for installation.
@@ -315,6 +312,7 @@ class AvailablePackagesHandler(EnvBaseHandler):
 
 
 class SearchHandler(EnvBaseHandler):
+    
     """
     Handler for `GET /packages/search?q=<query>`, which uses CondaSearcher
     to search the available conda packages.
@@ -340,16 +338,11 @@ _pkg_regex = r"(?P<pkg>[^\-][\-\da-zA-Z\._]+)"
 
 
 default_handlers = [
-    (r"/environments", MainEnvHandler),
-    (r"/environment_export/%s" % _env_regex, ExportEnvHandler),
+    (r"/environments", ManageEnvHandler),
+    (r"/environments/%s" % _env_regex, ExportEnvHandler),
     (r"/environment_clone", CloneEnvHandler),
-    (r"/environment_create", CreateEnvHandler),
-    (r"/environment_delete", DeleteEnvHandler),
-    (r"/list_packages/%s" % _env_regex, ListPkgHandler),
-    (r"/install_packages", InstallPkgHandler),
-    (r"/update_packages", UpdatePkgHandler),
-    (r"/check_update_packages", CheckUpdatePkgHandler),
-    (r"/delete_packages", DeletePkgHandler),
+    (r"/packages", PkgHandler),
+    (r"/packages/check_update", CheckUpdatePkgHandler),
     (r"/packages/available", AvailablePackagesHandler),
     (r"/packages/search", SearchHandler),
 ]
@@ -365,4 +358,4 @@ def PackageManagerHandler(nbapp):
         (ujoin(base_url, NS, pat), handler)
         for pat, handler in default_handlers
     ])
-    nbapp.log.info("Jupyter-Package-Manager: Handlers enabled")
+    nbapp.log.info("packagemanagerextension: Handlers enabled")

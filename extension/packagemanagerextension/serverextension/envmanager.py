@@ -47,18 +47,20 @@ class EnvManager(LoggingConfigurable):
 
     def _execute(self, cmd, *args):
         cmdline = cmd.split() + list(args)
-        self.log.debug('[nb_conda] command: %s', cmdline)
+        self.log.debug('[packagemanagerextension] command: %s', cmdline)
 
         try:
             output = check_output(cmdline)
         except CalledProcessError as exc:
-            self.log.debug('[nb_conda] exit code: %s', exc.returncode)
+            self.log.debug(
+                '[packagemanagerextension] exit code: %s', exc.returncode)
             output = exc.output
 
-        self.log.debug('[nb_conda] output: %s', output[:MAX_LOG_OUTPUT])
+        self.log.debug('[packagemanagerextension] output: %s',
+                       output[:MAX_LOG_OUTPUT])
 
         if len(output) > MAX_LOG_OUTPUT:
-            self.log.debug('[nb_conda] ...')
+            self.log.debug('[packagemanagerextension] ...')
 
         return output.decode("utf-8")
 
@@ -68,9 +70,9 @@ class EnvManager(LoggingConfigurable):
         default_env = info['default_prefix']
 
         root_env = {
-                'name': 'root',
-                'dir': info['root_prefix'],
-                'is_default': info['root_prefix'] == default_env
+            'name': 'root',
+            'dir': info['root_prefix'],
+            'is_default': info['root_prefix'] == default_env
         }
 
         def get_info(env):
@@ -81,8 +83,7 @@ class EnvManager(LoggingConfigurable):
             }
 
         return {
-            "environments": [root_env] + [get_info(env)
-                                          for env in info['envs']]
+            "environments": [root_env] + [get_info(env) for env in info['envs'] if env != info['root_prefix']]
         }
 
     def delete_env(self, env):
@@ -95,7 +96,8 @@ class EnvManager(LoggingConfigurable):
         try:
             return json.loads('\n'.join(lines))
         except Exception as err:
-            self.log.warn('[nb_conda] JSON parse fail:\n%s', err)
+            self.log.warn(
+                '[packagemanagerextension] JSON parse fail:\n%s', err)
 
         # try to remove bad lines
         lines = [line for line in lines if re.match(JSONISH_RE)]
@@ -103,7 +105,8 @@ class EnvManager(LoggingConfigurable):
         try:
             return json.loads('\n'.join(lines))
         except Exception as err:
-            self.log.error('[nb_conda] JSON clean/parse fail:\n%s', err)
+            self.log.error(
+                '[packagemanagerextension] JSON clean/parse fail:\n%s', err)
 
         return {"error": True}
 
