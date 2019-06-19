@@ -7,7 +7,7 @@ define(function (require) {
     var urls = require('./urls');
     var dialog = require('base/js/dialog');
     var utils = require('base/js/utils');
-    var $view = $('#package_manager_html_id');
+    var $view = $('#package_manager');
 
     jQuery.fn.center = function () {
         this.css("position", "absolute");
@@ -42,7 +42,7 @@ define(function (require) {
                 success: function (tab_html, status, xhr) {
                     // Load the 'conda tab', hide the Environments portion
                     $view = $(tab_html);
-                    $view.find('#package_manager_html_id').removeClass('tab-pane').hide();
+                    $view.find('#package_manager').removeClass('tab-pane').hide();
                     $view.find('#environments').hide();
                     $('body').append($view);
 

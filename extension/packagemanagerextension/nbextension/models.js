@@ -87,14 +87,14 @@ define([
             var error_callback = common.MakeErrorCallback('Error Removing Environment', 'An error occurred while removing "' + env.name + '"');
 
             function remove_success() {
-                // Refresh list of environments since there is a new one
+                // Refresh list of environments since one has been deleted
                 environments.load();
             }
             return conda_env_action(env, 'delete', remove_success, error_callback);
         },
 
         export: function (env) {
-            return conda_env_action(env, 'export', remove_success, error_callback);
+            return urls.api_url + utils.url_join_encode('environments', env.name);
         }
     };
 
@@ -188,7 +188,7 @@ define([
             });
 
             var url = urls.api_url + utils.url_join_encode(
-                'environments', env.name);
+                'environments');
             return utils.ajax(url, settings);
         }
         else if (action === "clone") {
@@ -204,7 +204,7 @@ define([
             });
 
             var url = urls.api_url + utils.url_join_encode(
-                'environment_clone', env.name, action);
+                'environment_clone', env.name);
             return utils.ajax(url, settings);
         }
         else if (action === "delete") {
@@ -219,19 +219,7 @@ define([
             });
 
             var url = urls.api_url + utils.url_join_encode(
-                'environments', env.name, action);
-            return utils.ajax(url, settings);
-        }
-        else if (action === "export") {
-            var settings = common.AjaxSettings({
-                type: 'GET',
-                contentType: "text/plain",
-                success: common.SuccessWrapper(on_success, on_error),
-                error: on_error
-            });
-
-            var url = urls.api_url + utils.url_join_encode(
-                'environments', env.name, action);
+                'environments');
             return utils.ajax(url, settings);
         }
     }
@@ -344,7 +332,7 @@ define([
         },
 
         conda_list: function (query) {
-            // Load the package list via ajax to the /list_packages endpoint
+            // Load the package list via ajax to the /environments endpoint
             var that = this;
 
             function handle_response(data, status, xhr) {
@@ -366,11 +354,12 @@ define([
 
             var settings = common.AjaxSettings({
                 success: common.SuccessWrapper(handle_response, error_callback),
+                contentType: "application/json",
                 error: error_callback
             });
 
             var url = urls.api_url + utils.url_join_encode(
-                'list_packages', query);
+                'environments', query);
             return utils.ajax(url, settings);
         },
 

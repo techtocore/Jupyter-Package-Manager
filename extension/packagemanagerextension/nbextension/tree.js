@@ -26,11 +26,11 @@ define(function (require) {
                         .append(
                             $('<a>')
                                 .attr('id', 'package_manager_tab')
-                                .attr('href', '#package_manager_html_id')
+                                .attr('href', '#package_manager')
                                 .attr('data-toggle', 'tab')
                                 .text('Package Manager')
                                 .click(function (e) {
-                                    window.history.pushState(null, null, '#package_manager_html_id');
+                                    window.history.pushState(null, null, '#package_manager');
                                     models.environments.load();
                                     models.available.load();
                                 })
@@ -45,7 +45,7 @@ define(function (require) {
                 models.available.view = views.AvailView;
                 models.installed.view = views.InstalledView;
 
-                if (window.location.hash === '#package_manager_html_id') {
+                if (window.location.hash === '#package_manager') {
                     $('#package_manager_tab').click();
                 }
             }
