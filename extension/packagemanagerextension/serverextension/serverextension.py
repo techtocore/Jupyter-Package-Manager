@@ -89,6 +89,8 @@ class ManageEnvHandler(EnvBaseHandler):
         data = escape.json_decode(self.request.body)
         env = data['env']
         resp = self.env_manager.delete_env(env)
+        if 'error' not in resp:
+            status = 200
 
         # catch-all ok
         if 'error' in resp:
