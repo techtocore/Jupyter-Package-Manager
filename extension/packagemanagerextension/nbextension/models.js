@@ -194,7 +194,7 @@ define([
         else if (action === "clone") {
             var settings = common.AjaxSettings({
                 data: JSON.stringify({
-                    env: env,
+                    env: env.name,
                     new_env: data
                 }),
                 type: 'POST',
@@ -204,13 +204,13 @@ define([
             });
 
             var url = urls.api_url + utils.url_join_encode(
-                'environment_clone', env.name);
+                'environment_clone');
             return utils.ajax(url, settings);
         }
         else if (action === "delete") {
             var settings = common.AjaxSettings({
                 data: JSON.stringify({
-                    env: env
+                    env: env.name
                 }),
                 type: 'DELETE',
                 contentType: "application/json",

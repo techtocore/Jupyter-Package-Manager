@@ -87,7 +87,7 @@ class EnvManager(LoggingConfigurable):
         }
 
     def delete_env(self, env):
-        output = self._execute('conda env remove -y -q --json -n', env)
+        output = self._execute('conda remove -y -q --all --json -n', env)
         return self.clean_conda_json(output)
 
     def clean_conda_json(self, output):
