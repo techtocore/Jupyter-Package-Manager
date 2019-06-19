@@ -89,6 +89,8 @@ class ManageEnvHandler(EnvBaseHandler):
         data = escape.json_decode(self.request.body)
         env = data['env']
         resp = self.env_manager.delete_env(env)
+        if 'error' not in resp:
+            status = 200
 
         # catch-all ok
         if 'error' in resp:
@@ -109,15 +111,14 @@ class ExportEnvHandler(EnvBaseHandler):
     @json_errors
     def get(self, env):
 
-        if self.request.headers['Content-Type'] == 'text/plain':
+        if self.request.headers.get('Content-Type') == 'application/json':
+            # send list of all packages
+            self.finish(json.dumps(self.env_manager.env_packages(env)))
+        else:
             # export requirements file
             self.set_header('Content-Disposition',
                             'attachment; filename="%s"' % (env + '.txt'))
             self.finish(self.env_manager.export_env(env))
-
-        if self.request.headers['Content-Type'] == 'application/json':
-            # send list of all packages
-            self.finish(json.dumps(self.env_manager.env_packages(env)))
 
 
 class CloneEnvHandler(EnvBaseHandler):
@@ -227,7 +228,6 @@ class CondaSearcher(object):
         self.conda_temp = None
 
     def list_available(self, handler=None):
-
         """
         List the available conda packages by kicking off a background
         conda process. Will return None. Call again to poll the process
@@ -312,7 +312,7 @@ class AvailablePackagesHandler(EnvBaseHandler):
 
 
 class SearchHandler(EnvBaseHandler):
-    
+
     """
     Handler for `GET /packages/search?q=<query>`, which uses CondaSearcher
     to search the available conda packages.
