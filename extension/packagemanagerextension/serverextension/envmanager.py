@@ -1,5 +1,4 @@
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
+# pylint: disable=C0321
 
 import json
 import os
@@ -87,20 +86,6 @@ class EnvManager(LoggingConfigurable):
             "environments": [root_env] + [get_info(env) for env in info['envs'] if env != info['root_prefix']]
         }
 
-    def delete_env(self, env):
-        output = self._execute('conda remove -y -q --all --json -n', env)
-        return self.clean_conda_json(output)
-
-    def delete_project(self, directory):
-        env = ""
-        directory = str(directory) + ".swanproject"
-        try:
-            env = yaml.load(open(directory))['ENV']
-        except:
-                return {'error': "Can't find project"}
-        output = self._execute('conda remove -y -q --all --json -n', env)
-        return self.clean_conda_json(output)
-
     def clean_conda_json(self, output):
         lines = output.splitlines()
 
@@ -121,18 +106,22 @@ class EnvManager(LoggingConfigurable):
 
         return {"error": True}
 
+    def delete_project(self, directory):
+        env = ""
+        directory = str(directory) + ".swanproject"
+        try:
+            env = yaml.load(open(directory))['ENV']
+        except:
+            return {'error': "Can't find project"}
+        output = self._execute('conda remove -y -q --all --json -n', env)
+        return self.clean_conda_json(output)
+
     def export_env(self, env):
         return self._execute('conda list -e -n', env)
 
     def clone_env(self, env, name):
         output = self._execute('conda create -y -q --json -n', name,
                                '--clone', env)
-        return self.clean_conda_json(output)
-
-    def create_env(self, env, type):
-        packages = package_map[type]
-        output = self._execute('conda create -y -q --json -n', env,
-                               *packages.split(" "))
         return self.clean_conda_json(output)
 
     def create_project(self, directory, type):
@@ -144,9 +133,9 @@ class EnvManager(LoggingConfigurable):
             os.makedirs(directory)
 
         if os.path.isfile(directory + '.swanproject'):
-            res = {'error': 'This directory alreday contains a project'}     
-            return res 
-           
+            res = {'error': 'This directory alreday contains a project'}
+            return res
+
         packages = package_map[type]
         output = self._execute('conda create -y -q --json -n', name,
                                *packages.split(" "))
