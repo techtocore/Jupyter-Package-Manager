@@ -4,6 +4,8 @@
 import json
 import os
 import re
+import uuid
+import yaml
 
 from pkg_resources import parse_version
 from subprocess import check_output, CalledProcessError
@@ -37,8 +39,7 @@ JSONISH_RE = r'(^\s*["\{\}\[\],\d])|(["\}\}\[\],\d]\s*$)'
 # these are the types of environments that can be created
 package_map = {
     'python2': 'python=2 ipykernel',
-    'python3': 'python=3 ipykernel',
-    'r':       'r-base r-essentials',
+    'python3': 'python=3 ipykernel'
 }
 
 
@@ -121,6 +122,21 @@ class EnvManager(LoggingConfigurable):
     def create_env(self, env, type):
         packages = package_map[type]
         output = self._execute('conda create -y -q --json -n', env,
+                               *packages.split(" "))
+        return self.clean_conda_json(output)
+
+    def create_project(self, directory, type):
+        name = uuid.uuid1()
+        name = 'swanproject-' + str(name)
+        data = {'ENV': name}
+
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        with open(directory + '.swanproject', 'w') as outfile:
+            yaml.dump(data, outfile, default_flow_style=False)
+        packages = package_map[type]
+        output = self._execute('conda create -y -q --json -n', name,
                                *packages.split(" "))
         return self.clean_conda_json(output)
 

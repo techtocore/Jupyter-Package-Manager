@@ -42,14 +42,14 @@ class EnvBaseHandler(APIHandler):
 
 
 # -----------------------------------------------------------------------------
-# ENV Management APIs
+# Project Management APIs
 # -----------------------------------------------------------------------------
 
 
-class ManageEnvHandler(EnvBaseHandler):
+class ManageProjectsHandler(EnvBaseHandler):
 
     """
-    Handler for `GET /environments` which lists the environments.
+    Handler for `GET /projects` which lists the projects.
     """
 
     @json_errors
@@ -57,18 +57,18 @@ class ManageEnvHandler(EnvBaseHandler):
         self.finish(json.dumps(self.env_manager.list_envs()))
 
     """
-    Handler for `POST /environments` which
+    Handler for `POST /projects` which
     creates the specified environment.
     """
 
     @json_errors
     def post(self):
         data = escape.json_decode(self.request.body)
-        env = data['env']
-        env_type = data['env_type']
+        directory = data.get('dir') + '/'
+        env_type = data.get('env_type', 'python3')
         if env_type not in package_map:
             raise web.HTTPError(400)
-        resp = self.env_manager.create_env(env, env_type)
+        resp = self.env_manager.create_project(directory, env_type)
         if 'error' not in resp:
             status = 201  # CREATED
 
@@ -80,8 +80,8 @@ class ManageEnvHandler(EnvBaseHandler):
         self.finish(json.dumps(resp))
 
     """
-    Handler for `DELETE /environments` which
-    deletes the specified environment.
+    Handler for `DELETE /projects` which
+    deletes the specified projects.
     """
 
     @json_errors
@@ -338,7 +338,7 @@ _pkg_regex = r"(?P<pkg>[^\-][\-\da-zA-Z\._]+)"
 
 
 default_handlers = [
-    (r"/environments", ManageEnvHandler),
+    (r"/projects", ManageProjectsHandler),
     (r"/environments/%s" % _env_regex, ExportEnvHandler),
     (r"/environment_clone", CloneEnvHandler),
     (r"/packages", PkgHandler),
