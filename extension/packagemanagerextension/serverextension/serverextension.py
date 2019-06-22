@@ -87,8 +87,8 @@ class ManageProjectsHandler(EnvBaseHandler):
     @json_errors
     def delete(self):
         data = escape.json_decode(self.request.body)
-        env = data['env']
-        resp = self.env_manager.delete_env(env)
+        directory = data.get('dir') + '/'
+        resp = self.env_manager.delete_project(directory)
         if 'error' not in resp:
             status = 200
 

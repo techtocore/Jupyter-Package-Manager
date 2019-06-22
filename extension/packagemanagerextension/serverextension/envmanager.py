@@ -91,6 +91,14 @@ class EnvManager(LoggingConfigurable):
         output = self._execute('conda remove -y -q --all --json -n', env)
         return self.clean_conda_json(output)
 
+    def delete_project(self, directory):
+        env = ""
+        with open(directory + '.swanproject', 'r') as outfile:
+            data = yaml.safe_load(outfile)
+            env = data["ENV"]
+        output = self._execute('conda remove -y -q --all --json -n', env)
+        return self.clean_conda_json(output)
+
     def clean_conda_json(self, output):
         lines = output.splitlines()
 
