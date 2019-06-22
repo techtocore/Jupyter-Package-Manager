@@ -93,9 +93,11 @@ class EnvManager(LoggingConfigurable):
 
     def delete_project(self, directory):
         env = ""
-        with open(directory + '.swanproject', 'r') as outfile:
-            data = yaml.safe_load(outfile)
-            env = data["ENV"]
+        directory = str(directory) + ".swanproject"
+        try:
+            env = yaml.load(open(directory))['ENV']
+        except:
+                return {'error': "Can't find project"}
         output = self._execute('conda remove -y -q --all --json -n', env)
         return self.clean_conda_json(output)
 
@@ -141,11 +143,18 @@ class EnvManager(LoggingConfigurable):
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        with open(directory + '.swanproject', 'w') as outfile:
-            yaml.dump(data, outfile, default_flow_style=False)
+        if os.path.isfile(directory + '.swanproject'):
+            res = {'error': 'This directory alreday contains a project'}     
+            return res 
+           
         packages = package_map[type]
         output = self._execute('conda create -y -q --json -n', name,
                                *packages.split(" "))
+        packages = self._execute('conda list --no-pip --json -n', name)
+        packages = self.clean_conda_json(packages)
+        data['PACKAGE_INFO'] = packages
+        with open(directory + '.swanproject', 'a') as outfile:
+            yaml.dump(data, outfile, default_flow_style=False)
         return self.clean_conda_json(output)
 
     def env_packages(self, env):
