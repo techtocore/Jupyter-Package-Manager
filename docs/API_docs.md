@@ -5,48 +5,37 @@ This file outlines the API specifications for the endpoints used by Jupyter Pack
 
 ## Indices
 
-* [Environment Management](#environment-management)
+* [Maintenance Tasks](#maintenance-tasks)
 
-  * [List Environments](#1-list-environments)
-  * [Export Environment](#2-export-environment)
-  * [Create  Environment](#3-create--environment)
-  * [Clone Environment](#4-clone-environment)
-  * [Delete Environment](#5-delete-environment)
+  * [List Projects](#1-list-projects)
+  * [Delete Project List](#2-delete-project-list)
 
 * [Package Management](#package-management)
 
-  * [List Packages](#1-list-packages)
-  * [Install Packages](#2-install-packages)
-  * [Uninstall Packages](#3-uninstall-packages)
-  * [Check Updates for Packages](#4-check-updates-for-packages)
-  * [Update Packages](#5-update-packages)
-  * [Available Packages](#6-available-packages)
-  * [Search Packages](#7-search-packages)
+  * [Install Packages](#1-install-packages)
+  * [Uninstall Packages](#2-uninstall-packages)
+  * [Check Updates for Packages](#3-check-updates-for-packages)
+  * [Update Packages](#4-update-packages)
+  * [Search Packages](#5-search-packages)
+
+* [Project Management](#project-management)
+
+  * [Create Project](#1-create-project)
+  * [Delete Project](#2-delete-project)
+  * [Project Info](#3-project-info)
 
 
 --------
 
 
-## Environment Management
+## Maintenance Tasks
 
 
 
-### 1. List Environments
+### 1. List Projects
 
 
-
-***Endpoint:***
-
-```bash
-Method: GET
-Type: RAW
-URL: http://localhost:8888/api/packagemanager/environments
-```
-
-
-
-### 2. Export Environment
-
+This API endpoint lists down all the projects created with this extension.
 
 
 ***Endpoint:***
@@ -54,84 +43,15 @@ URL: http://localhost:8888/api/packagemanager/environments
 ```bash
 Method: GET
 Type: RAW
-URL: http://localhost:8888/api/packagemanager/environments/myenv
-```
-
-
-***Headers:***
-
-| Key | Value | Description |
-| --- | ------|-------------|
-| Content-Type | text/plain | To retrive the content as a text file |
-
-
-
-### 3. Create  Environment
-
-
-
-***Endpoint:***
-
-```bash
-Method: POST
-Type: RAW
-URL: http://localhost:8888/api/packagemanager/environments
-```
-
-
-***Headers:***
-
-| Key | Value | Description |
-| --- | ------|-------------|
-| Content-Type | application/json |  |
-
-
-
-***Body:***
-
-```js        
-{
-	"env": "myenv",
-	"env_type": "python3"
-}
+URL: http://localhost:8888/api/packagemanager/projects
 ```
 
 
 
-### 4. Clone Environment
+### 2. Delete Project List
 
 
-
-***Endpoint:***
-
-```bash
-Method: POST
-Type: RAW
-URL: http://localhost:8888/api/packagemanager/environment_clone
-```
-
-
-***Headers:***
-
-| Key | Value | Description |
-| --- | ------|-------------|
-| Content-Type | application/json |  |
-
-
-
-***Body:***
-
-```js        
-{
-	"env": "myenv",
-	"new_env": "myenv1"
-}
-```
-
-
-
-### 5. Delete Environment
-
+This API endpoint lets you delete multiple projects at once.
 
 
 ***Endpoint:***
@@ -139,7 +59,7 @@ URL: http://localhost:8888/api/packagemanager/environment_clone
 ```bash
 Method: DELETE
 Type: RAW
-URL: http://localhost:8888/api/packagemanager/environments
+URL: http://localhost:8888/api/packagemanager/projects
 ```
 
 
@@ -155,7 +75,7 @@ URL: http://localhost:8888/api/packagemanager/environments
 
 ```js        
 {
-	"env": "myenv"
+	"dir": ["/home/akash/.conda/envs/swantest1", "/home/akash/.conda/envs/swantest2"]
 }
 ```
 
@@ -165,29 +85,12 @@ URL: http://localhost:8888/api/packagemanager/environments
 
 
 
-### 1. List Packages
+### 1. Install Packages
 
 
+The extension installs the package onto the corresponding project.
 
-***Endpoint:***
-
-```bash
-Method: GET
-Type: RAW
-URL: http://localhost:8888/api/packagemanager/environments/myenv
-```
-
-
-***Headers:***
-
-| Key | Value | Description |
-| --- | ------|-------------|
-| Content-Type | application/json | To retrive the result as a JSON |
-
-
-
-### 2. Install Packages
-
+The .swanproject gets updated with the new package and respective version.
 
 
 ***Endpoint:***
@@ -211,14 +114,19 @@ URL: http://localhost:8888/api/packagemanager/packages
 
 ```js        
 {
-	"env": "myenv",
-	"packages": ["dnspython", "pillow"]
+	"dir": "/home/akash/.conda/envs/swantest",
+	"packages": ["PyYAML=3.13"]
 }
 ```
 
 
 
-### 3. Uninstall Packages
+### 2. Uninstall Packages
+
+
+The extension removes the package from the corresponding project.
+
+The .swanproject gets updated with the current set of packages and respective versions.
 
 
 
@@ -243,21 +151,23 @@ URL: http://localhost:8888/api/packagemanager/packages
 
 ```js        
 {
-	"env": "myenv",
-	"packages": ["sqlite"]
+	"dir": "/home/akash/.conda/envs/swantest",
+	"packages": ["PyYAML"]
 }
 ```
 
 
 
-### 4. Check Updates for Packages
+### 3. Check Updates for Packages
 
+
+This API endpoint returns the list of packages that can be updated in the corresponding project.
 
 
 ***Endpoint:***
 
 ```bash
-Method: POST
+Method: GET
 Type: RAW
 URL: http://localhost:8888/api/packagemanager/packages/check_update
 ```
@@ -271,19 +181,20 @@ URL: http://localhost:8888/api/packagemanager/packages/check_update
 
 
 
-***Body:***
+***Query params:***
 
-```js        
-{
-	"env": "myenv",
-	"packages": ["sqlite"]
-}
-```
+| Key | Value | Description |
+| --- | ------|-------------|
+| dir | /home/akash/.conda/envs/swantest |  |
 
 
 
-### 5. Update Packages
+### 4. Update Packages
 
+
+The API endpoint installs the latest versions of packages onto the corresponding project.
+
+The .swanproject gets updated with the new packages and respective versions.
 
 
 ***Endpoint:***
@@ -307,29 +218,17 @@ URL: http://localhost:8888/api/packagemanager/packages
 
 ```js        
 {
-	"env": "myenv",
-	"packages": ["sqlite"]
+	"dir": "/home/akash/.conda/envs/swantest",
+	"packages": ["pyyaml"]
 }
 ```
 
 
 
-### 6. Available Packages
+### 5. Search Packages
 
 
-
-***Endpoint:***
-
-```bash
-Method: GET
-Type: RAW
-URL: http://localhost:8888/api/packagemanager/packages/available
-```
-
-
-
-### 7. Search Packages
-
+This API endpoint lets you search a package name for installation.
 
 
 ***Endpoint:***
@@ -347,6 +246,106 @@ URL: http://localhost:8888/api/packagemanager/packages/search
 | Key | Value | Description |
 | --- | ------|-------------|
 | q | numpy |  |
+
+
+
+## Project Management
+
+
+
+### 1. Create Project
+
+
+The API endpoint creates a conda environment with a Python kernel installed (ipykernel).
+
+The .swanproject file gets filled with the swanproject-UUID (name of the environment internally) and the installed packages.
+
+
+
+***Endpoint:***
+
+```bash
+Method: POST
+Type: RAW
+URL: http://localhost:8888/api/packagemanager/projects
+```
+
+
+***Headers:***
+
+| Key | Value | Description |
+| --- | ------|-------------|
+| Content-Type | application/json |  |
+
+
+
+***Body:***
+
+```js        
+{
+	"dir": "/home/akash/.conda/envs/swantest",
+	"env_type": "python3"
+}
+```
+
+
+
+### 2. Delete Project
+
+
+The API endpoint deletes the conda environment corresponding to a project.
+
+
+
+***Endpoint:***
+
+```bash
+Method: DELETE
+Type: RAW
+URL: http://localhost:8888/api/packagemanager/projects
+```
+
+
+***Headers:***
+
+| Key | Value | Description |
+| --- | ------|-------------|
+| Content-Type | application/json |  |
+
+
+
+***Body:***
+
+```js        
+{
+	"dir": "/home/akash/.conda/envs/swantest"
+}
+```
+
+
+
+### 3. Project Info
+
+
+The API endpoint outlines the details of the conda environment corresponding to a project.
+
+
+
+***Endpoint:***
+
+```bash
+Method: GET
+Type: RAW
+URL: http://localhost:8888/api/packagemanager/project_info
+```
+
+
+
+***Query params:***
+
+| Key | Value | Description |
+| --- | ------|-------------|
+| dir | /home/akash/.conda/envs/swantest |  |
 
 
 

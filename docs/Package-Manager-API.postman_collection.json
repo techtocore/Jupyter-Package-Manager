@@ -7,68 +7,10 @@
 	},
 	"item": [
 		{
-			"name": "Environment Management",
+			"name": "Project Management",
 			"item": [
 				{
-					"name": "List Environments",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/environments",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8888",
-							"path": [
-								"api",
-								"packagemanager",
-								"environments"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Export Environment",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "text/plain",
-								"description": "To retrive the content as a text file",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/environments/myenv",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8888",
-							"path": [
-								"api",
-								"packagemanager",
-								"environments",
-								"myenv"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create  Environment",
+					"name": "Create Project",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -81,10 +23,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"env\": \"myenv\",\n\t\"env_type\": \"python3\"\n}"
+							"raw": "{\n\t\"dir\": \"/home/akash/.conda/envs/swantest\",\n\t\"env_type\": \"python3\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/environments",
+							"raw": "http://localhost:8888/api/packagemanager/projects",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -93,46 +35,15 @@
 							"path": [
 								"api",
 								"packagemanager",
-								"environments"
+								"projects"
 							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Clone Environment",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"env\": \"myenv\",\n\t\"new_env\": \"myenv1\"\n}"
 						},
-						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/environment_clone",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8888",
-							"path": [
-								"api",
-								"packagemanager",
-								"environment_clone"
-							]
-						}
+						"description": "The API endpoint creates a conda environment with a Python kernel installed (ipykernel).\n\nThe .swanproject file gets filled with the swanproject-UUID (name of the environment internally) and the installed packages.\n"
 					},
 					"response": []
 				},
 				{
-					"name": "Delete Environment",
+					"name": "Delete Project",
 					"request": {
 						"method": "DELETE",
 						"header": [
@@ -145,10 +56,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"env\": \"myenv\"\n}"
+							"raw": "{\n\t\"dir\": \"/home/akash/.conda/envs/swantest\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/environments",
+							"raw": "http://localhost:8888/api/packagemanager/projects",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -157,9 +68,42 @@
 							"path": [
 								"api",
 								"packagemanager",
-								"environments"
+								"projects"
 							]
-						}
+						},
+						"description": "The API endpoint deletes the conda environment corresponding to a project.\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Project Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/project_info?dir=/home/akash/.conda/envs/swantest",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"project_info"
+							],
+							"query": [
+								{
+									"key": "dir",
+									"value": "/home/akash/.conda/envs/swantest"
+								}
+							]
+						},
+						"description": "The API endpoint outlines the details of the conda environment corresponding to a project.\n"
 					},
 					"response": []
 				}
@@ -168,39 +112,6 @@
 		{
 			"name": "Package Management",
 			"item": [
-				{
-					"name": "List Packages",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": "To retrive the result as a JSON",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/environments/myenv",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8888",
-							"path": [
-								"api",
-								"packagemanager",
-								"environments",
-								"myenv"
-							]
-						}
-					},
-					"response": []
-				},
 				{
 					"name": "Install Packages",
 					"request": {
@@ -215,7 +126,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"env\": \"myenv\",\n\t\"packages\": [\"dnspython\", \"pillow\"]\n}"
+							"raw": "{\n\t\"dir\": \"/home/akash/.conda/envs/swantest\",\n\t\"packages\": [\"PyYAML=3.13\"]\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8888/api/packagemanager/packages",
@@ -229,7 +140,8 @@
 								"packagemanager",
 								"packages"
 							]
-						}
+						},
+						"description": "The extension installs the package onto the corresponding project.\n\nThe .swanproject gets updated with the new package and respective version."
 					},
 					"response": []
 				},
@@ -247,7 +159,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"env\": \"myenv\",\n\t\"packages\": [\"sqlite\"]\n}"
+							"raw": "{\n\t\"dir\": \"/home/akash/.conda/envs/swantest\",\n\t\"packages\": [\"PyYAML\"]\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8888/api/packagemanager/packages",
@@ -261,14 +173,15 @@
 								"packagemanager",
 								"packages"
 							]
-						}
+						},
+						"description": "The extension removes the package from the corresponding project.\n\nThe .swanproject gets updated with the current set of packages and respective versions.\n"
 					},
 					"response": []
 				},
 				{
 					"name": "Check Updates for Packages",
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -279,10 +192,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"env\": \"myenv\",\n\t\"packages\": [\"sqlite\"]\n}"
+							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/packages/check_update",
+							"raw": "http://localhost:8888/api/packagemanager/packages/check_update?dir=/home/akash/.conda/envs/swantest",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -293,8 +206,15 @@
 								"packagemanager",
 								"packages",
 								"check_update"
+							],
+							"query": [
+								{
+									"key": "dir",
+									"value": "/home/akash/.conda/envs/swantest"
+								}
 							]
-						}
+						},
+						"description": "This API endpoint returns the list of packages that can be updated in the corresponding project."
 					},
 					"response": []
 				},
@@ -312,7 +232,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"env\": \"myenv\",\n\t\"packages\": [\"sqlite\"]\n}"
+							"raw": "{\n\t\"dir\": \"/home/akash/.conda/envs/swantest\",\n\t\"packages\": [\"pyyaml\"]\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8888/api/packagemanager/packages",
@@ -326,33 +246,8 @@
 								"packagemanager",
 								"packages"
 							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Available Packages",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
 						},
-						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/packages/available",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8888",
-							"path": [
-								"api",
-								"packagemanager",
-								"packages",
-								"available"
-							]
-						}
+						"description": "The API endpoint installs the latest versions of packages onto the corresponding project.\n\nThe .swanproject gets updated with the new packages and respective versions."
 					},
 					"response": []
 				},
@@ -384,7 +279,72 @@
 									"value": "numpy"
 								}
 							]
-						}
+						},
+						"description": "This API endpoint lets you search a package name for installation."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Maintenance Tasks",
+			"item": [
+				{
+					"name": "List Projects",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/projects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"projects"
+							]
+						},
+						"description": "This API endpoint lists down all the projects created with this extension."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Project List",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"dir\": [\"/home/akash/.conda/envs/swantest1\", \"/home/akash/.conda/envs/swantest2\"]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/projects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"projects"
+							]
+						},
+						"description": "This API endpoint lets you delete multiple projects at once."
 					},
 					"response": []
 				}
