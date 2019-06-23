@@ -116,7 +116,7 @@ class EnvManager(LoggingConfigurable):
                 '[packagemanagerextension] JSON parse fail:\n%s', err)
 
         # try to remove bad lines
-        lines = [line for line in lines if re.match(JSONISH_RE)]
+        lines = [line for line in lines if re.match(JSONISH_RE, line)]
 
         try:
             return json.loads('\n'.join(lines))
@@ -189,7 +189,7 @@ class EnvManager(LoggingConfigurable):
         packages = self._execute('conda list --no-pip --json -n', name)
         packages = self.clean_conda_json(packages)
         data['PACKAGE_INFO'] = packages
-        with open(directory + '.swanproject', 'a') as outfile:
+        with open(directory + '.swanproject', 'w') as outfile:
             yaml.dump(data, outfile, default_flow_style=False)
         return self.clean_conda_json(output)
 
@@ -205,7 +205,13 @@ class EnvManager(LoggingConfigurable):
             "packages": [pkg_info(package) for package in data]
         }
 
-    def check_update(self, env, packages):
+    def check_update(self, directory, packages):
+        env = ""
+        directory = str(directory) + ".swanproject"
+        try:
+            env = yaml.load(open(directory))['ENV']
+        except:
+            return {'error': "Can't find project"}
         output = self._execute('conda update --dry-run -q --json -n', env,
                                *packages)
         data = self.clean_conda_json(output)
@@ -215,7 +221,7 @@ class EnvManager(LoggingConfigurable):
             # error info
             return data
         elif 'actions' in data:
-            links = data['actions'][0].get('LINK', [])
+            links = data['actions'].get('LINK', [])
             package_versions = [link.get('dist_name') for link in links]
             return {
                 "updates": [pkg_info(pkg_version)
@@ -227,16 +233,52 @@ class EnvManager(LoggingConfigurable):
                 "updates": []
             }
 
-    def install_packages(self, env, packages):
+    def install_packages(self, directory, packages):
+        env = ""
+        directory = str(directory) + ".swanproject"
+        try:
+            env = yaml.load(open(directory))['ENV']
+        except:
+            return {'error': "Can't find project"}
         output = self._execute('conda install -y -q --json -n', env, *packages)
+        data = {'ENV': env}
+        packages = self._execute('conda list --no-pip --json -n', env)
+        packages = self.clean_conda_json(packages)
+        data['PACKAGE_INFO'] = packages
+        with open(directory, 'w') as outfile:
+            yaml.dump(data, outfile, default_flow_style=False)
         return self.clean_conda_json(output)
 
-    def update_packages(self, env, packages):
+    def update_packages(self, directory, packages):
+        env = ""
+        directory = str(directory) + ".swanproject"
+        try:
+            env = yaml.load(open(directory))['ENV']
+        except:
+            return {'error': "Can't find project"}
         output = self._execute('conda update -y -q --json -n', env, *packages)
+        data = {'ENV': env}
+        packages = self._execute('conda list --no-pip --json -n', env)
+        packages = self.clean_conda_json(packages)
+        data['PACKAGE_INFO'] = packages
+        with open(directory, 'w') as outfile:
+            yaml.dump(data, outfile, default_flow_style=False)
         return self.clean_conda_json(output)
 
-    def remove_packages(self, env, packages):
+    def remove_packages(self, directory, packages):
+        env = ""
+        directory = str(directory) + ".swanproject"
+        try:
+            env = yaml.load(open(directory))['ENV']
+        except:
+            return {'error': "Can't find project"}
         output = self._execute('conda remove -y -q --json -n', env, *packages)
+        data = {'ENV': env}
+        packages = self._execute('conda list --no-pip --json -n', env)
+        packages = self.clean_conda_json(packages)
+        data['PACKAGE_INFO'] = packages
+        with open(directory, 'w') as outfile:
+            yaml.dump(data, outfile, default_flow_style=False)
         return self.clean_conda_json(output)
 
     def package_search(self, q):

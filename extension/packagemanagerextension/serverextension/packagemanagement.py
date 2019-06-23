@@ -45,9 +45,9 @@ class PkgHandler(EnvBaseHandler):
     @json_errors
     def post(self):
         data = escape.json_decode(self.request.body)
-        env = data['env']
-        packages = data['packages']
-        resp = self.env_manager.install_packages(env, packages)
+        directory = data.get('dir') + '/'
+        packages = data.get('packages')
+        resp = self.env_manager.install_packages(directory, packages)
         if resp.get("error"):
             self.set_status(500)
         self.finish(json.dumps(resp))
@@ -60,9 +60,9 @@ class PkgHandler(EnvBaseHandler):
     @json_errors
     def patch(self):
         data = escape.json_decode(self.request.body)
-        env = data['env']
-        packages = data['packages']
-        resp = self.env_manager.update_packages(env, packages)
+        directory = data.get('dir') + '/'
+        packages = data.get('packages')
+        resp = self.env_manager.update_packages(directory, packages)
         if resp.get("error"):
             self.set_status(500)
         self.finish(json.dumps(resp))
@@ -75,9 +75,9 @@ class PkgHandler(EnvBaseHandler):
     @json_errors
     def delete(self):
         data = escape.json_decode(self.request.body)
-        env = data['env']
-        packages = data['packages']
-        resp = self.env_manager.remove_packages(env, packages)
+        directory = data.get('dir') + '/'
+        packages = data.get('packages')
+        resp = self.env_manager.remove_packages(directory, packages)
         if resp.get("error"):
             self.set_status(500)
         self.finish(json.dumps(resp))
@@ -93,9 +93,9 @@ class CheckUpdatePkgHandler(EnvBaseHandler):
     @json_errors
     def post(self):
         data = escape.json_decode(self.request.body)
-        env = data['env']
-        packages = data['packages']
-        resp = self.env_manager.check_update(env, packages)
+        directory = data.get('dir') + '/'
+        packages = data.get('packages')
+        resp = self.env_manager.check_update(directory, packages)
         if resp.get("error"):
             self.set_status(500)
         self.finish(json.dumps(resp))
