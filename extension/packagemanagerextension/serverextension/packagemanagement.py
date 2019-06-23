@@ -173,6 +173,25 @@ class CondaSearcher(object):
 
 searcher = CondaSearcher()
 
+class AvailablePackagesHandler(EnvBaseHandler):
+
+    """
+    Handler for `GET /packages/available`, which uses CondaSearcher
+    to list the packages available for installation.
+    """
+
+    @json_errors
+    def get(self):
+        data = searcher.list_available(self)
+
+        if data is None:
+            # tell client to check back later
+            self.clear()
+            self.set_status(202)  # Accepted
+            self.finish('{}')
+        else:
+            self.finish(json.dumps({"packages": data}))
+
 
 class SearchHandler(EnvBaseHandler):
 

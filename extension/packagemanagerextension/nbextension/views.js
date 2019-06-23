@@ -138,14 +138,13 @@ define([
 
     $.extend(EnvView, {
         selector: '#environments',
-        label: 'Conda environment',
+        label: 'SWAN Projects',
         selectable: false,
         model: models.environments,
         columns: [
             { heading: 'Action', attr: '_action', width: 1 },
-            { heading: 'Name', attr: 'name', width: 3 },
-            { heading: 'Default?', attr: 'is_default', width: 1 },
-            { heading: 'Directory', attr: 'dir', width: 7 },
+            { heading: 'Name', attr: 'name', width: 5 },
+            { heading: 'Directory', attr: 'dir', width: 6 },
         ],
 
         transforms: {
@@ -170,13 +169,6 @@ define([
 
                 return $('<span class="action_col"/>')
                     .addClass('btn-group')
-                    .append(common.link(models.environments.export(row), common.icon('external-link')))
-                    .append(common.icon('copy').click(function () {
-                        common.prompt('Clone Environment', 'Create a copy of "' + row.name + '"', 'New name:', 'Clone', function (new_name) {
-                            ActionMessage('Cloning...');
-                            models.environments.clone(row, new_name);
-                        });
-                    }))
                     .append(common.icon('trash-o').click(function () {
                         var msg = 'Are you sure you want to permanently delete environment "' + row.name + '" ?';
                         common.confirm('Delete Environment', msg, 'Delete', function () {

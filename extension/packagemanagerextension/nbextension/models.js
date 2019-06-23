@@ -19,21 +19,23 @@ define([
         load: function () {
             // Load the list via ajax to the /environments endpoint
             var that = this;
-            var error_callback = common.MakeErrorCallback('Error', 'An error occurred while listing Conda environments.');
+            var error_callback = common.MakeErrorCallback('Error', 'An error occurred while listing Projects.');
 
             function handle_response(data, status, xhr) {
                 var keep_selection = false;
                 var default_env;
-                var envs = data.environments || [];
+                var envs = data.projects || [];
 
                 that.all = envs;
-
+                
                 // Select the default environment as current
+                let ct = 0;
                 $.each(envs, function (index, env) {
-                    if (env.is_default) {
+                    if (ct === 0)
+                    {
                         default_env = env;
+                        ct++;
                     }
-
                     if (that.selected && that.selected.name == env.name) {
                         // selected env still exists
                         keep_selection = true;
@@ -53,7 +55,7 @@ define([
                 error: error_callback
             });
 
-            return utils.ajax(urls.api_url + 'environments', settings);
+            return utils.ajax(urls.api_url + 'projects', settings);
         },
 
         select: function (env) {
@@ -91,10 +93,6 @@ define([
                 environments.load();
             }
             return conda_env_action(env, 'delete', remove_success, error_callback);
-        },
-
-        export: function (env) {
-            return urls.api_url + utils.url_join_encode('environments', env.name);
         }
     };
 
@@ -188,23 +186,7 @@ define([
             });
 
             var url = urls.api_url + utils.url_join_encode(
-                'environments');
-            return utils.ajax(url, settings);
-        }
-        else if (action === "clone") {
-            var settings = common.AjaxSettings({
-                data: JSON.stringify({
-                    env: env.name,
-                    new_env: data
-                }),
-                type: 'POST',
-                contentType: "application/json",
-                success: common.SuccessWrapper(on_success, on_error),
-                error: on_error
-            });
-
-            var url = urls.api_url + utils.url_join_encode(
-                'environment_clone');
+                'projects');
             return utils.ajax(url, settings);
         }
         else if (action === "delete") {
@@ -219,7 +201,7 @@ define([
             });
 
             var url = urls.api_url + utils.url_join_encode(
-                'environments');
+                'projects');
             return utils.ajax(url, settings);
         }
     }
@@ -359,7 +341,7 @@ define([
             });
 
             var url = urls.api_url + utils.url_join_encode(
-                'environments', query);
+                'projects', query);
             return utils.ajax(url, settings);
         },
 
