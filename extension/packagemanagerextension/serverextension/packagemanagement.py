@@ -86,16 +86,14 @@ class PkgHandler(EnvBaseHandler):
 class CheckUpdatePkgHandler(EnvBaseHandler):
 
     """
-    Handler for `POST /packages/check_update` which checks for updates of all
+    Handler for `GET /packages/check_update` which checks for updates of all
     the selected packages in the specified environment.
     """
 
     @json_errors
-    def post(self):
-        data = escape.json_decode(self.request.body)
-        directory = data.get('dir') + '/'
-        packages = data.get('packages')
-        resp = self.env_manager.check_update(directory, packages)
+    def get(self):
+        directory = self.get_argument('dir', "None") + '/'
+        resp = self.env_manager.check_update(directory)
         if resp.get("error"):
             self.set_status(500)
         self.finish(json.dumps(resp))
@@ -174,26 +172,6 @@ class CondaSearcher(object):
 
 
 searcher = CondaSearcher()
-
-
-class AvailablePackagesHandler(EnvBaseHandler):
-
-    """
-    Handler for `GET /packages/available`, which uses CondaSearcher
-    to list the packages available for installation.
-    """
-
-    @json_errors
-    def get(self):
-        data = searcher.list_available(self)
-
-        if data is None:
-            # tell client to check back later
-            self.clear()
-            self.set_status(202)  # Accepted
-            self.finish('{}')
-        else:
-            self.finish(json.dumps({"packages": data}))
 
 
 class SearchHandler(EnvBaseHandler):

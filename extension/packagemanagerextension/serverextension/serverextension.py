@@ -52,7 +52,6 @@ default_handlers = [
     # (r"/environment_clone", projectmanagement.CloneEnvHandler),
     (r"/packages", packagemanagement.PkgHandler),
     (r"/packages/check_update", packagemanagement.CheckUpdatePkgHandler),
-    (r"/packages/available", packagemanagement.AvailablePackagesHandler),
     (r"/packages/search", packagemanagement.SearchHandler),
 ]
 

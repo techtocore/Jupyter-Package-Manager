@@ -205,13 +205,18 @@ class EnvManager(LoggingConfigurable):
             "packages": [pkg_info(package) for package in data]
         }
 
-    def check_update(self, directory, packages):
+    def check_update(self, directory):
         env = ""
         directory = str(directory) + ".swanproject"
         try:
             env = yaml.load(open(directory))['ENV']
         except:
             return {'error': "Can't find project"}
+        packagesJson = self._execute('conda list --no-pip --json -n', env)
+        packagesJson = self.clean_conda_json(packagesJson)
+        packages = []
+        for it in packagesJson:
+            packages.append(it.get('name'))
         output = self._execute('conda update --dry-run -q --json -n', env,
                                *packages)
         data = self.clean_conda_json(output)
