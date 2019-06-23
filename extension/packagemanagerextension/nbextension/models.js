@@ -66,33 +66,13 @@ define([
         },
 
         create: function (name, type) {
-            var error_callback = common.MakeErrorCallback('Error Creating Environment', 'An error occurred while creating "' + name + '"');
+            var error_callback = common.MakeErrorCallback('Error Creating Project', 'An error occurred while creating "' + name + '"');
 
             function create_success() {
                 // Refresh list of environments since there is a new one
                 environments.load();
             }
             return conda_env_action(name, 'create', create_success, error_callback, type);
-        },
-
-        clone: function (env, new_name) {
-            var error_callback = common.MakeErrorCallback('Error Cloning Environment', 'An error occurred while cloning "' + env.name + '"');
-
-            function clone_success() {
-                // Refresh list of environments since there is a new one
-                environments.load();
-            }
-            return conda_env_action(env, 'clone', clone_success, error_callback, new_name);
-        },
-
-        remove: function (env) {
-            var error_callback = common.MakeErrorCallback('Error Removing Environment', 'An error occurred while removing "' + env.name + '"');
-
-            function remove_success() {
-                // Refresh list of environments since one has been deleted
-                environments.load();
-            }
-            return conda_env_action(env, 'delete', remove_success, error_callback);
         }
     };
 
@@ -176,25 +156,10 @@ define([
         if (action === "create") {
             var settings = common.AjaxSettings({
                 data: JSON.stringify({
-                    env: env,
+                    dir: env,
                     env_type: data
                 }),
                 type: 'POST',
-                contentType: "application/json",
-                success: common.SuccessWrapper(on_success, on_error),
-                error: on_error
-            });
-
-            var url = urls.api_url + utils.url_join_encode(
-                'projects');
-            return utils.ajax(url, settings);
-        }
-        else if (action === "delete") {
-            var settings = common.AjaxSettings({
-                data: JSON.stringify({
-                    env: env.name
-                }),
-                type: 'DELETE',
                 contentType: "application/json",
                 success: common.SuccessWrapper(on_success, on_error),
                 error: on_error

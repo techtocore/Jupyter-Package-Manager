@@ -115,16 +115,15 @@ define([
 
     function new_env_prompt(callback) {
         var input = $('<input id="env_name" name="name"/>');
-        var dialogform = $('<div/>').attr('title', 'Create New Environment').append(
+        var dialogform = $('<div/>').attr('title', 'Create New Project').append(
             $('<form class="new_env_form"/>').append(
                 $('<fieldset/>')
-                    .append($('<label for="env_name">Name:</label>'))
+                    .append($('<label for="env_name">Project Directory:</label>'))
                     .append(input)
                     .append($('<label for="env_type">Type:</label>'))
                     .append($('<select id="env_type" name="type">' +
                         '<option value="python2">Python 2</option>' +
                         '<option selected value="python3">Python 3</option>' +
-                        '<option value="r">R</option>' +
                         '</select>'))
             )
         );
@@ -133,7 +132,7 @@ define([
             callback($('#env_name').val(), $('#env_type').val());
         }
 
-        common.confirm('New Environment', dialogform, 'Create', ok, input);
+        common.confirm('New Project', dialogform, 'Create', ok, input);
     }
 
     $.extend(EnvView, {
@@ -170,16 +169,7 @@ define([
                 return $('<span class="action_col"/>')
                     .addClass('btn-group')
                     .append(common.icon('trash-o').click(function () {
-                        var msg = 'Are you sure you want to permanently delete environment "' + row.name + '" ?';
-                        common.confirm('Delete Environment', msg, 'Delete', function () {
-                            ActionMessage('Deleting...');
-
-                            // disable environment name link
-                            var $link = $row.find('a').first();
-                            $link.replaceWith($link.text());
-
-                            models.environments.remove(row);
-                        });
+                        alert("Feature Currently Disabled")
                     }));
             }
         },
@@ -244,20 +234,6 @@ define([
                 models.available.load().then(function () {
                     action_end(btn, btn_state);
                 });
-            },
-
-            '#install': function () {
-                var btn = this;
-                var msg = 'Are you sure you want to install ' +
-                    common.pluralize(models.available.get_selection().length, 'package') +
-                    ' into the environment "' + models.environments.selected.name + '" ?';
-
-                common.confirm('Install Packages', msg, 'Install', function () {
-                    var btn_state = action_start(btn);
-                    models.available.conda_install().then(function () {
-                        action_end(btn, btn_state);
-                    });
-                });
             }
         },
 
@@ -308,53 +284,8 @@ define([
                 models.installed.load().then(function () {
                     action_end(btn, btn_state);
                 });
-            },
-
-            '#check_update': function () {
-                var btn = this;
-                var btn_state = action_start(btn);
-
-                models.installed.conda_check_updates().then(function () {
-                    action_end(btn, btn_state);
-                });
-            },
-
-            '#update_pkgs': function () {
-                var btn = this;
-                var count = models.installed.get_selection().length;
-                var packages = 'ALL packages';
-                if (count > 0) {
-                    packages = common.pluralize(count, 'package');
-                }
-                var msg = 'Are you sure you want to update ' + packages +
-                    ' in the environment "' + models.environments.selected.name + '" ?';
-
-                common.confirm('Update Packages', msg, 'Update', function () {
-                    var btn_state = action_start(btn);
-                    models.installed.conda_update().then(function () {
-                        action_end(btn, btn_state);
-                    });
-                });
-            },
-
-            '#remove_pkgs': function () {
-                var btn = this;
-                var count = models.installed.get_selection().length;
-
-                if (count === 0) {
-                    return;
-                }
-                var msg = 'Are you sure you want to remove ' +
-                    common.pluralize(count, 'package') +
-                    ' from the environment "' + models.environments.selected.name + '" ?';
-
-                common.confirm('Remove Packages', msg, 'Remove', function () {
-                    var btn_state = action_start(btn);
-                    models.installed.conda_remove().then(function () {
-                        action_end(btn, btn_state);
-                    });
-                });
             }
+
         },
     });
 
