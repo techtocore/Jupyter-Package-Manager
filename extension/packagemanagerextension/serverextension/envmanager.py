@@ -30,6 +30,26 @@ def pkg_info(s):
     }
 
 
+def pkg_info_status(s, names):
+    try:
+        # for conda >= 4.3, `s` should be a dict
+        name = s['name']
+        version = s['version']
+        build = s.get('build_string') or s['build']
+    except TypeError:
+        # parse legacy string version for information
+        name, version, build = s.rsplit('-', 2)
+    status = "not available"
+    if name in names:
+        status = "installed"
+    return {
+        'name': name,
+        'version': version,
+        'build': build,
+        "status": status
+    }
+
+
 MAX_LOG_OUTPUT = 6000
 
 # try to match lines of json
@@ -115,6 +135,33 @@ class EnvManager(LoggingConfigurable):
             return {'error': "Can't find project"}
         output = self._execute('conda remove -y -q --all --json -n', env)
         return self.clean_conda_json(output)
+
+    def project_info(self, directory):
+        env = ""
+        names = []
+        packagesMD = {}
+        directory = str(directory) + ".swanproject"
+        try:
+            val = yaml.load(open(directory))
+            env = val['ENV']
+            packagesMD = val['PACKAGE_INFO']
+        except:
+            return {'error': "Can't find project"}
+
+        for item in packagesMD:
+            names.append(item.get('name'))
+
+        output = self._execute('conda list --no-pip --json -n', env)
+        data = self.clean_conda_json(output)
+        if 'error' in data:
+            # we didn't get back a list of packages, we got a dictionary with
+            # error info
+            return data
+
+        return {
+            "env": env,
+            "packages": [pkg_info_status(package, names) for package in data]
+        }
 
     def export_env(self, env):
         return self._execute('conda list -e -n', env)

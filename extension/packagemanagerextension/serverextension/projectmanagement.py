@@ -92,7 +92,7 @@ class ManageProjectsHandler(EnvBaseHandler):
 class ExportEnvHandler(EnvBaseHandler):
 
     """
-    Handler for `GET /environments/<name>` which
+    Handler for `GET /projects/<name>` which
     exports the specified environment as a text file or simply lists all
     the packages in the specified environment, based on the Content-Type header. 
     """
@@ -123,6 +123,29 @@ class CloneEnvHandler(EnvBaseHandler):
         env = data['env']
         new_env = data['new_env']
         resp = self.env_manager.clone_env(env, new_env)
+        if 'error' not in resp:
+            status = 201  # CREATED
+
+        # catch-all ok
+        if 'error' in resp:
+            status = 400
+
+        self.set_status(status or 200)
+        self.finish(json.dumps(resp))
+
+
+class ProjectInfoHandler(EnvBaseHandler):
+
+    """
+    Handler for `GET /project_info` which
+    return the internal name of the environment 
+    + all packages required along with thier status (if already installed or not?)
+    """
+
+    @json_errors
+    def get(self):
+        directory = self.get_argument('dir', "None") + '/'
+        resp = self.env_manager.project_info(directory)
         if 'error' not in resp:
             status = 201  # CREATED
 

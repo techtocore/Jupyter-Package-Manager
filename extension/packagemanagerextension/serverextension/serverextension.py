@@ -47,8 +47,9 @@ _pkg_regex = r"(?P<pkg>[^\-][\-\da-zA-Z\._]+)"
 
 default_handlers = [
     (r"/projects", projectmanagement.ManageProjectsHandler),
-    (r"/environments/%s" % _env_regex, projectmanagement.ExportEnvHandler),
-    (r"/environment_clone", projectmanagement.CloneEnvHandler),
+    (r"/projects/%s" % _env_regex, projectmanagement.ExportEnvHandler),
+    (r"/project_info", projectmanagement.ProjectInfoHandler),
+    # (r"/environment_clone", projectmanagement.CloneEnvHandler),
     (r"/packages", packagemanagement.PkgHandler),
     (r"/packages/check_update", packagemanagement.CheckUpdatePkgHandler),
     (r"/packages/available", packagemanagement.AvailablePackagesHandler),
