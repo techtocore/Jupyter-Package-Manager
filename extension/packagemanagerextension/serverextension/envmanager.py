@@ -84,26 +84,18 @@ class EnvManager(LoggingConfigurable):
 
         return output.decode("utf-8")
 
-    def list_envs(self):
-        """List all environments that conda knows about"""
+    def list_projects(self):
+        """List all projects that conda knows about"""
         info = self.clean_conda_json(self._execute('conda info --json'))
-        default_env = info['default_prefix']
-
-        root_env = {
-            'name': 'root',
-            'dir': info['root_prefix'],
-            'is_default': info['root_prefix'] == default_env
-        }
 
         def get_info(env):
             return {
                 'name': os.path.basename(env),
-                'dir': env,
-                'is_default': env == default_env
+                'dir': env
             }
 
         return {
-            "environments": [root_env] + [get_info(env) for env in info['envs'] if env != info['root_prefix']]
+            "projects": [get_info(env) for env in info['envs'] if "swanproject" in env]
         }
 
     def clean_conda_json(self, output):

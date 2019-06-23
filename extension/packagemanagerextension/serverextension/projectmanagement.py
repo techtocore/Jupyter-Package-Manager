@@ -43,7 +43,7 @@ class ManageProjectsHandler(EnvBaseHandler):
 
     @json_errors
     def get(self):
-        self.finish(json.dumps(self.env_manager.list_envs()))
+        self.finish(json.dumps(self.env_manager.list_projects()))
 
     """
     Handler for `POST /projects` which
@@ -76,17 +76,27 @@ class ManageProjectsHandler(EnvBaseHandler):
     @json_errors
     def delete(self):
         data = escape.json_decode(self.request.body)
-        directory = data.get('dir') + '/'
-        resp = self.env_manager.delete_project(directory)
-        if 'error' not in resp:
-            status = 200
+        dlist = []
+        directory = data.get('dir')
+        if type(directory) == type(dlist):
+            for proj in directory:
+                proj = proj + '/'
+                resp = self.env_manager.delete_project(proj)
+                dlist.append(resp)
+            res = {'response': dlist}
+            self.finish(json.dumps(res))
+        else:
+            directory = directory + '/'
+            resp = self.env_manager.delete_project(directory)
+            if 'error' not in resp:
+                status = 200
 
-        # catch-all ok
-        if 'error' in resp:
-            status = 400
+            # catch-all ok
+            if 'error' in resp:
+                status = 400
 
-        self.set_status(status or 200)
-        self.finish(json.dumps(resp))
+            self.set_status(status or 200)
+            self.finish(json.dumps(resp))
 
 
 class ExportEnvHandler(EnvBaseHandler):
