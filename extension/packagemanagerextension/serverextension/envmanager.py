@@ -168,6 +168,8 @@ class EnvManager(LoggingConfigurable):
         name = 'swanproject-' + str(name)
         data = {'ENV': name}
 
+        folder = directory[:-1].split('/')[-1]
+
         if not os.path.exists(directory):
             os.makedirs(directory)
 
@@ -180,10 +182,27 @@ class EnvManager(LoggingConfigurable):
                                *packages.split(" "))
         packages = self._execute('conda list --no-pip --json -n', name)
         packages = self.clean_conda_json(packages)
+        op = self.clean_conda_json(output)
+        tp = json.dumps(op)
+        js = json.loads(tp)
+        kerneljson = {
+            "argv": [js['prefix'] + "/bin/python",   "-m",
+                     "ipykernel_launcher",
+                     "-f",
+                     "{connection_file}"],
+            "display_name": "Python (" + folder + ")",
+            "language": "python"
+        }
+        kdir = '.local/share/jupyter/kernels/' + name
+        if not os.path.exists(kdir):
+            os.makedirs(kdir)
+        with open(kdir + '/kernel.json', 'w') as fp:
+            json.dump(kerneljson, fp)
+
         data['PACKAGE_INFO'] = packages
         with open(directory + '.swanproject', 'w') as outfile:
             yaml.dump(data, outfile, default_flow_style=False)
-        return self.clean_conda_json(output)
+        return op
 
     def env_packages(self, env):
         output = self._execute('conda list --no-pip --json -n', env)

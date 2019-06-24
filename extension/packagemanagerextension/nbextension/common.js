@@ -144,7 +144,7 @@ define([
             }
             else {
                 if (single_word.endsWith('s') || single_word.endsWith('sh') || single_word.endsWith('ch')) {
-                    word = single_word + 's';
+                    word = single_word + 'es';
                 }
                 else if (single_word.endsWith('y')) {
                     word = single_word.slice(0, -1) + 'ies';
