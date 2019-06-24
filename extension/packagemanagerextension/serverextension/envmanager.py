@@ -126,6 +126,9 @@ class EnvManager(LoggingConfigurable):
         except:
             return {'error': "Can't find project"}
         output = self._execute('conda remove -y -q --all --json -n', env)
+        kdir = '.local/share/jupyter/kernels/' + env
+        os.remove(kdir + '/kernel.json')
+        os.rmdir(kdir)
         return self.clean_conda_json(output)
 
     def project_info(self, directory):
