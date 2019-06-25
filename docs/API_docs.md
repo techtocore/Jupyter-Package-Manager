@@ -115,7 +115,7 @@ URL: http://localhost:8888/api/packagemanager/packages
 ```js        
 {
 	"dir": "/home/akash/.conda/envs/swantest",
-	"packages": ["PyYAML=3.13"]
+	"packages": ["numpy"]
 }
 ```
 
@@ -152,7 +152,7 @@ URL: http://localhost:8888/api/packagemanager/packages
 ```js        
 {
 	"dir": "/home/akash/.conda/envs/swantest",
-	"packages": ["PyYAML"]
+	"packages": ["numpy"]
 }
 ```
 
@@ -219,7 +219,7 @@ URL: http://localhost:8888/api/packagemanager/packages
 ```js        
 {
 	"dir": "/home/akash/.conda/envs/swantest",
-	"packages": ["pyyaml"]
+	"packages": ["numpy"]
 }
 ```
 
@@ -260,6 +260,7 @@ The API endpoint creates a conda environment with a Python kernel installed (ipy
 
 The .swanproject file gets filled with the swanproject-UUID (name of the environment internally) and the installed packages.
 
+A 'kernel.json' file is generated and stored, to allow the users to create a notebook from the newly created environment corresponding to the project.
 
 
 ***Endpoint:***
@@ -295,6 +296,9 @@ URL: http://localhost:8888/api/packagemanager/projects
 
 The API endpoint deletes the conda environment corresponding to a project.
 
+The 'kernel.json' for the environment corresponding to the project is removed.
+
+Note that the project directory has to exist while calling this endpoint, and it is left unmodified by invoking this API.
 
 
 ***Endpoint:***

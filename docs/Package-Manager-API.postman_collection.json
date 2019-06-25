@@ -38,7 +38,7 @@
 								"projects"
 							]
 						},
-						"description": "The API endpoint creates a conda environment with a Python kernel installed (ipykernel).\n\nThe .swanproject file gets filled with the swanproject-UUID (name of the environment internally) and the installed packages.\n"
+						"description": "The API endpoint creates a conda environment with a Python kernel installed (ipykernel).\n\nThe .swanproject file gets filled with the swanproject-UUID (name of the environment internally) and the installed packages.\n\nA 'kernel.json' file is generated and stored, to allow the users to create a notebook from the newly created environment corresponding to the project."
 					},
 					"response": []
 				},
@@ -71,7 +71,7 @@
 								"projects"
 							]
 						},
-						"description": "The API endpoint deletes the conda environment corresponding to a project.\n"
+						"description": "The API endpoint deletes the conda environment corresponding to a project.\n\nThe 'kernel.json' for the environment corresponding to the project is removed.\n\nNote that the project directory has to exist while calling this endpoint, and it is left unmodified by invoking this API."
 					},
 					"response": []
 				},
@@ -126,7 +126,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"dir\": \"/home/akash/.conda/envs/swantest\",\n\t\"packages\": [\"PyYAML=3.13\"]\n}"
+							"raw": "{\n\t\"dir\": \"/home/akash/.conda/envs/swantest\",\n\t\"packages\": [\"numpy\"]\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8888/api/packagemanager/packages",
@@ -159,7 +159,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"dir\": \"/home/akash/.conda/envs/swantest\",\n\t\"packages\": [\"PyYAML\"]\n}"
+							"raw": "{\n\t\"dir\": \"/home/akash/.conda/envs/swantest\",\n\t\"packages\": [\"numpy\"]\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8888/api/packagemanager/packages",
@@ -232,7 +232,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"dir\": \"/home/akash/.conda/envs/swantest\",\n\t\"packages\": [\"pyyaml\"]\n}"
+							"raw": "{\n\t\"dir\": \"/home/akash/.conda/envs/swantest\",\n\t\"packages\": [\"numpy\"]\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8888/api/packagemanager/packages",
