@@ -176,9 +176,9 @@ class EnvManager(LoggingConfigurable):
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        if os.path.isfile(directory + '.swanproject'):
-            res = {'error': 'This directory alreday contains a project'}
-            return res
+        # if os.path.isfile(directory + '.swanproject'):
+        #     res = {'error': 'This directory alreday contains a project'}
+        #     return res
 
         packages = package_map[type]
         output = self._execute('conda create -y -q --json -n', name,
