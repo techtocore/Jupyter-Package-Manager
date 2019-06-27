@@ -99,27 +99,6 @@ class ManageProjectsHandler(EnvBaseHandler):
             self.finish(json.dumps(resp))
 
 
-class ExportEnvHandler(EnvBaseHandler):
-
-    """
-    Handler for `GET /projects/<name>` which
-    exports the specified environment as a text file or simply lists all
-    the packages in the specified environment, based on the Content-Type header. 
-    """
-
-    @json_errors
-    def get(self, env):
-
-        if self.request.headers.get('Content-Type') == 'application/json':
-            # send list of all packages
-            self.finish(json.dumps(self.env_manager.env_packages(env)))
-        else:
-            # export requirements file
-            self.set_header('Content-Disposition',
-                            'attachment; filename="%s"' % (env + '.txt'))
-            self.finish(self.env_manager.export_env(env))
-
-
 class CloneEnvHandler(EnvBaseHandler):
 
     """
@@ -149,19 +128,31 @@ class ProjectInfoHandler(EnvBaseHandler):
     """
     Handler for `GET /project_info` which
     return the internal name of the environment 
-    + all packages required along with thier status (if already installed or not?)
+    + all packages required along with their status (if already installed or not?)
     """
 
     @json_errors
     def get(self):
-        directory = self.get_argument('dir', "None") + '/'
-        resp = self.env_manager.project_info(directory)
-        if 'error' not in resp:
-            status = 201  # CREATED
+        if self.request.headers.get('Content-Type') == 'text/plain':
+            # export requirements file
+            directory = self.get_argument('dir', "None") + '/'
+            folder = directory[:-1].split('/')[-1]
+            self.set_header('Content-Disposition',
+                            'attachment; filename="%s"' % (folder + '.txt'))
+            self.write(self.env_manager.export_env(directory))
+            # TODO Find why the content-type header is not properly set
+            self.set_header('Content-Type', 'text/plain; charset="utf-8"')
+            self.finish()
+        else:
+            # send list of all packages
+            directory = self.get_argument('dir', "None") + '/'
+            resp = self.env_manager.project_info(directory)
+            if 'error' not in resp:
+                status = 200  # OK
 
-        # catch-all ok
-        if 'error' in resp:
-            status = 400
+            # catch-all ok
+            if 'error' in resp:
+                status = 400
 
-        self.set_status(status or 200)
-        self.finish(json.dumps(resp))
+            self.set_status(status or 200)
+            self.finish(json.dumps(resp))

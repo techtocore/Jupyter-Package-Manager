@@ -37,16 +37,9 @@ NS = r'api/packagemanager'
 # -----------------------------------------------------------------------------
 
 
-# there is almost no text that is invalid, but no hyphens up front, please
-# neither all these suspicious but valid caracthers...
-_env_regex = r"(?P<env>[^/&+$?@<>%*-][^/&+$?@<>%*]*)"
-
-
 default_handlers = [
     (r"/projects", projectmanagement.ManageProjectsHandler),
-    (r"/projects/%s" % _env_regex, projectmanagement.ExportEnvHandler),
     (r"/project_info", projectmanagement.ProjectInfoHandler),
-    # (r"/environment_clone", projectmanagement.CloneEnvHandler),
     (r"/packages", packagemanagement.PkgHandler),
     (r"/packages/check_update", packagemanagement.CheckUpdatePkgHandler),
     (r"/packages/available", packagemanagement.AvailablePackagesHandler),

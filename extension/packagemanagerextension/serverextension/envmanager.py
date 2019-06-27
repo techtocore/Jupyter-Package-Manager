@@ -158,8 +158,14 @@ class EnvManager(LoggingConfigurable):
             "packages": [pkg_info_status(package, names) for package in data]
         }
 
-    def export_env(self, env):
-        return self._execute('conda list -e -n', env)
+    def export_env(self, directory):
+        env = ""
+        directory = str(directory) + ".swanproject"
+        try:
+            env = yaml.load(open(directory))['ENV']
+        except:
+            return {'error': "Can't find project"}
+        return str(self._execute('conda list -e -n', env))
 
     def clone_env(self, env, name):
         output = self._execute('conda create -y -q --json -n', name,
@@ -207,17 +213,6 @@ class EnvManager(LoggingConfigurable):
             yaml.dump(data, outfile, default_flow_style=False)
         return op
 
-    def env_packages(self, env):
-        output = self._execute('conda list --no-pip --json -n', env)
-        data = self.clean_conda_json(output)
-        if 'error' in data:
-            # we didn't get back a list of packages, we got a dictionary with
-            # error info
-            return data
-
-        return {
-            "packages": [pkg_info(package) for package in data]
-        }
 
     def check_update(self, directory):
         env = ""
