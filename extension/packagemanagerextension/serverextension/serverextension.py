@@ -41,9 +41,6 @@ NS = r'api/packagemanager'
 # neither all these suspicious but valid caracthers...
 _env_regex = r"(?P<env>[^/&+$?@<>%*-][^/&+$?@<>%*]*)"
 
-# no hyphens up front, please
-_pkg_regex = r"(?P<pkg>[^\-][\-\da-zA-Z\._]+)"
-
 
 default_handlers = [
     (r"/projects", projectmanagement.ManageProjectsHandler),

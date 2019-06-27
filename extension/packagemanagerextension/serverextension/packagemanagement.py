@@ -37,6 +37,13 @@ class EnvBaseHandler(APIHandler):
 
 class PkgHandler(EnvBaseHandler):
 
+    def clean(self, packages):
+        # no hyphens up front, please
+        _pkg_regex = r"(?P<pkg>[^\-][\-\da-zA-Z\._]+)"
+        # don't allow arbitrary switches
+        packages = [pkg for pkg in packages if re.match(_pkg_regex, pkg)]
+        return packages
+
     """
     Handler for `POST /packages` which installs all
     the selected packages in the specified environment.
@@ -47,6 +54,7 @@ class PkgHandler(EnvBaseHandler):
         data = escape.json_decode(self.request.body)
         directory = data.get('dir') + '/'
         packages = data.get('packages')
+        packages = self.clean(packages)
         resp = self.env_manager.install_packages(directory, packages)
         if resp.get("error"):
             self.set_status(500)
@@ -62,6 +70,7 @@ class PkgHandler(EnvBaseHandler):
         data = escape.json_decode(self.request.body)
         directory = data.get('dir') + '/'
         packages = data.get('packages')
+        packages = self.clean(packages)
         resp = self.env_manager.update_packages(directory, packages)
         if resp.get("error"):
             self.set_status(500)
@@ -77,6 +86,7 @@ class PkgHandler(EnvBaseHandler):
         data = escape.json_decode(self.request.body)
         directory = data.get('dir') + '/'
         packages = data.get('packages')
+        packages = self.clean(packages)
         resp = self.env_manager.remove_packages(directory, packages)
         if resp.get("error"):
             self.set_status(500)
