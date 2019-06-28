@@ -127,7 +127,7 @@ class ProjectInfoHandler(EnvBaseHandler):
 
     """
     Handler for `GET /project_info` which
-    return the internal name of the environment 
+    returns the internal name of the environment 
     + all packages required along with their status (if already installed or not?)
     """
 
@@ -156,3 +156,33 @@ class ProjectInfoHandler(EnvBaseHandler):
 
             self.set_status(status or 200)
             self.finish(json.dumps(resp))
+
+    
+    """
+    Handler for `PUT /project_info` which
+    updates a project with all the packages obtained from an export file
+    """
+
+    @json_errors
+    def put(self):
+        # get list of all packages
+        file1 = self.request.files['file'][0]        
+        directory = self.get_argument('dir', default=None)
+
+        tmp = file1['body'].splitlines()
+        packages = []
+        for i in tmp:
+            if i[0]!='#':
+                packages.append(i)
+
+        resp = self.env_manager.install_packages(directory + '/', packages)
+
+        if 'error' not in resp:
+            status = 200  # OK
+
+        # catch-all ok
+        if 'error' in resp:
+            status = 400
+
+        self.set_status(status or 200)
+        self.finish(json.dumps(resp))
