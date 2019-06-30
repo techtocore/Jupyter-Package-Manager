@@ -27,12 +27,11 @@ define([
                 var envs = data.projects || [];
 
                 that.all = envs;
-                
+
                 // Select the default environment as current
                 let ct = 0;
                 $.each(envs, function (index, env) {
-                    if (ct === 0)
-                    {
+                    if (ct === 0) {
                         default_env = env;
                         ct++;
                     }

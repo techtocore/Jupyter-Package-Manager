@@ -6,8 +6,8 @@ import re
 import uuid
 import yaml
 
-from pkg_resources import parse_version
 from subprocess import check_output, CalledProcessError
+from packaging.version import parse
 
 from traitlets.config.configurable import LoggingConfigurable
 from traitlets import Dict
@@ -213,7 +213,6 @@ class EnvManager(LoggingConfigurable):
             yaml.dump(data, outfile, default_flow_style=False)
         return op
 
-
     def check_update(self, directory):
         env = ""
         directory = str(directory) + ".swanproject"
@@ -307,18 +306,17 @@ class EnvManager(LoggingConfigurable):
 
         packages = []
 
-        for name, entries in data.items():
+        for entries in data.values():
             max_version = None
             max_version_entry = None
 
             for entry in entries:
-                version = parse_version(entry.get('version', ''))
+                version = parse(entry.get("version", ""))
 
                 if max_version is None or version > max_version:
                     max_version = version
                     max_version_entry = entry
 
             packages.append(max_version_entry)
-        return {
-            "packages": sorted(packages, key=lambda entry: entry.get('name'))
-        }
+
+        return {"packages": sorted(packages, key=lambda entry: entry.get("name"))}

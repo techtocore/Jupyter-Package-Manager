@@ -14,10 +14,7 @@ from notebook.base.handlers import (
 )
 from tornado import web, escape
 
-if sys.version_info >= (3, 0):
-    from .envmanager import EnvManager, package_map
-else:
-    from envmanager import EnvManager, package_map
+from .envmanager import EnvManager, package_map
 
 
 class EnvBaseHandler(APIHandler):
@@ -182,6 +179,7 @@ class CondaSearcher(object):
 
 
 searcher = CondaSearcher()
+
 
 class AvailablePackagesHandler(EnvBaseHandler):
 

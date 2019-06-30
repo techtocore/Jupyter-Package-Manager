@@ -19,10 +19,7 @@ from notebook.base.handlers import (
 )
 from tornado import web, escape
 
-if sys.version_info >= (3, 0):
-    from .envmanager import EnvManager, package_map
-else:
-    from envmanager import EnvManager, package_map
+from .envmanager import EnvManager, package_map
 
 import projectmanagement
 import packagemanagement

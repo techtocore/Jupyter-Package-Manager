@@ -14,10 +14,7 @@ from notebook.base.handlers import (
 )
 from tornado import web, escape
 
-if sys.version_info >= (3, 0):
-    from .envmanager import EnvManager, package_map
-else:
-    from envmanager import EnvManager, package_map
+from .envmanager import EnvManager, package_map
 
 
 class EnvBaseHandler(APIHandler):
@@ -157,7 +154,6 @@ class ProjectInfoHandler(EnvBaseHandler):
             self.set_status(status or 200)
             self.finish(json.dumps(resp))
 
-    
     """
     Handler for `PUT /project_info` which
     updates a project with all the packages obtained from an export file
@@ -166,13 +162,13 @@ class ProjectInfoHandler(EnvBaseHandler):
     @json_errors
     def put(self):
         # get list of all packages
-        file1 = self.request.files['file'][0]        
+        file1 = self.request.files['file'][0]
         directory = self.get_argument('dir', default=None)
 
         tmp = file1['body'].splitlines()
         packages = []
         for i in tmp:
-            if i[0]!='#':
+            if i[0] != '#':
                 packages.append(i)
 
         resp = self.env_manager.install_packages(directory + '/', packages)
