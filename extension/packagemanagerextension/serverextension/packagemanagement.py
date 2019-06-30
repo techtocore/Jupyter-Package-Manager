@@ -16,6 +16,16 @@ from tornado import web, escape
 
 from .envmanager import EnvManager, package_map
 
+from os.path import expanduser
+home = expanduser("~")
+
+def relativeDir(directory):
+    if directory[0] != '/':
+        directory = '/' + directory
+    if directory[-1] != '/':
+        directory = directory + '/'
+    return home + directory
+
 
 class EnvBaseHandler(APIHandler):
     """
@@ -49,7 +59,8 @@ class PkgHandler(EnvBaseHandler):
     @json_errors
     def post(self):
         data = escape.json_decode(self.request.body)
-        directory = data.get('dir') + '/'
+        directory = data.get('dir')
+        directory = relativeDir(directory)
         packages = data.get('packages')
         packages = self.clean(packages)
         resp = self.env_manager.install_packages(directory, packages)
@@ -65,7 +76,8 @@ class PkgHandler(EnvBaseHandler):
     @json_errors
     def patch(self):
         data = escape.json_decode(self.request.body)
-        directory = data.get('dir') + '/'
+        directory = data.get('dir')
+        directory = relativeDir(directory)
         packages = data.get('packages')
         packages = self.clean(packages)
         resp = self.env_manager.update_packages(directory, packages)
@@ -81,7 +93,8 @@ class PkgHandler(EnvBaseHandler):
     @json_errors
     def delete(self):
         data = escape.json_decode(self.request.body)
-        directory = data.get('dir') + '/'
+        directory = data.get('dir')
+        directory = relativeDir(directory)
         packages = data.get('packages')
         packages = self.clean(packages)
         resp = self.env_manager.remove_packages(directory, packages)
@@ -99,7 +112,8 @@ class CheckUpdatePkgHandler(EnvBaseHandler):
 
     @json_errors
     def get(self):
-        directory = self.get_argument('dir', "None") + '/'
+        directory = self.get_argument('dir', "None")
+        directory = relativeDir(directory)
         resp = self.env_manager.check_update(directory)
         if resp.get("error"):
             self.set_status(500)

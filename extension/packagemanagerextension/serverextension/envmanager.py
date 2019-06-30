@@ -14,43 +14,26 @@ from traitlets import Dict
 
 
 def pkg_info(s):
-    try:
-        # for conda >= 4.3, `s` should be a dict
-        name = s['name']
-        version = s['version']
-        build = s.get('build_string') or s['build']
-    except TypeError:
-        # parse legacy string version for information
-        name, version, build = s.rsplit('-', 2)
-
     return {
-        'name': name,
-        'version': version,
-        'build': build
+        "build_string": s.get("build_string", s.get("build")),
+        "name": s.get("name"),
+        "version": s.get("version")
     }
 
 
 def pkg_info_status(s, names):
-    try:
-        # for conda >= 4.3, `s` should be a dict
-        name = s['name']
-        version = s['version']
-        build = s.get('build_string') or s['build']
-    except TypeError:
-        # parse legacy string version for information
-        name, version, build = s.rsplit('-', 2)
+    pkg_info_res = pkg_info(s)
+    name = pkg_info_res.get("name")
     status = "not available"
     if name in names:
         status = "installed"
-    return {
-        'name': name,
-        'version': version,
-        'build': build,
-        "status": status
-    }
+    pkg_info_res['status'] = status
+    return pkg_info_res
 
 
 MAX_LOG_OUTPUT = 6000
+
+CONDA_EXE = os.environ.get("CONDA_EXE", "conda")  # type: str
 
 # try to match lines of json
 JSONISH_RE = r'(^\s*["\{\}\[\],\d])|(["\}\}\[\],\d]\s*$)'
@@ -65,7 +48,8 @@ package_map = {
 class EnvManager(LoggingConfigurable):
     envs = Dict()
 
-    def _execute(self, cmd, *args):
+    def conda_execute(self, cmd, *args):
+        cmd = CONDA_EXE + ' ' + cmd
         cmdline = cmd.split() + list(args)
         self.log.debug('[packagemanagerextension] command: %s', cmdline)
 
@@ -86,7 +70,7 @@ class EnvManager(LoggingConfigurable):
 
     def list_projects(self):
         """List all projects that conda knows about"""
-        info = self.clean_conda_json(self._execute('conda info --json'))
+        info = self.clean_conda_json(self.conda_execute('info --json'))
 
         def get_info(env):
             return {
@@ -125,7 +109,7 @@ class EnvManager(LoggingConfigurable):
             env = yaml.load(open(directory))['ENV']
         except:
             return {'error': "Can't find project"}
-        output = self._execute('conda remove -y -q --all --json -n', env)
+        output = self.conda_execute('remove -y -q --all --json -n', env)
         kdir = '.local/share/jupyter/kernels/' + env
         os.remove(kdir + '/kernel.json')
         os.rmdir(kdir)
@@ -146,7 +130,7 @@ class EnvManager(LoggingConfigurable):
         for item in packagesMD:
             names.append(item.get('name'))
 
-        output = self._execute('conda list --no-pip --json -n', env)
+        output = self.conda_execute('list --no-pip --json -n', env)
         data = self.clean_conda_json(output)
         if 'error' in data:
             # we didn't get back a list of packages, we got a dictionary with
@@ -165,10 +149,10 @@ class EnvManager(LoggingConfigurable):
             env = yaml.load(open(directory))['ENV']
         except:
             return {'error': "Can't find project"}
-        return str(self._execute('conda list -e -n', env))
+        return str(self.conda_execute('list -e -n', env))
 
     def clone_env(self, env, name):
-        output = self._execute('conda create -y -q --json -n', name,
+        output = self.conda_execute('create -y -q --json -n', name,
                                '--clone', env)
         return self.clean_conda_json(output)
 
@@ -180,16 +164,18 @@ class EnvManager(LoggingConfigurable):
         folder = directory[:-1].split('/')[-1]
 
         if not os.path.exists(directory):
-            os.makedirs(directory)
+            # os.makedirs(directory)
+            res = {'error': 'Project directory not available'}
+            return res
 
         # if os.path.isfile(directory + '.swanproject'):
         #     res = {'error': 'This directory alreday contains a project'}
         #     return res
 
         packages = package_map[type]
-        output = self._execute('conda create -y -q --json -n', name,
+        output = self.conda_execute('create -y -q --json -n', name,
                                *packages.split(" "))
-        packages = self._execute('conda list --no-pip --json -n', name)
+        packages = self.conda_execute('list --no-pip --json -n', name)
         packages = self.clean_conda_json(packages)
         op = self.clean_conda_json(output)
         tp = json.dumps(op)
@@ -220,12 +206,12 @@ class EnvManager(LoggingConfigurable):
             env = yaml.load(open(directory))['ENV']
         except:
             return {'error': "Can't find project"}
-        packagesJson = self._execute('conda list --no-pip --json -n', env)
+        packagesJson = self.conda_execute('list --no-pip --json -n', env)
         packagesJson = self.clean_conda_json(packagesJson)
         packages = []
         for it in packagesJson:
             packages.append(it.get('name'))
-        output = self._execute('conda update --dry-run -q --json -n', env,
+        output = self.conda_execute('update --dry-run -q --json -n', env,
                                *packages)
         data = self.clean_conda_json(output)
 
@@ -235,7 +221,7 @@ class EnvManager(LoggingConfigurable):
             return data
         elif 'actions' in data:
             links = data['actions'].get('LINK', [])
-            package_versions = [link.get('dist_name') for link in links]
+            package_versions = [link for link in links]
             return {
                 "updates": [pkg_info(pkg_version)
                             for pkg_version in package_versions]
@@ -253,9 +239,9 @@ class EnvManager(LoggingConfigurable):
             env = yaml.load(open(directory))['ENV']
         except:
             return {'error': "Can't find project"}
-        output = self._execute('conda install -y -q --json -n', env, *packages)
+        output = self.conda_execute('install -y -q --json -n', env, *packages)
         data = {'ENV': env}
-        packages = self._execute('conda list --no-pip --json -n', env)
+        packages = self.conda_execute('list --no-pip --json -n', env)
         packages = self.clean_conda_json(packages)
         data['PACKAGE_INFO'] = packages
         with open(directory, 'w') as outfile:
@@ -269,9 +255,9 @@ class EnvManager(LoggingConfigurable):
             env = yaml.load(open(directory))['ENV']
         except:
             return {'error': "Can't find project"}
-        output = self._execute('conda update -y -q --json -n', env, *packages)
+        output = self.conda_execute('update -y -q --json -n', env, *packages)
         data = {'ENV': env}
-        packages = self._execute('conda list --no-pip --json -n', env)
+        packages = self.conda_execute('list --no-pip --json -n', env)
         packages = self.clean_conda_json(packages)
         data['PACKAGE_INFO'] = packages
         with open(directory, 'w') as outfile:
@@ -285,9 +271,9 @@ class EnvManager(LoggingConfigurable):
             env = yaml.load(open(directory))['ENV']
         except:
             return {'error': "Can't find project"}
-        output = self._execute('conda remove -y -q --json -n', env, *packages)
+        output = self.conda_execute('remove -y -q --json -n', env, *packages)
         data = {'ENV': env}
-        packages = self._execute('conda list --no-pip --json -n', env)
+        packages = self.conda_execute('list --no-pip --json -n', env)
         packages = self.clean_conda_json(packages)
         data['PACKAGE_INFO'] = packages
         with open(directory, 'w') as outfile:
@@ -296,7 +282,7 @@ class EnvManager(LoggingConfigurable):
 
     def package_search(self, q):
         # this method is slow and operates synchronously
-        output = self._execute('conda search --json', q)
+        output = self.conda_execute('search --json', q)
         data = self.clean_conda_json(output)
 
         if 'error' in data:
