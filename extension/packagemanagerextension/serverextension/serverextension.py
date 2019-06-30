@@ -19,7 +19,7 @@ from notebook.base.handlers import (
 )
 from tornado import web, escape
 
-from .envmanager import EnvManager, package_map
+from .envmanager import EnvManager
 
 import projectmanagement
 import packagemanagement

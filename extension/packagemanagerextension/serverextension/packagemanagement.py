@@ -1,20 +1,18 @@
 import json
 import os
 import re
-import sys
 
 from subprocess import Popen
 from tempfile import TemporaryFile
 
 from pkg_resources import parse_version
-from notebook.utils import url_path_join as ujoin
 from notebook.base.handlers import (
     APIHandler,
     json_errors,
 )
 from tornado import web, escape
 
-from .envmanager import EnvManager, package_map
+from .envmanager import EnvManager
 
 from os.path import expanduser
 home = expanduser("~")
@@ -29,7 +27,7 @@ def relativeDir(directory):
 
 class EnvBaseHandler(APIHandler):
     """
-    Mixin for an env manager. Just maintains a reference to the
+    Maintains a reference to the
     'env_manager' which implements all of the conda functions.
     """
     @property
