@@ -100,29 +100,6 @@ class ManageProjectsHandler(EnvBaseHandler):
             self.finish(json.dumps(resp))
 
 
-class CloneEnvHandler(EnvBaseHandler):
-
-    """
-    Handler for `POST /environment_clone` which
-    clones the specified environment.
-    """
-
-    @json_errors
-    def post(self):
-        data = escape.json_decode(self.request.body)
-        env = data['env']
-        new_env = data['new_env']
-        resp = self.env_manager.clone_env(env, new_env)
-        if 'error' not in resp:
-            status = 201  # CREATED
-
-        # catch-all ok
-        if 'error' in resp:
-            status = 400
-
-        self.set_status(status or 200)
-        self.finish(json.dumps(resp))
-
 
 class ProjectInfoHandler(EnvBaseHandler):
 

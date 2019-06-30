@@ -69,3 +69,12 @@ class ProcessHelper(LoggingConfigurable):
         except Exception as err:
             return {"error": err}
         return {"error": True}
+
+    @classmethod
+    def get_swanproject(self, directory):
+        directory = str(directory) + ".swanproject"
+        try:
+            env = yaml.load(open(directory))['ENV']
+        except:
+            raise "Can't find project"
+        return env
