@@ -31,14 +31,16 @@ class ProcessHelper(LoggingConfigurable):
         }
 
     @classmethod
-    def pkg_info_status(self, s, names):
-        pkg_info_res = self.pkg_info(s)
-        name = pkg_info_res.get("name")
-        status = "not available"
-        if name in names:
-            status = "installed"
-        pkg_info_res['status'] = status
-        return pkg_info_res
+    def pkg_info_status(self, swandata, condadata):
+        packages = {x['name']: x for x in swandata + condadata}.values()
+        for i in packages:
+            if i in swandata and i in condadata:
+                i['status'] = 'installed'
+            elif i in swandata and i not in condadata:
+                i['status'] = 'not installed'
+            elif i not in swandata and i in condadata:
+                i['status'] = 'not synced'
+        return packages
 
     @classmethod
     def conda_execute(self, cmd, *args):
@@ -72,9 +74,20 @@ class ProcessHelper(LoggingConfigurable):
 
     @classmethod
     def get_swanproject(self, directory):
-        directory = str(directory) + ".swanproject"
+        directory = directory + ".swanproject"
         try:
             env = yaml.load(open(directory))['ENV']
         except:
             raise "Can't find project"
         return env
+
+    @classmethod
+    def update_yaml(self, name, packages, directory):
+        directory = directory + ".swanproject"
+        data = {'ENV': name}
+        data['PACKAGE_INFO'] = packages
+        try:
+            with open(directory, 'w') as outfile:
+                yaml.dump(data, outfile, default_flow_style=False)
+        except:
+            raise "Can't update .swanproject file"
