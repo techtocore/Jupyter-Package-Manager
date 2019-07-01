@@ -1,28 +1,28 @@
 import json
 import os
-import re
-import sys
 
-from subprocess import Popen
-from tempfile import TemporaryFile
-
-from pkg_resources import parse_version
-from notebook.utils import url_path_join as ujoin
 from notebook.base.handlers import (
     APIHandler,
     json_errors,
 )
 from tornado import web, escape
 
-if sys.version_info >= (3, 0):
-    from .envmanager import EnvManager, package_map
-else:
-    from envmanager import EnvManager, package_map
+from .envmanager import EnvManager, package_map
+
+from os.path import expanduser
+home = expanduser("~")
+
+def relativeDir(directory):
+    if directory[0] != '/':
+        directory = '/' + directory
+    if directory[-1] != '/':
+        directory = directory + '/'
+    return home + directory
 
 
 class EnvBaseHandler(APIHandler):
     """
-    Mixin for an env manager. Just maintains a reference to the
+    Maintains a reference to the
     'env_manager' which implements all of the conda functions.
     """
     @property
@@ -53,7 +53,8 @@ class ManageProjectsHandler(EnvBaseHandler):
     @json_errors
     def post(self):
         data = escape.json_decode(self.request.body)
-        directory = data.get('dir') + '/'
+        directory = data.get('dir')
+        directory = relativeDir(directory)
         env_type = data.get('env_type', 'python3')
         if env_type not in package_map:
             raise web.HTTPError(400)
@@ -80,13 +81,13 @@ class ManageProjectsHandler(EnvBaseHandler):
         directory = data.get('dir')
         if type(directory) == type(dlist):
             for proj in directory:
-                proj = proj + '/'
+                proj = relativeDir(proj)
                 resp = self.env_manager.delete_project(proj)
                 dlist.append(resp)
             res = {'response': dlist}
             self.finish(json.dumps(res))
         else:
-            directory = directory + '/'
+            directory = relativeDir(directory)
             resp = self.env_manager.delete_project(directory)
             if 'error' not in resp:
                 status = 200
@@ -99,42 +100,62 @@ class ManageProjectsHandler(EnvBaseHandler):
             self.finish(json.dumps(resp))
 
 
-class ExportEnvHandler(EnvBaseHandler):
+
+class ProjectInfoHandler(EnvBaseHandler):
 
     """
-    Handler for `GET /projects/<name>` which
-    exports the specified environment as a text file or simply lists all
-    the packages in the specified environment, based on the Content-Type header. 
+    Handler for `GET /project_info` which
+    returns the internal name of the environment 
+    + all packages required along with their status (if already installed or not?)
     """
 
     @json_errors
-    def get(self, env):
-
-        if self.request.headers.get('Content-Type') == 'application/json':
-            # send list of all packages
-            self.finish(json.dumps(self.env_manager.env_packages(env)))
-        else:
+    def get(self):
+        directory = self.get_argument('dir', "None")
+        directory = relativeDir(directory)
+        if self.request.headers.get('Content-Type') == 'text/plain':
             # export requirements file
+            folder = directory[:-1].split('/')[-1]
             self.set_header('Content-Disposition',
-                            'attachment; filename="%s"' % (env + '.txt'))
-            self.finish(self.env_manager.export_env(env))
+                            'attachment; filename="%s"' % (folder + '.txt'))
+            self.write(self.env_manager.export_env(directory))
+            # TODO Find why the content-type header is not properly set
+            self.set_header('Content-Type', 'text/plain; charset="utf-8"')
+            self.finish()
+        else:
+            # send list of all packages
+            resp = self.env_manager.project_info(directory)
+            if 'error' not in resp:
+                status = 200  # OK
 
+            # catch-all ok
+            if 'error' in resp:
+                status = 400
 
-class CloneEnvHandler(EnvBaseHandler):
+            self.set_status(status or 200)
+            self.finish(json.dumps(resp))
 
     """
-    Handler for `POST /environment_clone` which
-    clones the specified environment.
+    Handler for `PUT /project_info` which
+    updates a project with all the packages obtained from an export file
     """
 
     @json_errors
-    def post(self):
-        data = escape.json_decode(self.request.body)
-        env = data['env']
-        new_env = data['new_env']
-        resp = self.env_manager.clone_env(env, new_env)
+    def put(self):
+        # get list of all packages
+        file1 = self.request.files['file'][0]
+        directory = self.get_argument('dir', default=None)
+        directory = relativeDir(directory)
+        tmp = file1['body'].splitlines()
+        packages = []
+        for i in tmp:
+            if i[0] != '#':
+                packages.append(i)
+
+        resp = self.env_manager.install_packages(directory, packages)
+
         if 'error' not in resp:
-            status = 201  # CREATED
+            status = 200  # OK
 
         # catch-all ok
         if 'error' in resp:
@@ -143,21 +164,20 @@ class CloneEnvHandler(EnvBaseHandler):
         self.set_status(status or 200)
         self.finish(json.dumps(resp))
 
-
-class ProjectInfoHandler(EnvBaseHandler):
-
     """
-    Handler for `GET /project_info` which
-    return the internal name of the environment 
-    + all packages required along with thier status (if already installed or not?)
+    Handler for `PATCH /project_info` which
+    syncs a .swanproject file and the corresponding conda env
     """
 
     @json_errors
-    def get(self):
-        directory = self.get_argument('dir', "None") + '/'
-        resp = self.env_manager.project_info(directory)
+    def patch(self):
+        data = escape.json_decode(self.request.body)
+        directory = data.get('dir')
+        directory = relativeDir(directory)
+        resp = self.env_manager.sync_packages(directory)
+
         if 'error' not in resp:
-            status = 201  # CREATED
+            status = 200  # OK
 
         # catch-all ok
         if 'error' in resp:

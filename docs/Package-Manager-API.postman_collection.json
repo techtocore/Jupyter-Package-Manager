@@ -23,7 +23,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"dir\": \"/home/akash/.conda/envs/swantest\",\n\t\"env_type\": \"python3\"\n}"
+							"raw": "{\n\t\"dir\": \"/MySwanProjectA\",\n\t\"env_type\": \"python3\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8888/api/packagemanager/projects",
@@ -56,7 +56,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"dir\": \"/home/akash/.conda/envs/swantest\"\n}"
+							"raw": "{\n\t\"dir\": \"/MySwanProjectA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8888/api/packagemanager/projects",
@@ -76,16 +76,22 @@
 					"response": []
 				},
 				{
-					"name": "Project Info",
+					"name": "Project Export",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "text/plain",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/project_info?dir=/home/akash/.conda/envs/swantest",
+							"raw": "http://localhost:8888/api/packagemanager/project_info?dir=/MySwanProjectA",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -99,11 +105,126 @@
 							"query": [
 								{
 									"key": "dir",
-									"value": "/home/akash/.conda/envs/swantest"
+									"value": "/MySwanProjectA"
+								}
+							]
+						},
+						"description": "The API endpoint exports the details of the conda environment corresponding to a project.\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Project Info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/project_info?dir=/MySwanProjectA",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"project_info"
+							],
+							"query": [
+								{
+									"key": "dir",
+									"value": "/MySwanProjectA"
 								}
 							]
 						},
 						"description": "The API endpoint outlines the details of the conda environment corresponding to a project.\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Project Import",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								},
+								{
+									"key": "dir",
+									"value": "/MySwanProjectA",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/project_info",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"project_info"
+							]
+						},
+						"description": "This API endpoint updates a project with all the packages obtained from an export file."
+					},
+					"response": []
+				},
+				{
+					"name": "Sync Project",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"dir\": \"/MySwanProjectA\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/project_info",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"project_info"
+							]
+						},
+						"description": "This API endpoint syncs a .swanproject file and the corresponding conda env."
 					},
 					"response": []
 				}
@@ -126,7 +247,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"dir\": \"/home/akash/.conda/envs/swantest\",\n\t\"packages\": [\"numpy\"]\n}"
+							"raw": "{\n\t\"dir\": \"/MySwanProjectA\",\n\t\"packages\": [\"pyyaml=3.13\"]\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8888/api/packagemanager/packages",
@@ -159,7 +280,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"dir\": \"/home/akash/.conda/envs/swantest\",\n\t\"packages\": [\"numpy\"]\n}"
+							"raw": "{\n\t\"dir\": \"/MySwanProjectA\",\n\t\"packages\": [\"pyyaml\"]\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8888/api/packagemanager/packages",
@@ -195,7 +316,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/packages/check_update?dir=/home/akash/.conda/envs/swantest",
+							"raw": "http://localhost:8888/api/packagemanager/packages/check_update?dir=/MySwanProjectA",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -210,7 +331,7 @@
 							"query": [
 								{
 									"key": "dir",
-									"value": "/home/akash/.conda/envs/swantest"
+									"value": "/MySwanProjectA"
 								}
 							]
 						},
@@ -232,7 +353,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"dir\": \"/home/akash/.conda/envs/swantest\",\n\t\"packages\": [\"numpy\"]\n}"
+							"raw": "{\n\t\"dir\": \"/MySwanProjectA\",\n\t\"packages\": [\"pyyaml\"]\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8888/api/packagemanager/packages",
@@ -261,7 +382,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/packages/search?q=numpy",
+							"raw": "http://localhost:8888/api/packagemanager/packages/search?q=pyyaml=3.13",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -276,7 +397,7 @@
 							"query": [
 								{
 									"key": "q",
-									"value": "numpy"
+									"value": "pyyaml=3.13"
 								}
 							]
 						},
@@ -329,7 +450,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"dir\": [\"/home/akash/.conda/envs/swantest1\", \"/home/akash/.conda/envs/swantest2\"]\n}"
+							"raw": "{\n\t\"dir\": [\"/MySwanProjectA\", \"/MySwanProjectB\"]\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8888/api/packagemanager/projects",

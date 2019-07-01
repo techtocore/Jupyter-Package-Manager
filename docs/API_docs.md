@@ -22,7 +22,10 @@ This file outlines the API specifications for the endpoints used by Jupyter Pack
 
   * [Create Project](#1-create-project)
   * [Delete Project](#2-delete-project)
-  * [Project Info](#3-project-info)
+  * [Project Export](#3-project-export)
+  * [Project Info](#4-project-info)
+  * [Project Import](#5-project-import)
+  * [Sync Project](#6-sync-project)
 
 
 --------
@@ -75,7 +78,7 @@ URL: http://localhost:8888/api/packagemanager/projects
 
 ```js        
 {
-	"dir": ["/home/akash/.conda/envs/swantest1", "/home/akash/.conda/envs/swantest2"]
+	"dir": ["/MySwanProjectA", "/MySwanProjectB"]
 }
 ```
 
@@ -114,8 +117,8 @@ URL: http://localhost:8888/api/packagemanager/packages
 
 ```js        
 {
-	"dir": "/home/akash/.conda/envs/swantest",
-	"packages": ["numpy"]
+	"dir": "/MySwanProjectA",
+	"packages": ["pyyaml=3.13"]
 }
 ```
 
@@ -151,8 +154,8 @@ URL: http://localhost:8888/api/packagemanager/packages
 
 ```js        
 {
-	"dir": "/home/akash/.conda/envs/swantest",
-	"packages": ["numpy"]
+	"dir": "/MySwanProjectA",
+	"packages": ["pyyaml"]
 }
 ```
 
@@ -185,7 +188,7 @@ URL: http://localhost:8888/api/packagemanager/packages/check_update
 
 | Key | Value | Description |
 | --- | ------|-------------|
-| dir | /home/akash/.conda/envs/swantest |  |
+| dir | /MySwanProjectA |  |
 
 
 
@@ -218,8 +221,8 @@ URL: http://localhost:8888/api/packagemanager/packages
 
 ```js        
 {
-	"dir": "/home/akash/.conda/envs/swantest",
-	"packages": ["numpy"]
+	"dir": "/MySwanProjectA",
+	"packages": ["pyyaml"]
 }
 ```
 
@@ -245,7 +248,7 @@ URL: http://localhost:8888/api/packagemanager/packages/search
 
 | Key | Value | Description |
 | --- | ------|-------------|
-| q | numpy |  |
+| q | pyyaml=3.13 |  |
 
 
 
@@ -284,7 +287,7 @@ URL: http://localhost:8888/api/packagemanager/projects
 
 ```js        
 {
-	"dir": "/home/akash/.conda/envs/swantest",
+	"dir": "/MySwanProjectA",
 	"env_type": "python3"
 }
 ```
@@ -322,13 +325,45 @@ URL: http://localhost:8888/api/packagemanager/projects
 
 ```js        
 {
-	"dir": "/home/akash/.conda/envs/swantest"
+	"dir": "/MySwanProjectA"
 }
 ```
 
 
 
-### 3. Project Info
+### 3. Project Export
+
+
+The API endpoint exports the details of the conda environment corresponding to a project.
+
+
+
+***Endpoint:***
+
+```bash
+Method: GET
+Type: RAW
+URL: http://localhost:8888/api/packagemanager/project_info
+```
+
+
+***Headers:***
+
+| Key | Value | Description |
+| --- | ------|-------------|
+| Content-Type | text/plain |  |
+
+
+
+***Query params:***
+
+| Key | Value | Description |
+| --- | ------|-------------|
+| dir | /MySwanProjectA |  |
+
+
+
+### 4. Project Info
 
 
 The API endpoint outlines the details of the conda environment corresponding to a project.
@@ -344,12 +379,84 @@ URL: http://localhost:8888/api/packagemanager/project_info
 ```
 
 
+***Headers:***
+
+| Key | Value | Description |
+| --- | ------|-------------|
+| Content-Type | application/json |  |
+
+
 
 ***Query params:***
 
 | Key | Value | Description |
 | --- | ------|-------------|
-| dir | /home/akash/.conda/envs/swantest |  |
+| dir | /MySwanProjectA |  |
+
+
+
+### 5. Project Import
+
+
+This API endpoint updates a project with all the packages obtained from an export file.
+
+
+***Endpoint:***
+
+```bash
+Method: PUT
+Type: FORMDATA
+URL: http://localhost:8888/api/packagemanager/project_info
+```
+
+
+***Headers:***
+
+| Key | Value | Description |
+| --- | ------|-------------|
+| Content-Type | application/x-www-form-urlencoded |  |
+
+
+
+***Body:***
+
+| Key | Value | Description |
+| --- | ------|-------------|
+| file |  |  |
+| dir | /MySwanProjectA |  |
+
+
+
+### 6. Sync Project
+
+
+This API endpoint syncs a .swanproject file and the corresponding conda env.
+
+
+***Endpoint:***
+
+```bash
+Method: PATCH
+Type: RAW
+URL: http://localhost:8888/api/packagemanager/project_info
+```
+
+
+***Headers:***
+
+| Key | Value | Description |
+| --- | ------|-------------|
+| Content-Type | application/json |  |
+
+
+
+***Body:***
+
+```js        
+{
+	"dir": "/MySwanProjectA"
+}
+```
 
 
 

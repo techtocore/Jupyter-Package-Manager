@@ -1,28 +1,33 @@
 import json
 import os
 import re
-import sys
 
 from subprocess import Popen
 from tempfile import TemporaryFile
 
 from pkg_resources import parse_version
-from notebook.utils import url_path_join as ujoin
 from notebook.base.handlers import (
     APIHandler,
     json_errors,
 )
 from tornado import web, escape
 
-if sys.version_info >= (3, 0):
-    from .envmanager import EnvManager, package_map
-else:
-    from envmanager import EnvManager, package_map
+from .envmanager import EnvManager
+
+from os.path import expanduser
+home = expanduser("~")
+
+def relativeDir(directory):
+    if directory[0] != '/':
+        directory = '/' + directory
+    if directory[-1] != '/':
+        directory = directory + '/'
+    return home + directory
 
 
 class EnvBaseHandler(APIHandler):
     """
-    Mixin for an env manager. Just maintains a reference to the
+    Maintains a reference to the
     'env_manager' which implements all of the conda functions.
     """
     @property
@@ -37,6 +42,13 @@ class EnvBaseHandler(APIHandler):
 
 class PkgHandler(EnvBaseHandler):
 
+    def clean(self, packages):
+        # no hyphens up front, please
+        _pkg_regex = r"(?P<pkg>[^\-][\-\da-zA-Z\._]+)"
+        # don't allow arbitrary switches
+        packages = [pkg for pkg in packages if re.match(_pkg_regex, pkg)]
+        return packages
+
     """
     Handler for `POST /packages` which installs all
     the selected packages in the specified environment.
@@ -45,8 +57,10 @@ class PkgHandler(EnvBaseHandler):
     @json_errors
     def post(self):
         data = escape.json_decode(self.request.body)
-        directory = data.get('dir') + '/'
+        directory = data.get('dir')
+        directory = relativeDir(directory)
         packages = data.get('packages')
+        packages = self.clean(packages)
         resp = self.env_manager.install_packages(directory, packages)
         if resp.get("error"):
             self.set_status(500)
@@ -60,8 +74,10 @@ class PkgHandler(EnvBaseHandler):
     @json_errors
     def patch(self):
         data = escape.json_decode(self.request.body)
-        directory = data.get('dir') + '/'
+        directory = data.get('dir')
+        directory = relativeDir(directory)
         packages = data.get('packages')
+        packages = self.clean(packages)
         resp = self.env_manager.update_packages(directory, packages)
         if resp.get("error"):
             self.set_status(500)
@@ -75,8 +91,10 @@ class PkgHandler(EnvBaseHandler):
     @json_errors
     def delete(self):
         data = escape.json_decode(self.request.body)
-        directory = data.get('dir') + '/'
+        directory = data.get('dir')
+        directory = relativeDir(directory)
         packages = data.get('packages')
+        packages = self.clean(packages)
         resp = self.env_manager.remove_packages(directory, packages)
         if resp.get("error"):
             self.set_status(500)
@@ -92,7 +110,8 @@ class CheckUpdatePkgHandler(EnvBaseHandler):
 
     @json_errors
     def get(self):
-        directory = self.get_argument('dir', "None") + '/'
+        directory = self.get_argument('dir', "None")
+        directory = relativeDir(directory)
         resp = self.env_manager.check_update(directory)
         if resp.get("error"):
             self.set_status(500)
@@ -172,6 +191,7 @@ class CondaSearcher(object):
 
 
 searcher = CondaSearcher()
+
 
 class AvailablePackagesHandler(EnvBaseHandler):
 
