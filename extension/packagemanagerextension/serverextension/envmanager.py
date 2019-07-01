@@ -91,6 +91,14 @@ class EnvManager(LoggingConfigurable):
         resp['packages'] = process_helper.pkg_info_status(swandata, condadata)
         return resp
 
+    def sync_packages(self, directory):
+        package_info = self.project_info(directory)
+        packages = []
+        for i in package_info['packages']:
+            if i['status'] != 'installed':
+                packages.append(i['name'] + '=' + i['version'])
+        return self.install_packages(directory, packages)
+
     def export_env(self, directory):
         try:
             env = process_helper.get_swanproject(directory)

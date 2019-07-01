@@ -163,3 +163,25 @@ class ProjectInfoHandler(EnvBaseHandler):
 
         self.set_status(status or 200)
         self.finish(json.dumps(resp))
+
+    """
+    Handler for `PATCH /project_info` which
+    syncs a .swanproject file and the corresponding conda env
+    """
+
+    @json_errors
+    def patch(self):
+        data = escape.json_decode(self.request.body)
+        directory = data.get('dir')
+        directory = relativeDir(directory)
+        resp = self.env_manager.sync_packages(directory)
+
+        if 'error' not in resp:
+            status = 200  # OK
+
+        # catch-all ok
+        if 'error' in resp:
+            status = 400
+
+        self.set_status(status or 200)
+        self.finish(json.dumps(resp))
