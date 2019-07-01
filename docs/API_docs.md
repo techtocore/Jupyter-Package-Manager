@@ -5,19 +5,6 @@ This file outlines the API specifications for the endpoints used by Jupyter Pack
 
 ## Indices
 
-* [Maintenance Tasks](#maintenance-tasks)
-
-  * [List Projects](#1-list-projects)
-  * [Delete Project List](#2-delete-project-list)
-
-* [Package Management](#package-management)
-
-  * [Install Packages](#1-install-packages)
-  * [Uninstall Packages](#2-uninstall-packages)
-  * [Check Updates for Packages](#3-check-updates-for-packages)
-  * [Update Packages](#4-update-packages)
-  * [Search Packages](#5-search-packages)
-
 * [Project Management](#project-management)
 
   * [Create Project](#1-create-project)
@@ -27,6 +14,18 @@ This file outlines the API specifications for the endpoints used by Jupyter Pack
   * [Project Import](#5-project-import)
   * [Sync Project](#6-sync-project)
 
+* [Package Management](#package-management)
+
+  * [Install Packages](#1-install-packages)
+  * [Uninstall Packages](#2-uninstall-packages)
+  * [Check Updates for Packages](#3-check-updates-for-packages)
+  * [Update Packages](#4-update-packages)
+  * [Search Packages](#5-search-packages)
+
+* [Maintenance Tasks](#maintenance-tasks)
+
+  * [List Projects](#1-list-projects)
+  * [Delete Project List](#2-delete-project-list)
 
 --------
 
@@ -78,7 +77,7 @@ URL: http://localhost:8888/api/packagemanager/projects
 
 ```js        
 {
-	"dir": ["/MySwanProjectA", "/MySwanProjectB"]
+	"project": ["/MySwanProjectA", "/MySwanProjectB"]
 }
 ```
 
@@ -117,7 +116,7 @@ URL: http://localhost:8888/api/packagemanager/packages
 
 ```js        
 {
-	"dir": "/MySwanProjectA",
+	"project": "/MySwanProjectA",
 	"packages": ["pyyaml=3.13"]
 }
 ```
@@ -154,7 +153,7 @@ URL: http://localhost:8888/api/packagemanager/packages
 
 ```js        
 {
-	"dir": "/MySwanProjectA",
+	"project": "/MySwanProjectA",
 	"packages": ["pyyaml"]
 }
 ```
@@ -188,7 +187,7 @@ URL: http://localhost:8888/api/packagemanager/packages/check_update
 
 | Key | Value | Description |
 | --- | ------|-------------|
-| dir | /MySwanProjectA |  |
+| project | /MySwanProjectA |  |
 
 
 
@@ -221,7 +220,7 @@ URL: http://localhost:8888/api/packagemanager/packages
 
 ```js        
 {
-	"dir": "/MySwanProjectA",
+	"project": "/MySwanProjectA",
 	"packages": ["pyyaml"]
 }
 ```
@@ -287,7 +286,7 @@ URL: http://localhost:8888/api/packagemanager/projects
 
 ```js        
 {
-	"dir": "/MySwanProjectA",
+	"project": "/MySwanProjectA",
 	"env_type": "python3"
 }
 ```
@@ -325,7 +324,7 @@ URL: http://localhost:8888/api/packagemanager/projects
 
 ```js        
 {
-	"dir": "/MySwanProjectA"
+	"project": "/MySwanProjectA"
 }
 ```
 
@@ -359,7 +358,7 @@ URL: http://localhost:8888/api/packagemanager/project_info
 
 | Key | Value | Description |
 | --- | ------|-------------|
-| dir | /MySwanProjectA |  |
+| project | /MySwanProjectA |  |
 
 
 
@@ -391,7 +390,7 @@ URL: http://localhost:8888/api/packagemanager/project_info
 
 | Key | Value | Description |
 | --- | ------|-------------|
-| dir | /MySwanProjectA |  |
+| project | /MySwanProjectA |  |
 
 
 
@@ -423,7 +422,7 @@ URL: http://localhost:8888/api/packagemanager/project_info
 | Key | Value | Description |
 | --- | ------|-------------|
 | file |  |  |
-| dir | /MySwanProjectA |  |
+| project | /MySwanProjectA |  |
 
 
 
@@ -454,7 +453,7 @@ URL: http://localhost:8888/api/packagemanager/project_info
 
 ```js        
 {
-	"dir": "/MySwanProjectA"
+	"project": "/MySwanProjectA"
 }
 ```
 

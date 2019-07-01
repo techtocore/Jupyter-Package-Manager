@@ -57,7 +57,7 @@ class PkgHandler(EnvBaseHandler):
     @json_errors
     def post(self):
         data = escape.json_decode(self.request.body)
-        directory = data.get('dir')
+        directory = data.get('project')
         directory = relativeDir(directory)
         packages = data.get('packages')
         packages = self.clean(packages)
@@ -74,7 +74,7 @@ class PkgHandler(EnvBaseHandler):
     @json_errors
     def patch(self):
         data = escape.json_decode(self.request.body)
-        directory = data.get('dir')
+        directory = data.get('project')
         directory = relativeDir(directory)
         packages = data.get('packages')
         packages = self.clean(packages)
@@ -91,7 +91,7 @@ class PkgHandler(EnvBaseHandler):
     @json_errors
     def delete(self):
         data = escape.json_decode(self.request.body)
-        directory = data.get('dir')
+        directory = data.get('project')
         directory = relativeDir(directory)
         packages = data.get('packages')
         packages = self.clean(packages)
@@ -110,7 +110,7 @@ class CheckUpdatePkgHandler(EnvBaseHandler):
 
     @json_errors
     def get(self):
-        directory = self.get_argument('dir', "None")
+        directory = self.get_argument('project', "None")
         directory = relativeDir(directory)
         resp = self.env_manager.check_update(directory)
         if resp.get("error"):

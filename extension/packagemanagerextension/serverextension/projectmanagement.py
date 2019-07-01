@@ -53,7 +53,7 @@ class ManageProjectsHandler(EnvBaseHandler):
     @json_errors
     def post(self):
         data = escape.json_decode(self.request.body)
-        directory = data.get('dir')
+        directory = data.get('project')
         directory = relativeDir(directory)
         env_type = data.get('env_type', 'python3')
         if env_type not in package_map:
@@ -78,7 +78,7 @@ class ManageProjectsHandler(EnvBaseHandler):
     def delete(self):
         data = escape.json_decode(self.request.body)
         dlist = []
-        directory = data.get('dir')
+        directory = data.get('project')
         if type(directory) == type(dlist):
             for proj in directory:
                 proj = relativeDir(proj)
@@ -111,7 +111,7 @@ class ProjectInfoHandler(EnvBaseHandler):
 
     @json_errors
     def get(self):
-        directory = self.get_argument('dir', "None")
+        directory = self.get_argument('project', "None")
         directory = relativeDir(directory)
         if self.request.headers.get('Content-Type') == 'text/plain':
             # export requirements file
@@ -144,7 +144,7 @@ class ProjectInfoHandler(EnvBaseHandler):
     def put(self):
         # get list of all packages
         file1 = self.request.files['file'][0]
-        directory = self.get_argument('dir', default=None)
+        directory = self.get_argument('project', default=None)
         directory = relativeDir(directory)
         tmp = file1['body'].splitlines()
         packages = []
@@ -172,7 +172,7 @@ class ProjectInfoHandler(EnvBaseHandler):
     @json_errors
     def patch(self):
         data = escape.json_decode(self.request.body)
-        directory = data.get('dir')
+        directory = data.get('project')
         directory = relativeDir(directory)
         resp = self.env_manager.sync_packages(directory)
 
