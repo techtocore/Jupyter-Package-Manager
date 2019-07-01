@@ -25,6 +25,7 @@ This file outlines the API specifications for the endpoints used by Jupyter Pack
   * [Project Export](#3-project-export)
   * [Project Info](#4-project-info)
   * [Project Import](#5-project-import)
+  * [Sync Project](#6-sync-project)
 
 
 --------
@@ -423,6 +424,39 @@ URL: http://localhost:8888/api/packagemanager/project_info
 | --- | ------|-------------|
 | file |  |  |
 | dir | /MySwanProjectA |  |
+
+
+
+### 6. Sync Project
+
+
+This API endpoint syncs a .swanproject file and the corresponding conda env.
+
+
+***Endpoint:***
+
+```bash
+Method: PATCH
+Type: RAW
+URL: http://localhost:8888/api/packagemanager/project_info
+```
+
+
+***Headers:***
+
+| Key | Value | Description |
+| --- | ------|-------------|
+| Content-Type | application/json |  |
+
+
+
+***Body:***
+
+```js        
+{
+	"dir": "/MySwanProjectA"
+}
+```
 
 
 

@@ -194,6 +194,39 @@
 						"description": "This API endpoint updates a project with all the packages obtained from an export file."
 					},
 					"response": []
+				},
+				{
+					"name": "Sync Project",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"dir\": \"/MySwanProjectA\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/project_info",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"project_info"
+							]
+						},
+						"description": "This API endpoint syncs a .swanproject file and the corresponding conda env."
+					},
+					"response": []
 				}
 			]
 		},
