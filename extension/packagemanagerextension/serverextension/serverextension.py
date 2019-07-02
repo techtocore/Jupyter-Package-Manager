@@ -24,8 +24,6 @@ from .envmanager import EnvManager
 import projectmanagement
 import packagemanagement
 
-static = os.path.join(os.path.dirname(__file__), 'static')
-
 NS = r'api/packagemanager'
 
 

@@ -113,13 +113,8 @@ class EnvManager(LoggingConfigurable):
         folder = directory[:-1].split('/')[-1]
 
         if not os.path.exists(directory):
-            # os.makedirs(directory)
             res = {'error': 'Project directory not available'}
             return res
-
-        # if os.path.isfile(directory + '.swanproject'):
-        #     res = {'error': 'This directory alreday contains a project'}
-        #     return res
 
         packages = package_map[type]
         output = process_helper.conda_execute('create -y -q --json -n', name,
