@@ -39,3 +39,23 @@
   .dropdown-item {
       display: block;
   }
+
+  #available_packages {
+      width: 420px !important;
+      max-height: 600px !important;
+      display: inline-block;
+  }
+
+  #avail_list {
+      width: 420px !important;
+      height: 400px !important;
+      overflow-x: auto !important;
+      overflow-y: auto !important;
+  }
+
+  input.small-input {
+    height: 22px;
+    width: 100%;
+    padding: 2px 6px 0px 6px;
+    font-size: 10px;
+}

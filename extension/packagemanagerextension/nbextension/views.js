@@ -212,7 +212,7 @@ define([
             ListView.bind.call(this);
 
             var that = this;
-            var $box = $('#searchbox');
+            var $box = $('#searchboxi');
 
             $box.keyup(function () {
                 that.filter($box.val());
@@ -222,7 +222,7 @@ define([
         refresh: function (data) {
             ListView.refresh.call(this, data);
 
-            var $box = $('#searchbox');
+            var $box = $('#searchboxi');
             this.filter($box.val());
         },
 

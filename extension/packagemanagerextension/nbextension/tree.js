@@ -34,6 +34,26 @@ define(function (require) {
                 );
             }
         });
+
+        utils.ajax(urls.static_url + 'projectinfo.html', {
+            dataType: 'html',
+            success: function (html, status, xhr) {
+                // Configure Conda tab
+                $("#projectinfo").append($(html));
+            }
+        });
+
+        utils.ajax(urls.static_url + 'installpackage.html', {
+            dataType: 'html',
+            success: function (html, status, xhr) {
+                // Configure Conda tab
+                $("#installpackage").append($(html));
+                models.available.load();
+                views.AvailView.init();
+                models.available.view = views.AvailView;
+            }
+        });
+
     }
     return {
         load_ipython_extension: load
