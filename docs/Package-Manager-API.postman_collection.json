@@ -23,7 +23,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"dir\": \"/MySwanProjectA\",\n\t\"env_type\": \"python3\"\n}"
+							"raw": "{\n\t\"project\": \"/MySwanProjectA\",\n\t\"env_type\": \"python3\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8888/api/packagemanager/projects",
@@ -56,7 +56,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"dir\": \"/MySwanProjectA\"\n}"
+							"raw": "{\n\t\"project\": \"/MySwanProjectA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8888/api/packagemanager/projects",
@@ -91,7 +91,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/project_info?dir=/MySwanProjectA",
+							"raw": "http://localhost:8888/api/packagemanager/project_info?project=/MySwanProjectA",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -104,7 +104,7 @@
 							],
 							"query": [
 								{
-									"key": "dir",
+									"key": "project",
 									"value": "/MySwanProjectA"
 								}
 							]
@@ -129,7 +129,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/project_info?dir=/MySwanProjectA",
+							"raw": "http://localhost:8888/api/packagemanager/project_info?project=/MySwanProjectA",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -142,7 +142,7 @@
 							],
 							"query": [
 								{
-									"key": "dir",
+									"key": "project",
 									"value": "/MySwanProjectA"
 								}
 							]
@@ -172,7 +172,7 @@
 									"src": ""
 								},
 								{
-									"key": "dir",
+									"key": "project",
 									"value": "/MySwanProjectA",
 									"type": "text"
 								}
@@ -209,7 +209,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"dir\": \"/MySwanProjectA\"\n}"
+							"raw": "{\n\t\"project\": \"/MySwanProjectA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8888/api/packagemanager/project_info",
@@ -247,7 +247,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"dir\": \"/MySwanProjectA\",\n\t\"packages\": [\"pyyaml=3.13\"]\n}"
+							"raw": "{\n\t\"project\": \"/MySwanProjectA\",\n\t\"packages\": [\"pyyaml=3.13\"]\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8888/api/packagemanager/packages",
@@ -280,7 +280,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"dir\": \"/MySwanProjectA\",\n\t\"packages\": [\"pyyaml\"]\n}"
+							"raw": "{\n\t\"project\": \"/MySwanProjectA\",\n\t\"packages\": [\"pyyaml\"]\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8888/api/packagemanager/packages",
@@ -316,7 +316,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8888/api/packagemanager/packages/check_update?dir=/MySwanProjectA",
+							"raw": "http://localhost:8888/api/packagemanager/packages/check_update?project=/MySwanProjectA",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -330,7 +330,7 @@
 							],
 							"query": [
 								{
-									"key": "dir",
+									"key": "project",
 									"value": "/MySwanProjectA"
 								}
 							]
@@ -353,7 +353,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"dir\": \"/MySwanProjectA\",\n\t\"packages\": [\"pyyaml\"]\n}"
+							"raw": "{\n\t\"project\": \"/MySwanProjectA\",\n\t\"packages\": [\"pyyaml\"]\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8888/api/packagemanager/packages",
@@ -450,7 +450,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"dir\": [\"/MySwanProjectA\", \"/MySwanProjectB\"]\n}"
+							"raw": "{\n\t\"project\": [\"/MySwanProjectA\", \"/MySwanProjectB\"]\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8888/api/packagemanager/projects",

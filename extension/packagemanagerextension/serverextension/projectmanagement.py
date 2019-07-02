@@ -8,17 +8,9 @@ from notebook.base.handlers import (
 from tornado import web, escape
 
 from .envmanager import EnvManager, package_map
+from .processhelper import ProcessHelper
 
-from os.path import expanduser
-home = expanduser("~")
-
-def relativeDir(directory):
-    if directory[0] != '/':
-        directory = '/' + directory
-    if directory[-1] != '/':
-        directory = directory + '/'
-    return home + directory
-
+process_helper = ProcessHelper()
 
 class EnvBaseHandler(APIHandler):
     """
@@ -53,8 +45,8 @@ class ManageProjectsHandler(EnvBaseHandler):
     @json_errors
     def post(self):
         data = escape.json_decode(self.request.body)
-        directory = data.get('dir')
-        directory = relativeDir(directory)
+        directory = data.get('project')
+        directory = process_helper.relativeDir(directory)
         env_type = data.get('env_type', 'python3')
         if env_type not in package_map:
             raise web.HTTPError(400)
@@ -78,16 +70,16 @@ class ManageProjectsHandler(EnvBaseHandler):
     def delete(self):
         data = escape.json_decode(self.request.body)
         dlist = []
-        directory = data.get('dir')
+        directory = data.get('project')
         if type(directory) == type(dlist):
             for proj in directory:
-                proj = relativeDir(proj)
+                proj = process_helper.relativeDir(proj)
                 resp = self.env_manager.delete_project(proj)
                 dlist.append(resp)
             res = {'response': dlist}
             self.finish(json.dumps(res))
         else:
-            directory = relativeDir(directory)
+            directory = process_helper.relativeDir(directory)
             resp = self.env_manager.delete_project(directory)
             if 'error' not in resp:
                 status = 200
@@ -111,8 +103,8 @@ class ProjectInfoHandler(EnvBaseHandler):
 
     @json_errors
     def get(self):
-        directory = self.get_argument('dir', "None")
-        directory = relativeDir(directory)
+        directory = self.get_argument('project', "None")
+        directory = process_helper.relativeDir(directory)
         if self.request.headers.get('Content-Type') == 'text/plain':
             # export requirements file
             folder = directory[:-1].split('/')[-1]
@@ -144,8 +136,8 @@ class ProjectInfoHandler(EnvBaseHandler):
     def put(self):
         # get list of all packages
         file1 = self.request.files['file'][0]
-        directory = self.get_argument('dir', default=None)
-        directory = relativeDir(directory)
+        directory = self.get_argument('project', default=None)
+        directory = process_helper.relativeDir(directory)
         tmp = file1['body'].splitlines()
         packages = []
         for i in tmp:
@@ -172,8 +164,8 @@ class ProjectInfoHandler(EnvBaseHandler):
     @json_errors
     def patch(self):
         data = escape.json_decode(self.request.body)
-        directory = data.get('dir')
-        directory = relativeDir(directory)
+        directory = data.get('project')
+        directory = process_helper.relativeDir(directory)
         resp = self.env_manager.sync_packages(directory)
 
         if 'error' not in resp:

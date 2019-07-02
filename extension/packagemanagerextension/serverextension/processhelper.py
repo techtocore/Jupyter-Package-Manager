@@ -12,6 +12,8 @@ from packaging.version import parse
 from traitlets.config.configurable import LoggingConfigurable
 from traitlets import Dict
 
+from os.path import expanduser
+
 MAX_LOG_OUTPUT = 6000
 
 CONDA_EXE = os.environ.get("CONDA_EXE", "conda")  # type: str
@@ -24,6 +26,9 @@ class ProcessHelper(LoggingConfigurable):
 
     @classmethod
     def pkg_info(self, s):
+        '''
+        Abstracts unwanted details and normalizes the package JSON
+        '''
         return {
             "build_string": s.get("build_string", s.get("build")),
             "name": s.get("name"),
@@ -32,6 +37,9 @@ class ProcessHelper(LoggingConfigurable):
 
     @classmethod
     def pkg_info_status(self, swandata, condadata):
+        '''
+        Combines the data available in both the lists and determines the status of each package
+        '''
         packages = {x['name']: x for x in swandata + condadata}.values()
         for i in packages:
             if i in swandata and i in condadata:
@@ -44,6 +52,9 @@ class ProcessHelper(LoggingConfigurable):
 
     @classmethod
     def conda_execute(self, cmd, *args):
+        '''
+        Executes the conda command line
+        '''
         cmd = CONDA_EXE + ' ' + cmd
         cmdline = cmd.split() + list(args)
 
@@ -56,6 +67,9 @@ class ProcessHelper(LoggingConfigurable):
 
     @classmethod
     def clean_conda_json(self, output):
+        '''
+        Ensures that only valid JSONs are processed
+        '''
         lines = output.splitlines()
 
         try:
@@ -74,6 +88,9 @@ class ProcessHelper(LoggingConfigurable):
 
     @classmethod
     def get_swanproject(self, directory):
+        '''
+        Directory to env mapping
+        '''
         directory = directory + ".swanproject"
         try:
             env = yaml.load(open(directory))['ENV']
@@ -83,6 +100,9 @@ class ProcessHelper(LoggingConfigurable):
 
     @classmethod
     def update_yaml(self, name, packages, directory):
+        '''
+        Updates the .swanproject file with new metadata
+        '''
         directory = directory + ".swanproject"
         data = {'ENV': name}
         data['PACKAGE_INFO'] = packages
@@ -91,3 +111,15 @@ class ProcessHelper(LoggingConfigurable):
                 yaml.dump(data, outfile, default_flow_style=False)
         except:
             raise "Can't update .swanproject file"
+
+    @classmethod
+    def relativeDir(self, directory):
+        '''
+        Ensures that all directories are relative to home
+        '''
+        home = expanduser("~")
+        if directory[0] != '/':
+            directory = '/' + directory
+        if directory[-1] != '/':
+            directory = directory + '/'
+        return home + directory
