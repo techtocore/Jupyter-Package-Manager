@@ -28,7 +28,7 @@ define(function (require) {
                                 .attr('id', 'package_manager_tab')
                                 .text('Package Manager')
                                 .click(function (e) {
-                                    document.getElementById("mySidenav").style.width = "400px";
+                                    document.getElementById("mySidenav").style.width = "450px";
                                 })
                         )
                 );
