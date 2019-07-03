@@ -12,6 +12,7 @@ from .processhelper import ProcessHelper
 
 process_helper = ProcessHelper()
 
+
 class EnvBaseHandler(APIHandler):
     """
     Maintains a reference to the
@@ -90,7 +91,6 @@ class ManageProjectsHandler(EnvBaseHandler):
 
             self.set_status(status or 200)
             self.finish(json.dumps(resp))
-
 
 
 class ProjectInfoHandler(EnvBaseHandler):
