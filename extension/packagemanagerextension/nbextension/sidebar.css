@@ -9,7 +9,7 @@
     background-color: rgb(255, 255, 255);
     overflow-x: hidden;
     transition: 0.5s;
-    padding-top: 40px;
+    padding-top: 20px;
   }
   
   .sidenavcontent {
@@ -26,10 +26,8 @@
   
 .closebtn {
     position: absolute;
-    top: 0;
     right: 25px;
     font-size: 30px;
-    margin-left: 50px;
   }
   
   @media screen and (max-height: 450px) {
@@ -40,22 +38,21 @@
       display: block;
   }
 
-  #available_packages {
-      width: 420px !important;
-      max-height: 600px !important;
-      display: inline-block;
+  #package-name {
+      width: 400px;
   }
 
-  #avail_list {
-      width: 420px !important;
-      height: 400px !important;
-      overflow-x: auto !important;
-      overflow-y: auto !important;
+  #packageview {
+      padding: 10px;
+      width: 400px;
   }
 
-  input.small-input {
-    height: 22px;
-    width: 100%;
-    padding: 2px 6px 0px 6px;
-    font-size: 10px;
-}
+  .value-name {
+      font-size: large;
+      line-height: 30px;
+  }
+
+  .value-version {
+      font-size: larger;
+      line-height: 30px;
+  }

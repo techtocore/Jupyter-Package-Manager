@@ -2,9 +2,9 @@ define(function (require) {
     var $ = require('jquery');
     var Jupyter = require('base/js/namespace');
     var utils = require('base/js/utils');
-    var models = require('./models');
-    var views = require('./views');
+    var scripts = require('./scripts');
     var urls = require('./urls');
+
 
     function load() {
         if (!Jupyter.notebook_list) return;
@@ -15,7 +15,10 @@ define(function (require) {
                 .attr('type', 'text/css')
                 .attr('href', urls.static_url + 'sidebar.css')
         );
-
+        $('head').append(
+            $('<script>')
+                .attr('src', urls.static_url + 'js/all.js')
+        );
         utils.ajax(urls.static_url + 'sidebar.html', {
             dataType: 'html',
             success: function (env_html, status, xhr) {
@@ -28,29 +31,20 @@ define(function (require) {
                                 .attr('id', 'package_manager_tab')
                                 .text('Package Manager')
                                 .click(function (e) {
-                                    document.getElementById("mySidenav").style.width = "450px";
+                                    document.getElementById("mySidenav").style.width = "440px";
+                                    scripts.packageview.load();
                                 })
                         )
                 );
             }
         });
 
-        utils.ajax(urls.static_url + 'projectinfo.html', {
-            dataType: 'html',
-            success: function (html, status, xhr) {
-                // Configure Conda tab
-                $("#projectinfo").append($(html));
-            }
-        });
 
-        utils.ajax(urls.static_url + 'installpackage.html', {
+        utils.ajax(urls.static_url + 'packageview.html', {
             dataType: 'html',
             success: function (html, status, xhr) {
                 // Configure Conda tab
-                $("#installpackage").append($(html));
-                models.available.load();
-                views.AvailView.init();
-                models.available.view = views.AvailView;
+                $("#packageview").append($(html));
             }
         });
 
