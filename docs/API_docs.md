@@ -49,6 +49,20 @@ URL: http://localhost:8888/api/packagemanager/projects
 ```
 
 
+***Sample Output:***
+
+```js
+{
+    "projects": [
+        {
+            "name": "swanproject-ad4d7f04-98c6-11e9-830c-ac2b6ebe8a16",
+            "dir": "/home/akash/.conda/envs/swanproject-ad4d7f04-98c6-11e9-830c-ac2b6ebe8a16"
+        }
+    ]
+}
+```
+
+
 
 ### 2. Delete Project List
 
@@ -81,6 +95,35 @@ URL: http://localhost:8888/api/packagemanager/projects
 }
 ```
 
+***Sample Output:***
+
+```js
+{
+    "response":
+    [
+        {
+	    "prefix": "/home/akash/.conda/envs/swanproject-ad4d7f04-98c6-11e9-830c-ac2b6ebe8a16",
+	    "success": true,
+	    "actions": {
+		"PREFIX": "/home/akash/.conda/envs/swanproject-ad4d7f04-98c6-11e9-830c-ac2b6ebe8a16",
+		"UNLINK": [
+		    {
+			"dist_name": "ipython_genutils-0.2.0-py37_0",
+			"build_number": 0,
+			"name": "ipython_genutils",
+			"build_string": "py37_0",
+			"base_url": "https://repo.anaconda.com/pkgs/main",
+			"platform": "linux-64",
+			"version": "0.2.0",
+			"channel": "pkgs/main"
+		    }
+		],
+		"FETCH": []
+	    }
+	}
+    ]
+}
+```
 
 
 ## Package Management
@@ -291,6 +334,31 @@ URL: http://localhost:8888/api/packagemanager/projects
 }
 ```
 
+***Sample Output:***
+
+```js
+{
+    "prefix": "/home/akash/.conda/envs/swanproject-ad4d7f04-98c6-11e9-830c-ac2b6ebe8a16",
+    "success": true,
+    "actions": {
+        "PREFIX": "/home/akash/.conda/envs/swanproject-ad4d7f04-98c6-11e9-830c-ac2b6ebe8a16",
+        "LINK": [
+            {
+                "dist_name": "ipython_genutils-0.2.0-py37_0",
+                "build_number": 0,
+                "name": "ipython_genutils",
+                "build_string": "py37_0",
+                "base_url": "https://repo.anaconda.com/pkgs/main",
+                "platform": "linux-64",
+                "version": "0.2.0",
+                "channel": "pkgs/main"
+            }
+        ],
+        "FETCH": []
+    }
+}
+```
+
 
 
 ### 2. Delete Project
@@ -310,7 +378,30 @@ Method: DELETE
 Type: RAW
 URL: http://localhost:8888/api/packagemanager/projects
 ```
+***Sample Output:***
 
+```js
+{
+    "prefix": "/home/akash/.conda/envs/swanproject-ad4d7f04-98c6-11e9-830c-ac2b6ebe8a16",
+    "success": true,
+    "actions": {
+        "PREFIX": "/home/akash/.conda/envs/swanproject-ad4d7f04-98c6-11e9-830c-ac2b6ebe8a16",
+        "UNLINK": [
+            {
+                "dist_name": "ipython_genutils-0.2.0-py37_0",
+                "build_number": 0,
+                "name": "ipython_genutils",
+                "build_string": "py37_0",
+                "base_url": "https://repo.anaconda.com/pkgs/main",
+                "platform": "linux-64",
+                "version": "0.2.0",
+                "channel": "pkgs/main"
+            }
+        ],
+        "FETCH": []
+    }
+}
+```
 
 ***Headers:***
 
@@ -351,7 +442,7 @@ URL: http://localhost:8888/api/packagemanager/project_info
 | Key | Value | Description |
 | --- | ------|-------------|
 | Content-Type | text/plain |  |
-
+| Content-Disposition | attachment |  |
 
 
 ***Query params:***
@@ -360,6 +451,16 @@ URL: http://localhost:8888/api/packagemanager/project_info
 | --- | ------|-------------|
 | project | /MySwanProjectA |  |
 
+***Sample Output:***
+
+```
+# This file may be used to create an environment using:
+# $ conda create --name <env> --file <this file>
+# platform: linux-64
+_libgcc_mutex=0.1=main
+backcall=0.1.0=py37_0
+blas=1.0=mkl
+```
 
 
 ### 4. Project Info
@@ -392,7 +493,21 @@ URL: http://localhost:8888/api/packagemanager/project_info
 | --- | ------|-------------|
 | project | /MySwanProjectA |  |
 
+***Sample Output:***
 
+```
+{
+    "packages": [
+        {
+            "status": "installed",
+            "version": "3.28.0",
+            "build_string": "h7b6447c_0",
+            "name": "sqlite"
+        }
+    ],
+    "env": "swanproject-729350f4-9e8f-11e9-b575-ac2b6ebe8a16"
+}
+```
 
 ### 5. Project Import
 

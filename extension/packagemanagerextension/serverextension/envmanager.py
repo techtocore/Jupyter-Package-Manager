@@ -149,7 +149,7 @@ class EnvManager(LoggingConfigurable):
         with open(kdir + '/kernel.json', 'w') as fp:
             json.dump(kerneljson, fp)
 
-        swan_project.update_swanproject(env)
+        swan_project.update_swanproject(directory, env)
         return resp
 
     def check_update(self, directory):
