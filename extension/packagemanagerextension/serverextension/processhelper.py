@@ -3,14 +3,11 @@
 import json
 import os
 import re
-import uuid
 import yaml
 
 from subprocess import check_output, CalledProcessError
-from packaging.version import parse
 
 from traitlets.config.configurable import LoggingConfigurable
-from traitlets import Dict
 
 from os.path import expanduser
 
@@ -66,11 +63,11 @@ class ProcessHelper(LoggingConfigurable):
         return output.decode("utf-8")
 
     @classmethod
-    def clean_conda_json(self, output):
+    def clean_conda_json(self, inputjson):
         '''
         Ensures that only valid JSONs are processed
         '''
-        lines = output.splitlines()
+        lines = inputjson.splitlines()
 
         try:
             return json.loads('\n'.join(lines))
@@ -85,18 +82,6 @@ class ProcessHelper(LoggingConfigurable):
         except Exception as err:
             return {"error": err}
         return {"error": True}
-
-    @classmethod
-    def get_swanproject(self, directory):
-        '''
-        Directory to env mapping
-        '''
-        directory = directory + ".swanproject"
-        try:
-            env = yaml.load(open(directory))['ENV']
-        except:
-            raise "Can't find project"
-        return env
 
     @classmethod
     def update_yaml(self, name, packages, directory):

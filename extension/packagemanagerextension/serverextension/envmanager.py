@@ -12,6 +12,7 @@ from traitlets.config.configurable import LoggingConfigurable
 from traitlets import Dict
 
 from .processhelper import ProcessHelper
+from .swanproject import SwanProject
 
 # these are the types of environments that can be created
 package_map = {
@@ -20,6 +21,7 @@ package_map = {
 }
 
 process_helper = ProcessHelper()
+swan_project = SwanProject()
 
 
 class EnvManager(LoggingConfigurable):
@@ -43,11 +45,15 @@ class EnvManager(LoggingConfigurable):
 
     def delete_project(self, directory):
         try:
-            env = process_helper.get_swanproject(directory)
+            env = swan_project.get_swanproject(directory)
         except:
             return {'error': "Can't find project"}
         output = process_helper.conda_execute(
             'remove -y -q --all --json -n', env)
+        '''
+        The corresponding kernel.json file needs to be removed to ensure that only valid kernels
+        are shown to the user.
+        '''
         kdir = '.local/share/jupyter/kernels/' + env
         os.remove(kdir + '/kernel.json')
         os.rmdir(kdir)
@@ -55,7 +61,7 @@ class EnvManager(LoggingConfigurable):
 
     def project_info(self, directory):
         try:
-            env = process_helper.get_swanproject(directory)
+            env = swan_project.get_swanproject(directory)
         except:
             return {'error': "Can't find project"}
         swandata = []
@@ -69,7 +75,7 @@ class EnvManager(LoggingConfigurable):
             swandata.append(process_helper.pkg_info(item))
             # details of all packages in the .swanproject file
 
-        output = process_helper.conda_execute('list --no-pip --json -n', env)
+        output = process_helper.conda_execute('list --json -n', env)
         data = process_helper.clean_conda_json(output)
         if 'error' in data:
             # we didn't get back a list of packages, we got a dictionary with
@@ -101,14 +107,14 @@ class EnvManager(LoggingConfigurable):
 
     def export_env(self, directory):
         try:
-            env = process_helper.get_swanproject(directory)
+            env = swan_project.get_swanproject(directory)
         except:
             return {'error': "Can't find project"}
         return str(process_helper.conda_execute('list -e -n', env))
 
     def create_project(self, directory, type):
-        name = uuid.uuid1()
-        name = 'swanproject-' + str(name)
+        env = uuid.uuid1()
+        env = 'swanproject-' + str(env)
 
         folder = directory[:-1].split('/')[-1]
 
@@ -117,38 +123,42 @@ class EnvManager(LoggingConfigurable):
             return res
 
         packages = package_map[type]
-        output = process_helper.conda_execute('create -y -q --json -n', name,
+        output = process_helper.conda_execute('create -y -q --json -n', env,
                                               *packages.split(" "))
-        packages = process_helper.conda_execute(
-            'list --no-pip --json -n', name)
-        packages = process_helper.clean_conda_json(packages)
-        op = process_helper.clean_conda_json(output)
-        tp = json.dumps(op)
-        js = json.loads(tp)
+        resp = process_helper.clean_conda_json(output)
+
+        temp = json.dumps(resp)
+        returnDict = json.loads(temp)
         kerneljson = {
-            "argv": [js['prefix'] + "/bin/python",   "-m",
+            "argv": [returnDict['prefix'] + "/bin/python",   "-m",
                      "ipykernel_launcher",
                      "-f",
                      "{connection_file}"],
             "display_name": "Python (" + folder + ")",
             "language": "python"
         }
-        kdir = '.local/share/jupyter/kernels/' + name
+        kdir = '.local/share/jupyter/kernels/' + env
+
+        '''
+        The kernel.json file is used by jupyter to recognize the iPython kernels (belonging to different env). 
+        It is needed to list down the kernel from the newly created environment corresponding to the project.
+        '''
+
         if not os.path.exists(kdir):
             os.makedirs(kdir)
         with open(kdir + '/kernel.json', 'w') as fp:
             json.dump(kerneljson, fp)
 
-        process_helper.update_yaml(name, packages, directory)
-        return op
+        swan_project.update_swanproject(env)
+        return resp
 
     def check_update(self, directory):
         try:
-            env = process_helper.get_swanproject(directory)
+            env = swan_project.get_swanproject(directory)
         except:
             return {'error': "Can't find project"}
         packagesJson = process_helper.conda_execute(
-            'list --no-pip --json -n', env)
+            'list --json -n', env)
         packagesJson = process_helper.clean_conda_json(packagesJson)
         packages = []
         for it in packagesJson:
@@ -176,38 +186,32 @@ class EnvManager(LoggingConfigurable):
 
     def install_packages(self, directory, packages):
         try:
-            env = process_helper.get_swanproject(directory)
+            env = swan_project.get_swanproject(directory)
         except:
             return {'error': "Can't find project"}
         output = process_helper.conda_execute(
             'install -y -q --json -n', env, *packages)
-        packages = process_helper.conda_execute('list --no-pip --json -n', env)
-        packages = process_helper.clean_conda_json(packages)
-        process_helper.update_yaml(env, packages, directory)
+        swan_project.update_swanproject(directory)
         return process_helper.clean_conda_json(output)
 
     def update_packages(self, directory, packages):
         try:
-            env = process_helper.get_swanproject(directory)
+            env = swan_project.get_swanproject(directory)
         except:
             return {'error': "Can't find project"}
         output = process_helper.conda_execute(
             'update -y -q --json -n', env, *packages)
-        packages = process_helper.conda_execute('list --no-pip --json -n', env)
-        packages = process_helper.clean_conda_json(packages)
-        process_helper.update_yaml(env, packages, directory)
+        swan_project.update_swanproject(directory)
         return process_helper.clean_conda_json(output)
 
     def remove_packages(self, directory, packages):
         try:
-            env = process_helper.get_swanproject(directory)
+            env = swan_project.get_swanproject(directory)
         except:
             return {'error': "Can't find project"}
         output = process_helper.conda_execute(
             'remove -y -q --json -n', env, *packages)
-        packages = process_helper.conda_execute('list --no-pip --json -n', env)
-        packages = process_helper.clean_conda_json(packages)
-        process_helper.update_yaml(env, packages, directory)
+        swan_project.update_swanproject(directory)
         return process_helper.clean_conda_json(output)
 
     def package_search(self, q):
