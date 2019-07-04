@@ -17,6 +17,7 @@ from .processhelper import ProcessHelper
 
 process_helper = ProcessHelper()
 
+
 class EnvBaseHandler(APIHandler):
     """
     Maintains a reference to the
@@ -55,7 +56,7 @@ class PkgHandler(EnvBaseHandler):
         packages = self.clean(packages)
         resp = self.env_manager.install_packages(directory, packages)
         if resp.get("error"):
-            self.set_status(500)
+            self.set_status(400)
         self.finish(json.dumps(resp))
 
     """
@@ -72,7 +73,7 @@ class PkgHandler(EnvBaseHandler):
         packages = self.clean(packages)
         resp = self.env_manager.update_packages(directory, packages)
         if resp.get("error"):
-            self.set_status(500)
+            self.set_status(400)
         self.finish(json.dumps(resp))
 
     """
@@ -89,7 +90,7 @@ class PkgHandler(EnvBaseHandler):
         packages = self.clean(packages)
         resp = self.env_manager.remove_packages(directory, packages)
         if resp.get("error"):
-            self.set_status(500)
+            self.set_status(400)
         self.finish(json.dumps(resp))
 
 
@@ -106,7 +107,7 @@ class CheckUpdatePkgHandler(EnvBaseHandler):
         directory = process_helper.relativeDir(directory)
         resp = self.env_manager.check_update(directory)
         if resp.get("error"):
-            self.set_status(500)
+            self.set_status(400)
         self.finish(json.dumps(resp))
 
 

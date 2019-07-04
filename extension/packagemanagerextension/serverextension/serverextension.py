@@ -3,26 +3,12 @@
 # Tornado get and post handlers often have different args from their base class
 # methods.
 
-import json
-import os
-import re
-import sys
-
-from subprocess import Popen
-from tempfile import TemporaryFile
-
-from pkg_resources import parse_version
 from notebook.utils import url_path_join as ujoin
-from notebook.base.handlers import (
-    APIHandler,
-    json_errors,
-)
-from tornado import web, escape
 
 from .envmanager import EnvManager
 
-import projectmanagement
-import packagemanagement
+from .projectmanagement import *
+from .packagemanagement import *
 
 NS = r'api/packagemanager'
 
@@ -33,12 +19,12 @@ NS = r'api/packagemanager'
 
 
 default_handlers = [
-    (r"/projects", projectmanagement.ManageProjectsHandler),
-    (r"/project_info", projectmanagement.ProjectInfoHandler),
-    (r"/packages", packagemanagement.PkgHandler),
-    (r"/packages/check_update", packagemanagement.CheckUpdatePkgHandler),
-    (r"/packages/available", packagemanagement.AvailablePackagesHandler),
-    (r"/packages/search", packagemanagement.SearchHandler),
+    (r"/projects", ManageProjectsHandler),
+    (r"/project_info", ProjectInfoHandler),
+    (r"/packages", PkgHandler),
+    (r"/packages/check_update", CheckUpdatePkgHandler),
+    (r"/packages/available", AvailablePackagesHandler),
+    (r"/packages/search", SearchHandler),
 ]
 
 
