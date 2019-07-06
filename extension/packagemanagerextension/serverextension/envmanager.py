@@ -49,6 +49,14 @@ class EnvManager(LoggingConfigurable):
         if not os.path.exists(directory):
             res = {'error': 'Project directory not available'}
             return res
+        
+        try:
+            swanproj = SwanProject(directory)
+            swanproj.project_info()
+            res = {'error': 'Project directory already associated with an env'}
+            return res
+        except:
+            pass
 
         packages = package_map[type]
         output = process_helper.conda_execute('create -y -q --json -n', env,
@@ -83,8 +91,11 @@ class EnvManager(LoggingConfigurable):
         return resp
 
     def delete_project(self, directory):
-        swanproj = SwanProject(directory)
-        env = swanproj.env
+        try:
+            swanproj = SwanProject(directory)
+            env = swanproj.env
+        except Exception as e:
+            return {'error': str(e)}
         output = process_helper.conda_execute(
             'remove -y -q --all --json -n', env)
         '''

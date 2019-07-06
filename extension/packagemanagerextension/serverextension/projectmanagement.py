@@ -52,7 +52,11 @@ class ManageProjectsHandler(EnvBaseHandler):
         env_type = data.get('env_type', 'python3')
         if env_type not in package_map:
             raise web.HTTPError(400)
-        resp = self.env_manager.create_project(directory, env_type)
+        try:
+            resp = self.env_manager.create_project(directory, env_type)
+        except Exception as e:
+            resp = {'error': str(e)}
+            
         if 'error' not in resp:
             status = 201  # CREATED
 
@@ -71,27 +75,30 @@ class ManageProjectsHandler(EnvBaseHandler):
     @json_errors
     def delete(self):
         data = escape.json_decode(self.request.body)
-        dlist = []
-        directory = data.get('project')
-        if type(directory) == type(dlist):
-            for proj in directory:
-                proj = process_helper.relativeDir(proj)
-                resp = self.env_manager.delete_project(proj)
-                dlist.append(resp)
-            res = {'response': dlist}
-            self.finish(json.dumps(res))
-        else:
-            directory = process_helper.relativeDir(directory)
-            resp = self.env_manager.delete_project(directory)
-            if 'error' not in resp:
-                status = 200
+        try:
+            dlist = []
+            directory = data.get('project')
+            if type(directory) == type(dlist):
+                for proj in directory:
+                    proj = process_helper.relativeDir(proj)
+                    resp = self.env_manager.delete_project(proj)
+                    dlist.append(resp)
+                resp = {'response': dlist}
+            else:
+                directory = process_helper.relativeDir(directory)
+                resp = self.env_manager.delete_project(directory)
+        except Exception as e:
+                resp = {'error': str(e)}
 
-            # catch-all ok
-            if 'error' in resp:
-                status = 400
+        if 'error' not in resp:
+            status = 200
 
-            self.set_status(status or 200)
-            self.finish(json.dumps(resp))
+        # catch-all ok
+        if 'error' in resp:
+            status = 400
+
+        self.set_status(status or 200)
+        self.finish(json.dumps(resp))
 
 
 class ProjectInfoHandler(EnvBaseHandler):
@@ -111,15 +118,23 @@ class ProjectInfoHandler(EnvBaseHandler):
             folder = directory[:-1].split('/')[-1]
             self.set_header('Content-Disposition',
                             'attachment; filename="%s"' % (folder + '.txt'))
-            swanproj = SwanProject(directory)
-            self.write(swanproj.export_env())
+            try:
+                swanproj = SwanProject(directory)
+                self.write(swanproj.export_env())
+            except Exception as e:
+                self.write(str(e))
+                self.set_status(400)
             # TODO Find why the content-type header is not properly set
             self.set_header('Content-Type', 'text/plain; charset="utf-8"')
             self.finish()
         else:
             # send list of all packages
-            swanproj = SwanProject(directory)
-            resp = swanproj.project_info()
+            try:
+                swanproj = SwanProject(directory)
+                resp = swanproj.project_info()
+            except Exception as e:
+                resp = {'error': str(e)}
+
             if 'error' not in resp:
                 status = 200  # OK
 
@@ -147,8 +162,11 @@ class ProjectInfoHandler(EnvBaseHandler):
             if i[0] != '#':
                 packages.append(i)
 
-        swanproj = SwanProject(directory)
-        resp = swanproj.install_packages(packages)
+        try:
+            swanproj = SwanProject(directory)
+            resp = swanproj.install_packages(packages)
+        except Exception as e:
+            resp = {'error': str(e)}
 
         if 'error' not in resp:
             status = 200  # OK
@@ -170,8 +188,11 @@ class ProjectInfoHandler(EnvBaseHandler):
         data = escape.json_decode(self.request.body)
         directory = data.get('project')
         directory = process_helper.relativeDir(directory)
-        swanproj = SwanProject(directory)
-        resp = swanproj.sync_packages()
+        try:
+            swanproj = SwanProject(directory)
+            resp = swanproj.sync_packages()
+        except Exception as e:
+            resp = {'error': str(e)}
 
         if 'error' not in resp:
             status = 200  # OK

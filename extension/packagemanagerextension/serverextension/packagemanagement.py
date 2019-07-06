@@ -55,8 +55,11 @@ class PkgHandler(EnvBaseHandler):
         directory = process_helper.relativeDir(directory)
         packages = data.get('packages')
         packages = self.clean(packages)
-        swanproj = SwanProject(directory)
-        resp = swanproj.install_packages(packages)
+        try:
+            swanproj = SwanProject(directory)
+            resp = swanproj.install_packages(packages)
+        except Exception as e:
+            resp = {'error': str(e)}
         if resp.get("error"):
             self.set_status(400)
         self.finish(json.dumps(resp))
@@ -73,8 +76,11 @@ class PkgHandler(EnvBaseHandler):
         directory = process_helper.relativeDir(directory)
         packages = data.get('packages')
         packages = self.clean(packages)
-        swanproj = SwanProject(directory)
-        resp = swanproj.update_packages(packages)
+        try:
+            swanproj = SwanProject(directory)
+            resp = swanproj.update_packages(packages)
+        except Exception as e:
+            resp = {'error': str(e)}
         if resp.get("error"):
             self.set_status(400)
         self.finish(json.dumps(resp))
@@ -91,8 +97,11 @@ class PkgHandler(EnvBaseHandler):
         directory = process_helper.relativeDir(directory)
         packages = data.get('packages')
         packages = self.clean(packages)
-        swanproj = SwanProject(directory)
-        resp = swanproj.remove_packages(packages)
+        try:
+            swanproj = SwanProject(directory)
+            resp = swanproj.remove_packages(packages)
+        except Exception as e:
+            resp = {'error': str(e)}
         if resp.get("error"):
             self.set_status(400)
         self.finish(json.dumps(resp))
@@ -109,8 +118,11 @@ class CheckUpdatePkgHandler(EnvBaseHandler):
     def get(self):
         directory = self.get_argument('project', "None")
         directory = process_helper.relativeDir(directory)
-        swanproj = SwanProject(directory)
-        resp = swanproj.check_update()
+        try:
+            swanproj = SwanProject(directory)
+            resp = swanproj.check_update
+        except Exception as e:
+            resp = {'error': str(e)}
         if resp.get("error"):
             self.set_status(400)
         self.finish(json.dumps(resp))
