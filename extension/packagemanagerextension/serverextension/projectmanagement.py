@@ -9,6 +9,7 @@ from tornado import web, escape
 
 from .envmanager import EnvManager, package_map
 from .processhelper import ProcessHelper
+from .swanproject import SwanProject
 
 process_helper = ProcessHelper()
 
@@ -110,13 +111,15 @@ class ProjectInfoHandler(EnvBaseHandler):
             folder = directory[:-1].split('/')[-1]
             self.set_header('Content-Disposition',
                             'attachment; filename="%s"' % (folder + '.txt'))
-            self.write(self.env_manager.export_env(directory))
+            swanproj = SwanProject(directory)
+            self.write(swanproj.export_env())
             # TODO Find why the content-type header is not properly set
             self.set_header('Content-Type', 'text/plain; charset="utf-8"')
             self.finish()
         else:
             # send list of all packages
-            resp = self.env_manager.project_info(directory)
+            swanproj = SwanProject(directory)
+            resp = swanproj.project_info()
             if 'error' not in resp:
                 status = 200  # OK
 
@@ -144,7 +147,8 @@ class ProjectInfoHandler(EnvBaseHandler):
             if i[0] != '#':
                 packages.append(i)
 
-        resp = self.env_manager.install_packages(directory, packages)
+        swanproj = SwanProject(directory)
+        resp = swanproj.install_packages(packages)
 
         if 'error' not in resp:
             status = 200  # OK
@@ -166,7 +170,8 @@ class ProjectInfoHandler(EnvBaseHandler):
         data = escape.json_decode(self.request.body)
         directory = data.get('project')
         directory = process_helper.relativeDir(directory)
-        resp = self.env_manager.sync_packages(directory)
+        swanproj = SwanProject(directory)
+        resp = swanproj.sync_packages()
 
         if 'error' not in resp:
             status = 200  # OK
