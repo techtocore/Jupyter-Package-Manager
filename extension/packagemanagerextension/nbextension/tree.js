@@ -8,7 +8,7 @@ define(function (require) {
 
     function load() {
         if (!Jupyter.notebook_list) return;
-        var base_url = Jupyter.notebook_list.base_url;
+
         $('head').append(
             $('<link>')
                 .attr('rel', 'stylesheet')
@@ -19,6 +19,8 @@ define(function (require) {
             $('<script>')
                 .attr('src', urls.static_url + 'js/all.js')
         );
+
+
         utils.ajax(urls.static_url + 'sidebar.html', {
             dataType: 'html',
             success: function (env_html, status, xhr) {
@@ -34,12 +36,12 @@ define(function (require) {
                                     document.getElementById("mySidenav").style.width = "440px";
                                     let dir = "/MySwanProjectA"
                                     scripts.packageview.load(dir);
+                                    scripts.searchview.load();
                                 })
                         )
                 );
             }
         });
-
 
         utils.ajax(urls.static_url + 'packageview.html', {
             dataType: 'html',

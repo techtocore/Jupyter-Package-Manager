@@ -4,7 +4,7 @@ define([
     'base/js/utils',
     './common',
     './urls',
-], function ($, utils, common, urls) {
+], function ($) {
     "use strict";
 
     var packageview = {
@@ -21,7 +21,7 @@ define([
                 },
                 "processData": false,
                 "data": ""
-            }
+            };
 
             return new Promise(resolve => {
                 $.ajax(settings).done(function (response) {
@@ -76,8 +76,62 @@ define([
                 });
             });
         }
-    }
+    };
+
+    var searchview = {
+
+        search: function (query) {
+            var settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": "http://localhost:8888/api/packagemanager/packages/search?q=" + query,
+                "method": "GET",
+                "headers": {
+                    "cache-control": "no-cache"
+                }
+            };
+
+            return new Promise(resolve => {
+                $.ajax(settings).done(function (response) {
+                    resolve(response);
+                });
+            });
+        },
+
+        delay: function (fn, ms) {
+            let timer = 0;
+            return function (...args) {
+                clearTimeout(timer);
+                timer = setTimeout(fn.bind(this, ...args), ms || 0);
+            };
+        },
+
+        load: function () {
+            let delay = this.delay;
+            let search = this.search;
+            jQuery(function () {
+                $('#package-name').keyup(delay(async function (e) {
+                    let query = this.value;
+                    let res = await search(query);
+                    let pks = res.packages;
+                    let html = ""
+                    $('#searchlist').html(html);
+                    pks.forEach(element => {
+                        let name = element.name;
+                        let version = element.version;
+                        let entry = name + " - " + version;
+                        html += "<option>";
+                        html += entry;
+                        html += "</option>";
+                    });
+                    $('#searchlist').html(html);
+                }, 1000));
+            });
+        }
+    };
+
     return {
         'packageview': packageview,
+        'searchview': searchview
     };
 });
