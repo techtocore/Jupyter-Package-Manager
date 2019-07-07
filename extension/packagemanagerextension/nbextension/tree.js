@@ -32,7 +32,8 @@ define(function (require) {
                                 .text('Package Manager')
                                 .click(function (e) {
                                     document.getElementById("mySidenav").style.width = "440px";
-                                    scripts.packageview.load();
+                                    let dir = "/MySwanProjectA"
+                                    scripts.packageview.load(dir);
                                 })
                         )
                 );

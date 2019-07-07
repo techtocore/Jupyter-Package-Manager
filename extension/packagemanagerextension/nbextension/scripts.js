@@ -8,32 +8,43 @@ define([
     "use strict";
 
     var packageview = {
-        load: function () {
-            var data = [
-                {
-                    "name": "Formatting",
-                    "version": "2.0.2"
+
+        get_info: function (dir) {
+            var settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": "http://localhost:8888/api/packagemanager/project_info?project=" + dir,
+                "method": "GET",
+                "headers": {
+                    "Content-Type": "application/json",
+                    "cache-control": "no-cache",
                 },
-                {
-                    "name": "Pandas",
-                    "version": "4.6"
-                },
-                {
-                    "name": "Datatables",
-                    "version": "5.0.1"
-                },
-                {
-                    "name": "Tensorflow",
-                    "version": "2.1.4"
-                }
-            ];
+                "processData": false,
+                "data": ""
+            }
+
+            return new Promise(resolve => {
+                $.ajax(settings).done(function (response) {
+                    resolve(response);
+                });
+            });
+        },
+
+        load: async function (dir) {
+
+            let info = await this.get_info(dir);
+
+            var data = info.packages;
 
             var output = "";
             $.each(data, function (key, val) {
                 output += "<div class='values'>";
                 output += "<div class='row one'>";
                 output += "<div class='col-sm-10 two'>";
-                output += "<i class='fas fa-box-open'></i> &nbsp;"
+                if (val.status === "installed")
+                    output += "<i class='fas fa-box-open'></i> &nbsp;"
+                else
+                    output += "<i class='fas fa-exclamation-triangle'></i> &nbsp;"
                 output += '<span class="value-name">' + val.name + '</span>';
                 output += "</div>";
                 output += "<div class='col-sm-2 three'>";
@@ -44,24 +55,6 @@ define([
             });
 
             $('#content').html(output);
-
-            /* SEEKER FUNCTION */
-            if (!RegExp.escape) {
-                RegExp.escape = function (s) {
-                    return s.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&")
-                };
-            }
-
-            jQuery(function () {
-                var $rows = $('.values');
-                $('#package-name').keyup(function () {
-                    var regex = new RegExp(RegExp.escape($.trim(this.value).replace(/\s+/g, ' ')), 'i')
-                    $rows.hide().filter(function () {
-                        var text = $(this).children(".one").children(".two").children(".value-name").text().replace(/\s+/g, ' ');
-                        return regex.test(text)
-                    }).show();
-                });
-            });
 
             var selectedPackages = [];
 
