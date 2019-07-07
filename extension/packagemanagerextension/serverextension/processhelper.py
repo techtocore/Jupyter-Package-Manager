@@ -72,16 +72,16 @@ class ProcessHelper(LoggingConfigurable):
         try:
             return json.loads('\n'.join(lines))
         except Exception as err:
-            return {"error": err}
+            raise Exception(err)
 
         # try to remove bad lines
         lines = [line for line in lines if re.match(JSONISH_RE, line)]
 
         try:
-            return json.loads('\n'.join(lines))
+            cleanJson = json.loads('\n'.join(lines))
         except Exception as err:
-            return {"error": err}
-        return {"error": True}
+            raise Exception(err)
+        return cleanJson
 
     @classmethod
     def update_yaml(self, name, packages, directory):
@@ -95,7 +95,7 @@ class ProcessHelper(LoggingConfigurable):
             with open(directory, 'w') as outfile:
                 yaml.dump(data, outfile, default_flow_style=False)
         except:
-            raise "Can't update .swanproject file"
+            raise Exception("Can't update .swanproject file")
 
     @classmethod
     def relativeDir(self, directory):

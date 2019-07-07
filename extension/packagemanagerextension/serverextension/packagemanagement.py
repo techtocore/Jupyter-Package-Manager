@@ -14,6 +14,7 @@ from tornado import web, escape
 
 from .envmanager import EnvManager
 from .processhelper import ProcessHelper
+from .swanproject import SwanProject
 
 process_helper = ProcessHelper()
 
@@ -54,7 +55,11 @@ class PkgHandler(EnvBaseHandler):
         directory = process_helper.relativeDir(directory)
         packages = data.get('packages')
         packages = self.clean(packages)
-        resp = self.env_manager.install_packages(directory, packages)
+        try:
+            swanproj = SwanProject(directory)
+            resp = swanproj.install_packages(packages)
+        except Exception as e:
+            resp = {'error': str(e)}
         if resp.get("error"):
             self.set_status(400)
         self.finish(json.dumps(resp))
@@ -71,7 +76,11 @@ class PkgHandler(EnvBaseHandler):
         directory = process_helper.relativeDir(directory)
         packages = data.get('packages')
         packages = self.clean(packages)
-        resp = self.env_manager.update_packages(directory, packages)
+        try:
+            swanproj = SwanProject(directory)
+            resp = swanproj.update_packages(packages)
+        except Exception as e:
+            resp = {'error': str(e)}
         if resp.get("error"):
             self.set_status(400)
         self.finish(json.dumps(resp))
@@ -88,7 +97,11 @@ class PkgHandler(EnvBaseHandler):
         directory = process_helper.relativeDir(directory)
         packages = data.get('packages')
         packages = self.clean(packages)
-        resp = self.env_manager.remove_packages(directory, packages)
+        try:
+            swanproj = SwanProject(directory)
+            resp = swanproj.remove_packages(packages)
+        except Exception as e:
+            resp = {'error': str(e)}
         if resp.get("error"):
             self.set_status(400)
         self.finish(json.dumps(resp))
@@ -105,7 +118,11 @@ class CheckUpdatePkgHandler(EnvBaseHandler):
     def get(self):
         directory = self.get_argument('project', "None")
         directory = process_helper.relativeDir(directory)
-        resp = self.env_manager.check_update(directory)
+        try:
+            swanproj = SwanProject(directory)
+            resp = swanproj.check_update
+        except Exception as e:
+            resp = {'error': str(e)}
         if resp.get("error"):
             self.set_status(400)
         self.finish(json.dumps(resp))
