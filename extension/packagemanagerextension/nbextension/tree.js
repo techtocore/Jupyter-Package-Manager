@@ -4,6 +4,7 @@ define(function (require) {
     var utils = require('base/js/utils');
     var scripts = require('./scripts');
     var urls = require('./urls');
+    var methods = require('./methods');
 
 
     function load() {
@@ -37,6 +38,7 @@ define(function (require) {
                                     let dir = "/MySwanProjectA"
                                     scripts.packageview.load(dir);
                                     scripts.searchview.load();
+                                    methods.updatepkg.load();
                                 })
                         )
                 );

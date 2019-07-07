@@ -1,16 +1,13 @@
 
 define([
     'jquery',
-    'base/js/utils',
-    './common',
-    './urls',
 ], function ($) {
     "use strict";
 
     var packageview = {
 
         get_info: function (dir) {
-            var settings = {
+            let settings = {
                 "async": true,
                 "crossDomain": true,
                 "url": "http://localhost:8888/api/packagemanager/project_info?project=" + dir,
@@ -32,11 +29,12 @@ define([
 
         load: async function (dir) {
 
+            sessionStorage.setItem("project", dir);
+
             let info = await this.get_info(dir);
+            let data = info.packages;
 
-            var data = info.packages;
-
-            var output = "";
+            let output = "";
             $.each(data, function (key, val) {
                 output += "<div class='values'>";
                 output += "<div class='row one'>";
@@ -56,11 +54,10 @@ define([
 
             $('#content').html(output);
 
-            var selectedPackages = [];
+            let selectedPackages = [];
 
             jQuery(function () {
                 $('.values').click(function () {
-                    console.log(selectedPackages);
                     let packageName = $(this).children(".one").children(".two").children(".value-name").text();
                     let version = $(this).children(".one").children(".three").children(".value-version").text();
                     let pkg = packageName + "=" + version;
@@ -72,7 +69,7 @@ define([
                         selectedPackages.push(pkg);
                         $(this).children(".one").children(".two").find('svg').attr("data-icon", "check");
                     }
-
+                    sessionStorage.setItem("selectedPackages", selectedPackages);
                 });
             });
         }
@@ -81,7 +78,7 @@ define([
     var searchview = {
 
         search: function (query) {
-            var settings = {
+            let settings = {
                 "async": true,
                 "crossDomain": true,
                 "url": "http://localhost:8888/api/packagemanager/packages/search?q=" + query,
