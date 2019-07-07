@@ -11,9 +11,12 @@ process_helper = ProcessHelper()
 
 class SwanProject(LoggingConfigurable):
 
-    def __init__(self, directory):
+    def __init__(self, directory, *args):
         self.directory = directory
-        self.env = self.get_swanproject()
+        if len(args) > 0:
+            self.env = args[0]
+        else:
+            self.env = self.get_swanproject()
 
     def get_swanproject(self):
         '''
@@ -45,7 +48,7 @@ class SwanProject(LoggingConfigurable):
         try:
             packagesMD = yaml.load(open(directory))['PACKAGE_INFO']
         except:
-            return {'error': "Can't find project info"}
+            raise Exception("Can't find project info")
 
         for item in packagesMD:
             swandata.append(process_helper.pkg_info(item))

@@ -43,16 +43,12 @@ class EnvManager(LoggingConfigurable):
     def create_project(self, directory, type):
         env = uuid.uuid1()
         env = 'swanproject-' + str(env)
-
         folder = directory[:-1].split('/')[-1]
 
         if not os.path.exists(directory):
-            res = {'error': 'Project directory not available'}
-            return res
-        
+            raise Exception('Project directory not available')
         try:
             swanproj = SwanProject(directory)
-            swanproj.project_info()
             res = {'error': 'Project directory already associated with an env'}
             return res
         except:
@@ -63,6 +59,10 @@ class EnvManager(LoggingConfigurable):
                                               *packages.split(" "))
         resp = process_helper.clean_conda_json(output)
 
+        '''
+        The kernel.json file is used by jupyter to recognize the iPython kernels (belonging to different env). 
+        It is needed to list down the kernel from the newly created environment corresponding to the project.
+        '''
         temp = json.dumps(resp)
         returnDict = json.loads(temp)
         kerneljson = {
@@ -74,18 +74,12 @@ class EnvManager(LoggingConfigurable):
             "language": "python"
         }
         kdir = '.local/share/jupyter/kernels/' + env
-
-        '''
-        The kernel.json file is used by jupyter to recognize the iPython kernels (belonging to different env). 
-        It is needed to list down the kernel from the newly created environment corresponding to the project.
-        '''
-
         if not os.path.exists(kdir):
             os.makedirs(kdir)
         with open(kdir + '/kernel.json', 'w') as fp:
             json.dump(kerneljson, fp)
 
-        swanproj = SwanProject(directory)
+        swanproj = SwanProject(directory, env)
         swanproj.update_swanproject()
 
         return resp
@@ -98,6 +92,8 @@ class EnvManager(LoggingConfigurable):
             return {'error': str(e)}
         output = process_helper.conda_execute(
             'remove -y -q --all --json -n', env)
+        # Clear the contents of the .swanproject file
+        open(directory + ".swanproject", 'w').close()
         '''
         The corresponding kernel.json file needs to be removed to ensure that only valid kernels
         are shown to the user.
