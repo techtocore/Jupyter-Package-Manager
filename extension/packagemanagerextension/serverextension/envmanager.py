@@ -59,26 +59,6 @@ class EnvManager(LoggingConfigurable):
                                               *packages.split(" "))
         resp = process_helper.clean_conda_json(output)
 
-        '''
-        The kernel.json file is used by jupyter to recognize the iPython kernels (belonging to different env). 
-        It is needed to list down the kernel from the newly created environment corresponding to the project.
-        '''
-        temp = json.dumps(resp)
-        returnDict = json.loads(temp)
-        kerneljson = {
-            "argv": [returnDict['prefix'] + "/bin/python",   "-m",
-                     "ipykernel_launcher",
-                     "-f",
-                     "{connection_file}"],
-            "display_name": "Python (" + folder + ")",
-            "language": "python"
-        }
-        kdir = '.local/share/jupyter/kernels/' + env
-        if not os.path.exists(kdir):
-            os.makedirs(kdir)
-        with open(kdir + '/kernel.json', 'w') as fp:
-            json.dump(kerneljson, fp)
-
         swanproj = SwanProject(directory, env)
         swanproj.update_swanproject()
 
@@ -94,13 +74,6 @@ class EnvManager(LoggingConfigurable):
             'remove -y -q --all --json -n', env)
         # Clear the contents of the .swanproject file
         open(directory + ".swanproject", 'w').close()
-        '''
-        The corresponding kernel.json file needs to be removed to ensure that only valid kernels
-        are shown to the user.
-        '''
-        kdir = '.local/share/jupyter/kernels/' + env
-        os.remove(kdir + '/kernel.json')
-        os.rmdir(kdir)
         return process_helper.clean_conda_json(output)
 
     def package_search(self, q):
