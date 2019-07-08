@@ -6,6 +6,13 @@ define(function (require) {
     var urls = require('./urls');
     var methods = require('./methods');
 
+    function init(dir) {
+        scripts.packageview.load(dir);
+        scripts.searchview.load();
+        methods.updatepkg.load();
+        methods.deletepkg.load();
+    };
+
 
     function load() {
         if (!Jupyter.notebook_list) return;
@@ -36,9 +43,7 @@ define(function (require) {
                                 .click(function (e) {
                                     document.getElementById("mySidenav").style.width = "440px";
                                     let dir = "/MySwanProjectA"
-                                    scripts.packageview.load(dir);
-                                    scripts.searchview.load();
-                                    methods.updatepkg.load();
+                                    init(dir);
                                 })
                         )
                 );
