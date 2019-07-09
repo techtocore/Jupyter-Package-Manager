@@ -8,7 +8,6 @@ This file outlines the API specifications for the endpoints used by Jupyter Pack
 * [Project Management](#project-management)
 
   * [Create Project](#1-create-project)
-  * [Delete Project](#2-delete-project)
   * [Project Export](#3-project-export)
   * [Project Info](#4-project-info)
   * [Project Import](#5-project-import)
@@ -25,7 +24,7 @@ This file outlines the API specifications for the endpoints used by Jupyter Pack
 * [Maintenance Tasks](#maintenance-tasks)
 
   * [List Projects](#1-list-projects)
-  * [Delete Project List](#2-delete-project-list)
+  * [Delete Projects](#2-delete-project-list)
 
 --------
 
@@ -358,67 +357,6 @@ URL: http://localhost:8888/api/packagemanager/projects
     }
 }
 ```
-
-
-
-### 2. Delete Project
-
-
-The API endpoint deletes the conda environment corresponding to a project.
-
-The 'kernel.json' for the environment corresponding to the project is removed.
-
-Note that the project directory has to exist while calling this endpoint, and it is left unmodified by invoking this API.
-
-
-***Endpoint:***
-
-```bash
-Method: DELETE
-Type: RAW
-URL: http://localhost:8888/api/packagemanager/projects
-```
-***Sample Output:***
-
-```js
-{
-    "prefix": "/home/akash/.conda/envs/swanproject-ad4d7f04-98c6-11e9-830c-ac2b6ebe8a16",
-    "success": true,
-    "actions": {
-        "PREFIX": "/home/akash/.conda/envs/swanproject-ad4d7f04-98c6-11e9-830c-ac2b6ebe8a16",
-        "UNLINK": [
-            {
-                "dist_name": "ipython_genutils-0.2.0-py37_0",
-                "build_number": 0,
-                "name": "ipython_genutils",
-                "build_string": "py37_0",
-                "base_url": "https://repo.anaconda.com/pkgs/main",
-                "platform": "linux-64",
-                "version": "0.2.0",
-                "channel": "pkgs/main"
-            }
-        ],
-        "FETCH": []
-    }
-}
-```
-
-***Headers:***
-
-| Key | Value | Description |
-| --- | ------|-------------|
-| Content-Type | application/json |  |
-
-
-
-***Body:***
-
-```js        
-{
-	"project": "/MySwanProjectA"
-}
-```
-
 
 
 ### 3. Project Export
