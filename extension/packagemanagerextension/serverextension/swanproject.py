@@ -165,3 +165,6 @@ class SwanProject(LoggingConfigurable):
         if directory[-1] != '/':
             directory = directory + '/'
         return home + directory
+
+    def clear_yaml(self, directory):
+        open(directory + ".swanproject", 'w').close()

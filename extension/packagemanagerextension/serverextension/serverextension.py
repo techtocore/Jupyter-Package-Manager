@@ -7,8 +7,7 @@ from notebook.utils import url_path_join as ujoin
 
 from .envmanager import EnvManager
 
-from .projectmanagement import *
-from .packagemanagement import *
+from .apihandlers import *
 
 NS = r'api/packagemanager'
 
