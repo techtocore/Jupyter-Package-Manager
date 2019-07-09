@@ -17,13 +17,17 @@ from .swanproject import SwanProject
 
 
 class EnvBaseHandler(APIHandler):
-    """
+
+    '''
     Maintains a reference to the
     'env_manager' which implements all of the conda functions.
-    """
+    '''
+    
     @property
     def env_manager(self):
-        """Return our env_manager instance"""
+        '''
+        Return our env_manager instance
+        '''
         return self.settings['env_manager']
 
 # -----------------------------------------------------------------------------
@@ -40,13 +44,14 @@ class PkgHandler(EnvBaseHandler):
         packages = [pkg for pkg in packages if re.match(_pkg_regex, pkg)]
         return packages
 
-    """
-    Handler for `POST /packages` which installs all
-    the selected packages in the specified environment.
-    """
-
     @json_errors
     def post(self):
+
+        '''
+        Handler for `POST /packages` which installs all
+        the selected packages in the specified environment.
+        '''
+
         data = escape.json_decode(self.request.body)
         directory = data.get('project')
         packages = data.get('packages')
@@ -60,13 +65,14 @@ class PkgHandler(EnvBaseHandler):
             self.set_status(400)
         self.finish(json.dumps(resp))
 
-    """
-    Handler for `PATCH /packages` which updates all
-    the selected packages in the specified environment.
-    """
-
     @json_errors
     def patch(self):
+
+        '''
+        Handler for `PATCH /packages` which updates all
+        the selected packages in the specified environment.
+        '''
+
         data = escape.json_decode(self.request.body)
         directory = data.get('project')
         packages = data.get('packages')
@@ -80,13 +86,14 @@ class PkgHandler(EnvBaseHandler):
             self.set_status(400)
         self.finish(json.dumps(resp))
 
-    """
-    Handler for `DELETE /packages` which deletes all
-    the selected packages in the specified environment.
-    """
-
     @json_errors
     def delete(self):
+
+        '''
+        Handler for `DELETE /packages` which deletes all
+        the selected packages in the specified environment.
+        '''
+
         data = escape.json_decode(self.request.body)
         directory = data.get('project')
         packages = data.get('packages')
@@ -103,17 +110,18 @@ class PkgHandler(EnvBaseHandler):
 
 class CheckUpdatePkgHandler(EnvBaseHandler):
 
-    """
-    Handler for `GET /packages/check_update` which checks for updates of all
-    the selected packages in the specified environment.
-    """
-
     @json_errors
     def get(self):
+
+        '''
+        Handler for `GET /packages/check_update` which checks for updates of all
+        the selected packages in the specified environment.
+        '''
+
         directory = self.get_argument('project', "None")
         try:
             swanproj = SwanProject(directory)
-            resp = swanproj.check_update
+            resp = swanproj.check_update()
         except Exception as e:
             resp = {'error': str(e)}
         if resp.get("error"):
@@ -123,23 +131,25 @@ class CheckUpdatePkgHandler(EnvBaseHandler):
 
 class CondaSearcher(object):
 
-    """
-    Helper object that runs `conda search` to retrieve the
-    list of packages available in the current conda channels.
-    """
-
     def __init__(self):
+
+        '''
+        Helper object that runs `conda search` to retrieve the
+        list of packages available in the current conda channels.
+        '''
+        
         self.conda_process = None
         self.conda_temp = None
 
     def list_available(self, handler=None):
-        """
+
+        '''
         List the available conda packages by kicking off a background
         conda process. Will return None. Call again to poll the process
         status. When the process completes, a list of packages will be
         returned upon success. On failure, the results of `conda search --json`
         will be returned (this will be a dict containing error information).
-        """
+        '''
 
         self.log = handler.log
 
@@ -198,13 +208,14 @@ searcher = CondaSearcher()
 
 class AvailablePackagesHandler(EnvBaseHandler):
 
-    """
-    Handler for `GET /packages/available`, which uses CondaSearcher
-    to list the packages available for installation.
-    """
-
     @json_errors
     def get(self):
+
+        '''
+        Handler for `GET /packages/available`, which uses CondaSearcher
+        to list the packages available for installation.
+        '''
+
         data = searcher.list_available(self)
 
         if data is None:
@@ -218,12 +229,13 @@ class AvailablePackagesHandler(EnvBaseHandler):
 
 class SearchHandler(EnvBaseHandler):
 
-    """
-    Handler for `GET /packages/search?q=<query>`, which uses CondaSearcher
-    to search the available conda packages.
-    """
-
     @json_errors
     def get(self):
+
+        '''
+        Handler for `GET /packages/search?q=<query>`, which uses CondaSearcher
+        to search the available conda packages.
+        '''
+
         q = self.get_argument('q', "None")
         self.finish(json.dumps(self.env_manager.package_search(q)))

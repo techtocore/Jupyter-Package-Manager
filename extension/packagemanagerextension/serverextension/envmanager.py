@@ -25,9 +25,9 @@ JSONISH_RE = r'(^\s*["\{\}\[\],\d])|(["\}\}\[\],\d]\s*$)'
 class EnvManager(LoggingConfigurable):
 
     def list_envs(self):
-        """
+        '''
         List all environments associated with SWAN projects
-        """
+        '''
         info = self.clean_conda_json(
             self.conda_execute('info --json'))
 
@@ -39,20 +39,10 @@ class EnvManager(LoggingConfigurable):
 
         return [get_info(env) for env in info['envs'] if "swanproject" in env]
 
-    def create_project(self, directory, type):
-        env = uuid.uuid1()
-        env = 'swanproject-' + str(env)
-        folder = directory[:-1].split('/')[-1]
-
-        if not os.path.exists(directory):
-            raise Exception('Project directory not available')
-        # try:
-        #     swanproj = SwanProject(directory)
-        #     res = {'error': 'Project directory already associated with an env'}
-        #     return res
-        # except:
-        #     pass
-
+    def create_env(self, env, folder, type):
+        '''
+        Creates a new conda env for asssociation with a SWAN project
+        '''
         packages = package_map[type]
         output = self.conda_execute('create -y -q --json -n', env,
                                               *packages.split(" "))
@@ -78,12 +68,12 @@ class EnvManager(LoggingConfigurable):
         with open(kdir + '/kernel.json', 'w') as fp:
             json.dump(kerneljson, fp)
 
-        # swanproj = SwanProject(directory, env)
-        # swanproj.update_swanproject()
-
         return resp
 
-    def delete_project(self, env):
+    def delete_env(self, env):
+        '''
+        Removes the conda env completely
+        '''
         output = self.conda_execute(
             'remove -y -q --all --json -n', env)
         '''
@@ -96,6 +86,9 @@ class EnvManager(LoggingConfigurable):
         return self.clean_conda_json(output)
 
     def package_search(self, q):
+        '''
+        This function lets users search for available packages that match a search query
+        '''
         # this method is slow and operates synchronously
         output = self.conda_execute('search --json', q)
         data = self.clean_conda_json(output)
@@ -167,28 +160,46 @@ class EnvManager(LoggingConfigurable):
         return cleanJson
 
     def install_packages(self, env, packages):
+        '''
+        Installs a list of packages onto an env
+        '''
         output = self.conda_execute(
             'install -y -q --json -n', env, *packages)
         return self.clean_conda_json(output)
 
     def update_packages(self, env, packages):
+        '''
+        Updates package(s) in an env
+        '''
         output = self.conda_execute(
             'update -y -q --json -n', env, *packages)
         return self.clean_conda_json(output)
 
     def remove_packages(self, env, packages):
+        '''
+        Removes a list of packages from an env
+        '''
         output = self.conda_execute(
             'remove -y -q --json -n', env, *packages)
         return self.clean_conda_json(output)
     
     def list_packages(self, env):
+        '''
+        List the packages installed on an env
+        '''
         packages = self.conda_execute('list --json -n', env)
         return self.clean_conda_json(packages)
     
     def export_env(self, env):
+        '''
+        Export the conda env specifiation as plain text
+        '''
         return str(self.conda_execute('list -e -n', env))
 
     def check_update(self, env, packages):
+        '''
+        Checks for newer versions of packages in an env
+        '''
         output = self.conda_execute('update --dry-run -q --json -n', env,
                                               *packages)
         return self.clean_conda_json(output)

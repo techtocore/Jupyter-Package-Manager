@@ -1,9 +1,6 @@
-"""
+'''
 This is the entrypoint module for Jupyter Server Extension
-"""
-
-import sys
-from notebook.utils import url_path_join
+'''
 
 from .serverextension import PackageManagerHandler
 

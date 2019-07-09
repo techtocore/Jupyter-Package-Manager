@@ -29,7 +29,7 @@ default_handlers = [
 
 
 def PackageManagerHandler(nbapp):
-    """Load the nbserver extension"""
+    '''Load the nbserver extension'''
     webapp = nbapp.web_app
     webapp.settings['env_manager'] = EnvManager(parent=nbapp)
 

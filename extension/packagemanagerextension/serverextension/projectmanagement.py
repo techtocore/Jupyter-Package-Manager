@@ -1,5 +1,6 @@
 import json
 import os
+import uuid
 
 from notebook.base.handlers import (
     APIHandler,
@@ -12,13 +13,17 @@ from .swanproject import SwanProject
 
 
 class EnvBaseHandler(APIHandler):
-    """
+
+    '''
     Maintains a reference to the
     'env_manager' which implements all of the conda functions.
-    """
+    '''
+
     @property
     def env_manager(self):
-        """Return our env_manager instance"""
+        '''
+        Return our env_manager instance
+        '''
         return self.settings['env_manager']
 
 # -----------------------------------------------------------------------------
@@ -28,30 +33,47 @@ class EnvBaseHandler(APIHandler):
 
 class ManageProjectsHandler(EnvBaseHandler):
 
-    """
-    Handler for `GET /projects` which lists the projects.
-    """
-
     @json_errors
     def get(self):
+
+        '''
+        Handler for `GET /projects` which lists the projects.
+        '''
+
         projects = {}
         projects['projects'] =  self.env_manager.list_envs()
         self.finish(json.dumps(projects))
 
-    """
-    Handler for `POST /projects` which
-    creates the specified environment.
-    """
-
     @json_errors
     def post(self):
+
+        '''
+        Handler for `POST /projects` which
+        creates the specified environment.
+        '''
+
         data = escape.json_decode(self.request.body)
         directory = data.get('project')
         env_type = data.get('env_type', 'python3')
         if env_type not in package_map:
             raise web.HTTPError(400)
+        env = uuid.uuid1()
+        env = 'swanproject-' + str(env)
+        folder = directory[:-1].split('/')[-1]
+
+        # if not os.path.exists(directory):
+        #     raise Exception('Project directory not available')
+        # try:
+        #     swanproj = SwanProject(directory)
+        #     resp = {'error': 'Project directory already associated with an env'}
+        #     return res
+        # except:
+        #     pass
+
         try:
-            resp = self.env_manager.create_project(directory, env_type)
+            resp = self.env_manager.create_env(env, folder, env_type)
+            swanproj = SwanProject(directory, env)
+            swanproj.update_swanproject()
         except Exception as e:
             resp = {'error': str(e)}
             
@@ -65,35 +87,34 @@ class ManageProjectsHandler(EnvBaseHandler):
         self.set_status(status or 200)
         self.finish(json.dumps(resp))
 
-    """
-    Handler for `DELETE /projects` which
-    deletes the specified projects.
-    """
-
     @json_errors
     def delete(self):
-        '''
-        try:
-            swanproj = SwanProject(directory)
-            env = swanproj.env
-        except Exception as e:
-            return {'error': str(e)}
-        
-        # Clear the contents of the .swanproject file
-        open(directory + ".swanproject", 'w').close()
 
         '''
+        Handler for `DELETE /projects` which
+        deletes the specified projects.
+        '''
+        
+        # try:
+        #     swanproj = SwanProject(directory)
+        #     env = swanproj.env
+        # except Exception as e:
+        #     return {'error': str(e)}
+        
+        # # Clear the contents of the .swanproject file
+        # open(directory + ".swanproject", 'w').close()
+
         data = escape.json_decode(self.request.body)
         try:
             dlist = []
             directory = data.get('project')
             if type(directory) == type(dlist):
                 for proj in directory:
-                    resp = self.env_manager.delete_project(proj)
+                    resp = self.env_manager.delete_env(proj)
                     dlist.append(resp)
                 resp = {'response': dlist}
             else:
-                resp = self.env_manager.delete_project(directory)
+                resp = self.env_manager.delete_env(directory)
         except Exception as e:
                 resp = {'error': str(e)}
 
@@ -110,14 +131,15 @@ class ManageProjectsHandler(EnvBaseHandler):
 
 class ProjectInfoHandler(EnvBaseHandler):
 
-    """
-    Handler for `GET /project_info` which
-    returns the internal name of the environment 
-    + all packages required along with their status (if already installed or not?)
-    """
-
     @json_errors
     def get(self):
+
+        '''
+        Handler for `GET /project_info` which
+        returns the internal name of the environment 
+        + all packages required along with their status (if already installed or not?)
+        '''
+
         directory = self.get_argument('project', "None")
         if self.request.headers.get('Content-Type') == 'text/plain':
             # export requirements file
@@ -151,13 +173,14 @@ class ProjectInfoHandler(EnvBaseHandler):
             self.set_status(status or 200)
             self.finish(json.dumps(resp))
 
-    """
-    Handler for `PUT /project_info` which
-    updates a project with all the packages obtained from an export file
-    """
-
     @json_errors
     def put(self):
+
+        '''
+        Handler for `PUT /project_info` which
+        updates a project with all the packages obtained from an export file
+        '''
+
         # get list of all packages
         file1 = self.request.files['file'][0]
         directory = self.get_argument('project', default=None)
@@ -183,13 +206,14 @@ class ProjectInfoHandler(EnvBaseHandler):
         self.set_status(status or 200)
         self.finish(json.dumps(resp))
 
-    """
-    Handler for `PATCH /project_info` which
-    syncs a .swanproject file and the corresponding conda env
-    """
-
     @json_errors
     def patch(self):
+
+        '''
+        Handler for `PATCH /project_info` which
+        syncs a .swanproject file and the corresponding conda env
+        '''
+
         data = escape.json_decode(self.request.body)
         directory = data.get('project')
         try:
