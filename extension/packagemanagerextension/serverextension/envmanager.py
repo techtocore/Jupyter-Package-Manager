@@ -23,6 +23,9 @@ CONDA_EXE = os.environ.get("CONDA_EXE", "conda")  # type: str
 JSONISH_RE = r'(^\s*["\{\}\[\],\d])|(["\}\}\[\],\d]\s*$)'
 
 class EnvManager(LoggingConfigurable):
+    '''
+    This class defines all the actions done by conda
+    '''
 
     def list_envs(self):
         '''

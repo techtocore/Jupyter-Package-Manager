@@ -15,6 +15,9 @@ from .swanproject import SwanProject
 env_manager = EnvManager()
 
 class PackageManager():
+    '''
+    This class essentially contains all the features of the server extension
+    '''
 
 # -----------------------------------------------------------------------------
 # Project Management Modules

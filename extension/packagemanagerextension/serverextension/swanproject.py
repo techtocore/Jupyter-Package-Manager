@@ -9,6 +9,9 @@ from .envmanager import EnvManager
 
 
 class SwanProject(LoggingConfigurable):
+    '''
+    This class represents the in-memory form of the swanproject file
+    '''
 
     def __init__(self, directory):
         directory = self.__relative_dir(directory) + ".swanproject"

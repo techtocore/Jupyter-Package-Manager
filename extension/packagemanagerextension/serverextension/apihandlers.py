@@ -10,6 +10,11 @@ from .packagemanagement import PackageManager, CondaSearcher
 
 package_manager = PackageManager()
 
+'''
+This file contains the handler classes for API endpoints. Every request is serviced by calling
+an appropriate method from the PackageManager class
+'''
+
 class EnvBaseHandler(APIHandler):
 
     '''
