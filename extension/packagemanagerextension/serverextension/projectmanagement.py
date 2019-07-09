@@ -34,7 +34,9 @@ class ManageProjectsHandler(EnvBaseHandler):
 
     @json_errors
     def get(self):
-        self.finish(json.dumps(self.env_manager.list_projects()))
+        projects = {}
+        projects['projects'] =  self.env_manager.list_envs()
+        self.finish(json.dumps(projects))
 
     """
     Handler for `POST /projects` which
@@ -124,7 +126,7 @@ class ProjectInfoHandler(EnvBaseHandler):
                             'attachment; filename="%s"' % (folder + '.txt'))
             try:
                 swanproj = SwanProject(directory)
-                self.write(swanproj.export_env())
+                self.write(swanproj.export_project())
             except Exception as e:
                 self.write(str(e))
                 self.set_status(400)

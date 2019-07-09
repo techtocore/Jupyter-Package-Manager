@@ -12,7 +12,7 @@ env_manager = EnvManager()
 class SwanProject(LoggingConfigurable):
 
     def __init__(self, directory, *args):
-        self.directory = directory
+        self.directory = self.relativeDir(directory)
         if len(args) > 0:
             self.env = args[0]
         else:
@@ -36,8 +36,7 @@ class SwanProject(LoggingConfigurable):
         '''
         directory = self.directory
         env = self.env
-        packages = env_manager.conda_execute('list --json -n', env)
-        packages = env_manager.clean_conda_json(packages)
+        packages = env_manager.list_packages(env)
         self.update_yaml(env, packages, directory)
 
     def project_info(self):
@@ -54,8 +53,7 @@ class SwanProject(LoggingConfigurable):
             swandata.append(env_manager.pkg_info(item))
             # details of all packages in the .swanproject file
 
-        output = env_manager.conda_execute('list --json -n', env)
-        data = env_manager.clean_conda_json(output)
+        data = env_manager.list_packages(env)
         if 'error' in data:
             # we didn't get back a list of packages, we got a dictionary with
             # error info
@@ -84,22 +82,17 @@ class SwanProject(LoggingConfigurable):
                 packages.append(i['name'] + '=' + i['version'])
         return self.install_packages(packages)
 
-    def export_env(self):
+    def export_project(self):
         env = self.env
-        return str(env_manager.conda_execute('list -e -n', env))
+        return env_manager.export_env(env)
 
     def check_update(self):
         env = self.env
-        packagesJson = env_manager.conda_execute(
-            'list --json -n', env)
-        packagesJson = env_manager.clean_conda_json(packagesJson)
+        packagesJson = env_manager.list_packages(env)
         packages = []
         for it in packagesJson:
             packages.append(it.get('name'))
-        output = env_manager.conda_execute('update --dry-run -q --json -n', env,
-                                              *packages)
-        data = env_manager.clean_conda_json(output)
-
+        data = env_manager.check_update(env, packages)
         if 'error' in data:
             # we didn't get back a list of packages, we got a dictionary with
             # error info
@@ -119,26 +112,22 @@ class SwanProject(LoggingConfigurable):
 
     def install_packages(self, packages):
         env = self.env
-        output = env_manager.conda_execute(
-            'install -y -q --json -n', env, *packages)
+        output = env_manager.install_packages(env, packages)
         self.update_swanproject()
-        return env_manager.clean_conda_json(output)
+        return output
 
     def update_packages(self, packages):
         env = self.env
-        output = env_manager.conda_execute(
-            'update -y -q --json -n', env, *packages)
+        output = env_manager.update_packages(env, packages)
         self.update_swanproject()
-        return env_manager.clean_conda_json(output)
+        return output
 
     def remove_packages(self, packages):
         env = self.env
-        output = env_manager.conda_execute(
-            'remove -y -q --json -n', env, *packages)
+        output = env_manager.remove_packages(env, packages)
         self.update_swanproject()
-        return env_manager.clean_conda_json(output)
+        return output
 
-    @classmethod
     def pkg_info_status(self, swandata, condadata):
         '''
         Combines the data available in both the lists and determines the status of each package
@@ -153,7 +142,6 @@ class SwanProject(LoggingConfigurable):
                 i['status'] = 'not synced'
         return packages
 
-    @classmethod
     def update_yaml(self, name, packages, directory):
         '''
         Updates the .swanproject file with new metadata
@@ -167,7 +155,6 @@ class SwanProject(LoggingConfigurable):
         except:
             raise Exception("Can't update .swanproject file")
 
-    @classmethod
     def relativeDir(self, directory):
         '''
         Ensures that all directories are relative to home

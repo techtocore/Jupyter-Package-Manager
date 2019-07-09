@@ -24,8 +24,10 @@ JSONISH_RE = r'(^\s*["\{\}\[\],\d])|(["\}\}\[\],\d]\s*$)'
 
 class EnvManager(LoggingConfigurable):
 
-    def list_projects(self):
-        """List all projects that conda knows about"""
+    def list_envs(self):
+        """
+        List all environments associated with SWAN projects
+        """
         info = self.clean_conda_json(
             self.conda_execute('info --json'))
 
@@ -35,9 +37,7 @@ class EnvManager(LoggingConfigurable):
                 'dir': env
             }
 
-        return {
-            "projects": [get_info(env) for env in info['envs'] if "swanproject" in env]
-        }
+        return [get_info(env) for env in info['envs'] if "swanproject" in env]
 
     def create_project(self, directory, type):
         env = uuid.uuid1()
@@ -122,7 +122,6 @@ class EnvManager(LoggingConfigurable):
 
         return {"packages": sorted(packages, key=lambda entry: entry.get("name"))}
 
-    @classmethod
     def pkg_info(self, s):
         '''
         Abstracts unwanted details and normalizes the package JSON
@@ -133,7 +132,6 @@ class EnvManager(LoggingConfigurable):
             "version": s.get("version")
         }
 
-    @classmethod
     def conda_execute(self, cmd, *args):
         '''
         Executes the conda command line
@@ -148,7 +146,6 @@ class EnvManager(LoggingConfigurable):
 
         return output.decode("utf-8")
 
-    @classmethod
     def clean_conda_json(self, inputjson):
         '''
         Ensures that only valid JSONs are processed
@@ -168,3 +165,30 @@ class EnvManager(LoggingConfigurable):
         except Exception as err:
             raise Exception(err)
         return cleanJson
+
+    def install_packages(self, env, packages):
+        output = self.conda_execute(
+            'install -y -q --json -n', env, *packages)
+        return self.clean_conda_json(output)
+
+    def update_packages(self, env, packages):
+        output = self.conda_execute(
+            'update -y -q --json -n', env, *packages)
+        return self.clean_conda_json(output)
+
+    def remove_packages(self, env, packages):
+        output = self.conda_execute(
+            'remove -y -q --json -n', env, *packages)
+        return self.clean_conda_json(output)
+    
+    def list_packages(self, env):
+        packages = self.conda_execute('list --json -n', env)
+        return self.clean_conda_json(packages)
+    
+    def export_env(self, env):
+        return str(self.conda_execute('list -e -n', env))
+
+    def check_update(self, env, packages):
+        output = self.conda_execute('update --dry-run -q --json -n', env,
+                                              *packages)
+        return self.clean_conda_json(output)
