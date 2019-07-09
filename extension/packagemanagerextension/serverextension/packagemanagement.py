@@ -74,18 +74,21 @@ class PackageManager():
         # except Exception as e:
         #     return {'error': str(e)}
         
-        # # Clear the contents of the .swanproject file
-        # open(directory + ".swanproject", 'w').close()
-
         try:
             dlist = []
             if type(directory) == type(dlist):
-                for proj in directory:
-                    resp = env_manager.delete_env(proj)
+                for projectdir in directory:
+                    swanproject = SwanProject(projectdir)
+                    env = swanproject.env
+                    resp = env_manager.delete_env(env)
                     dlist.append(resp)
+                    swanproject.clear_yaml()
                 resp = {'response': dlist}
             else:
-                resp = env_manager.delete_env(directory)
+                swanproject = SwanProject(directory)
+                env = swanproject.env
+                resp = env_manager.delete_env(env)
+                swanproject.clear_yaml()
         except Exception as e:
                 resp = {'error': str(e)}
 

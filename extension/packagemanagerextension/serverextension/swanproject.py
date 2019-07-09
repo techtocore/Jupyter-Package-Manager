@@ -34,10 +34,9 @@ class SwanProject(LoggingConfigurable):
         '''
         Update the .swanproject file with the updated metadata
         '''
-        directory = self.directory
         env = self.env
         packages = env_manager.list_packages(env)
-        self.update_yaml(env, packages, directory)
+        self.update_yaml(packages)
 
     def project_info(self):
         env = self.env
@@ -142,10 +141,12 @@ class SwanProject(LoggingConfigurable):
                 i['status'] = 'not synced'
         return packages
 
-    def update_yaml(self, name, packages, directory):
+    def update_yaml(self, packages):
         '''
         Updates the .swanproject file with new metadata
         '''
+        directory = self.directory
+        name = self.env
         directory = directory + ".swanproject"
         data = {'ENV': name}
         data['PACKAGE_INFO'] = packages
@@ -166,5 +167,7 @@ class SwanProject(LoggingConfigurable):
             directory = directory + '/'
         return home + directory
 
-    def clear_yaml(self, directory):
+    def clear_yaml(self):
+        # Clear the contents of the .swanproject file
+        directory = self.directory
         open(directory + ".swanproject", 'w').close()
