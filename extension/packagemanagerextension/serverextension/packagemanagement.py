@@ -1,40 +1,142 @@
 import json
 import os
 import re
+import uuid
 
 from subprocess import Popen
 from tempfile import TemporaryFile
 
 from pkg_resources import parse_version
-from notebook.base.handlers import (
-    APIHandler,
-    json_errors,
-)
 from tornado import web, escape
 
-from .envmanager import EnvManager
-from .processhelper import ProcessHelper
+from .envmanager import EnvManager, package_map
 from .swanproject import SwanProject
 
-process_helper = ProcessHelper()
+env_manager = EnvManager()
+
+class PackageManager():
+
+# -----------------------------------------------------------------------------
+# Project Management Modules
+# -----------------------------------------------------------------------------
+
+    def list_projects(self):
+
+        '''
+        Module for `GET /projects` which lists the projects.
+        '''
+
+        projects = {}
+        projects['projects'] =  env_manager.list_envs()
+        return projects
+
+    def create_project(self, directory, env_type):
+
+        '''
+        Module for `POST /projects` which
+        creates the specified environment.
+        '''
+
+        if env_type not in package_map:
+            raise web.HTTPError(400)
+        env = uuid.uuid1()
+        env = 'swanproject-' + str(env)
+        folder = directory[:-1].split('/')[-1]
+
+        # if not os.path.exists(directory):
+        #     raise Exception('Project directory not available')
+        # try:
+        #     swanproj = SwanProject(directory)
+        #     resp = {'error': 'Project directory already associated with an env'}
+        #     return res
+        # except:
+        #     pass
+
+        try:
+            resp = env_manager.create_env(env, folder, env_type)
+            swanproj = SwanProject(directory, env)
+            swanproj.update_swanproject()
+        except Exception as e:
+            resp = {'error': str(e)}
+            
+        return resp
+
+    def delete_project(self, directory):
+
+        '''
+        Module for `DELETE /projects` which
+        deletes the specified projects.
+        '''
+        
+        # try:
+        #     swanproj = SwanProject(directory)
+        #     env = swanproj.env
+        # except Exception as e:
+        #     return {'error': str(e)}
+        
+        try:
+            dlist = []
+            if type(directory) == type(dlist):
+                for projectdir in directory:
+                    swanproject = SwanProject(projectdir)
+                    env = swanproject.env
+                    resp = env_manager.delete_env(env)
+                    dlist.append(resp)
+                    swanproject.clear_yaml()
+                resp = {'response': dlist}
+            else:
+                swanproject = SwanProject(directory)
+                env = swanproject.env
+                resp = env_manager.delete_env(env)
+                swanproject.clear_yaml()
+        except Exception as e:
+                resp = {'error': str(e)}
+
+        return resp
+
+    def import_project(self, file1, directory):
+
+        '''
+        Module for `PUT /project_info` which
+        updates a project with all the packages obtained from an export file
+        '''
+
+        tmp = file1['body'].splitlines()
+        packages = []
+        for i in tmp:
+            if i[0] != '#':
+                packages.append(i)
+
+        try:
+            swanproj = SwanProject(directory)
+            resp = swanproj.install_packages(packages)
+        except Exception as e:
+            resp = {'error': str(e)}
+
+        return resp
+
+    def sync_project(self, directory):
+
+        '''
+        Module for `PATCH /project_info` which
+        syncs a .swanproject file and the corresponding conda env
+        '''
+
+        try:
+            swanproj = SwanProject(directory)
+            resp = swanproj.sync_packages()
+        except Exception as e:
+            resp = {'error': str(e)}
+
+        return resp
 
 
-class EnvBaseHandler(APIHandler):
-    """
-    Maintains a reference to the
-    'env_manager' which implements all of the conda functions.
-    """
-    @property
-    def env_manager(self):
-        """Return our env_manager instance"""
-        return self.settings['env_manager']
+
 
 # -----------------------------------------------------------------------------
 # Package Management APIs
 # -----------------------------------------------------------------------------
 
-
-class PkgHandler(EnvBaseHandler):
 
     def clean(self, packages):
         # no hyphens up front, please
@@ -43,112 +145,108 @@ class PkgHandler(EnvBaseHandler):
         packages = [pkg for pkg in packages if re.match(_pkg_regex, pkg)]
         return packages
 
-    """
-    Handler for `POST /packages` which installs all
-    the selected packages in the specified environment.
-    """
+    def install_packages(self, directory, packages):
 
-    @json_errors
-    def post(self):
-        data = escape.json_decode(self.request.body)
-        directory = data.get('project')
-        directory = process_helper.relativeDir(directory)
-        packages = data.get('packages')
+        '''
+        Module for `POST /packages` which installs all
+        the selected packages in the specified environment.
+        '''
+
         packages = self.clean(packages)
         try:
             swanproj = SwanProject(directory)
             resp = swanproj.install_packages(packages)
         except Exception as e:
             resp = {'error': str(e)}
-        if resp.get("error"):
-            self.set_status(400)
-        self.finish(json.dumps(resp))
+        return resp
 
-    """
-    Handler for `PATCH /packages` which updates all
-    the selected packages in the specified environment.
-    """
+    def update_packages(self, directory, packages):
 
-    @json_errors
-    def patch(self):
-        data = escape.json_decode(self.request.body)
-        directory = data.get('project')
-        directory = process_helper.relativeDir(directory)
-        packages = data.get('packages')
+        '''
+        Module for `PATCH /packages` which updates all
+        the selected packages in the specified environment.
+        '''
+
         packages = self.clean(packages)
         try:
             swanproj = SwanProject(directory)
             resp = swanproj.update_packages(packages)
         except Exception as e:
             resp = {'error': str(e)}
-        if resp.get("error"):
-            self.set_status(400)
-        self.finish(json.dumps(resp))
+        return resp
 
-    """
-    Handler for `DELETE /packages` which deletes all
-    the selected packages in the specified environment.
-    """
+    def delete_packages(self, directory, packages):
 
-    @json_errors
-    def delete(self):
-        data = escape.json_decode(self.request.body)
-        directory = data.get('project')
-        directory = process_helper.relativeDir(directory)
-        packages = data.get('packages')
+        '''
+        Module for `DELETE /packages` which deletes all
+        the selected packages in the specified environment.
+        '''
+
         packages = self.clean(packages)
         try:
             swanproj = SwanProject(directory)
             resp = swanproj.remove_packages(packages)
         except Exception as e:
             resp = {'error': str(e)}
-        if resp.get("error"):
-            self.set_status(400)
-        self.finish(json.dumps(resp))
+        return resp
 
 
-class CheckUpdatePkgHandler(EnvBaseHandler):
+    def check_update(self, directory):
 
-    """
-    Handler for `GET /packages/check_update` which checks for updates of all
-    the selected packages in the specified environment.
-    """
+        '''
+        Module for `GET /packages/check_update` which checks for updates of all
+        the selected packages in the specified environment.
+        '''
 
-    @json_errors
-    def get(self):
-        directory = self.get_argument('project', "None")
-        directory = process_helper.relativeDir(directory)
         try:
             swanproj = SwanProject(directory)
-            resp = swanproj.check_update
+            resp = swanproj.check_update()
         except Exception as e:
             resp = {'error': str(e)}
-        if resp.get("error"):
-            self.set_status(400)
-        self.finish(json.dumps(resp))
+        return resp
 
+    def export_package_text(self, directory):
+        try:
+            swanproj = SwanProject(directory)
+            resp = swanproj.export_project()
+        except Exception as e:
+            resp = str(e)
+        return resp
+    
+    def project_info(self, directory):
+        try:
+            swanproj = SwanProject(directory)
+            resp = swanproj.project_info()
+        except Exception as e:
+            resp = {'error': str(e)}
+        return resp
+
+    def search(self, query):
+        return env_manager.package_search(query)
 
 class CondaSearcher(object):
 
-    """
-    Helper object that runs `conda search` to retrieve the
-    list of packages available in the current conda channels.
-    """
-
     def __init__(self):
+
+        '''
+        Helper object that runs `conda search` to retrieve the
+        list of packages available in the current conda channels.
+        '''
+        
         self.conda_process = None
         self.conda_temp = None
 
-    def list_available(self, handler=None):
-        """
+    def list_available(self, Module=None):
+
+        '''
         List the available conda packages by kicking off a background
         conda process. Will return None. Call again to poll the process
         status. When the process completes, a list of packages will be
         returned upon success. On failure, the results of `conda search --json`
         will be returned (this will be a dict containing error information).
-        """
+        '''
 
-        self.log = handler.log
+        self.log = Module.log
 
         if self.conda_process is not None:
             # already running, check for completion
@@ -198,39 +296,3 @@ class CondaSearcher(object):
             self.log.debug('Started: pid %s', self.conda_process.pid)
 
         return None
-
-
-searcher = CondaSearcher()
-
-
-class AvailablePackagesHandler(EnvBaseHandler):
-
-    """
-    Handler for `GET /packages/available`, which uses CondaSearcher
-    to list the packages available for installation.
-    """
-
-    @json_errors
-    def get(self):
-        data = searcher.list_available(self)
-
-        if data is None:
-            # tell client to check back later
-            self.clear()
-            self.set_status(202)  # Accepted
-            self.finish('{}')
-        else:
-            self.finish(json.dumps({"packages": data}))
-
-
-class SearchHandler(EnvBaseHandler):
-
-    """
-    Handler for `GET /packages/search?q=<query>`, which uses CondaSearcher
-    to search the available conda packages.
-    """
-
-    @json_errors
-    def get(self):
-        q = self.get_argument('q', "None")
-        self.finish(json.dumps(self.env_manager.package_search(q)))
