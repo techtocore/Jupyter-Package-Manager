@@ -10,6 +10,11 @@ from .packagemanagement import PackageManager, CondaSearcher
 
 package_manager = PackageManager()
 
+'''
+This file contains the handler classes for API endpoints. Every request is serviced by calling
+an appropriate method from the PackageManager class
+'''
+
 class EnvBaseHandler(APIHandler):
 
     '''
@@ -40,8 +45,9 @@ class ManageProjectsHandler(EnvBaseHandler):
         Handler for `GET /projects` which lists the projects.
         '''
 
-        response = package_manager.list_projects()
-        self.finish(json.dumps(response))
+        resp = {}
+        resp['projects'] = package_manager.list_projects()
+        self.finish(json.dumps(resp))
 
     @json_errors
     def post(self):
@@ -75,8 +81,8 @@ class ManageProjectsHandler(EnvBaseHandler):
         '''
 
         data = escape.json_decode(self.request.body)
-        directory = data.get('project')
-        resp = package_manager.delete_project(directory)
+        directories = data.get('project')
+        resp = package_manager.delete_project(directories)
 
         if 'error' not in resp:
             status = 200
@@ -280,5 +286,6 @@ class SearchHandler(EnvBaseHandler):
         '''
 
         q = self.get_argument('q', "None")
-        resp = package_manager.search(q)
+        resp = {}
+        resp['packages'] = package_manager.search(q)
         self.finish(json.dumps(resp))
