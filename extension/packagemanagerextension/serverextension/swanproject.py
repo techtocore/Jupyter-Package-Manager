@@ -4,10 +4,10 @@ import os
 import yaml
 
 from traitlets.config.configurable import LoggingConfigurable
+from os.path import expanduser
+from .envmanager import EnvManager
 
-from .processhelper import ProcessHelper
-process_helper = ProcessHelper()
-
+env_manager = EnvManager()
 
 class SwanProject(LoggingConfigurable):
 
@@ -36,9 +36,9 @@ class SwanProject(LoggingConfigurable):
         '''
         directory = self.directory
         env = self.env
-        packages = process_helper.conda_execute('list --json -n', env)
-        packages = process_helper.clean_conda_json(packages)
-        process_helper.update_yaml(env, packages, directory)
+        packages = env_manager.conda_execute('list --json -n', env)
+        packages = env_manager.clean_conda_json(packages)
+        self.update_yaml(env, packages, directory)
 
     def project_info(self):
         env = self.env
@@ -51,18 +51,18 @@ class SwanProject(LoggingConfigurable):
             raise Exception("Can't find project info")
 
         for item in packagesMD:
-            swandata.append(process_helper.pkg_info(item))
+            swandata.append(env_manager.pkg_info(item))
             # details of all packages in the .swanproject file
 
-        output = process_helper.conda_execute('list --json -n', env)
-        data = process_helper.clean_conda_json(output)
+        output = env_manager.conda_execute('list --json -n', env)
+        data = env_manager.clean_conda_json(output)
         if 'error' in data:
             # we didn't get back a list of packages, we got a dictionary with
             # error info
             return data
         condadata = []
         for package in data:
-            condadata.append(process_helper.pkg_info(package))
+            condadata.append(env_manager.pkg_info(package))
             # details of all packages in the corresponding env
 
         resp = {}
@@ -73,7 +73,7 @@ class SwanProject(LoggingConfigurable):
         if in conda but not in swanproj -> alert the user to sync the state (or do it automatically?)
         if in both -> keep calm and carry on
         '''
-        resp['packages'] = process_helper.pkg_info_status(swandata, condadata)
+        resp['packages'] = self.pkg_info_status(swandata, condadata)
         return resp
 
     def sync_packages(self):
@@ -86,19 +86,19 @@ class SwanProject(LoggingConfigurable):
 
     def export_env(self):
         env = self.env
-        return str(process_helper.conda_execute('list -e -n', env))
+        return str(env_manager.conda_execute('list -e -n', env))
 
     def check_update(self):
         env = self.env
-        packagesJson = process_helper.conda_execute(
+        packagesJson = env_manager.conda_execute(
             'list --json -n', env)
-        packagesJson = process_helper.clean_conda_json(packagesJson)
+        packagesJson = env_manager.clean_conda_json(packagesJson)
         packages = []
         for it in packagesJson:
             packages.append(it.get('name'))
-        output = process_helper.conda_execute('update --dry-run -q --json -n', env,
+        output = env_manager.conda_execute('update --dry-run -q --json -n', env,
                                               *packages)
-        data = process_helper.clean_conda_json(output)
+        data = env_manager.clean_conda_json(output)
 
         if 'error' in data:
             # we didn't get back a list of packages, we got a dictionary with
@@ -108,7 +108,7 @@ class SwanProject(LoggingConfigurable):
             links = data['actions'].get('LINK', [])
             package_versions = [link for link in links]
             return {
-                "updates": [process_helper.pkg_info(pkg_version)
+                "updates": [env_manager.pkg_info(pkg_version)
                             for pkg_version in package_versions]
             }
         else:
@@ -119,21 +119,62 @@ class SwanProject(LoggingConfigurable):
 
     def install_packages(self, packages):
         env = self.env
-        output = process_helper.conda_execute(
+        output = env_manager.conda_execute(
             'install -y -q --json -n', env, *packages)
         self.update_swanproject()
-        return process_helper.clean_conda_json(output)
+        return env_manager.clean_conda_json(output)
 
     def update_packages(self, packages):
         env = self.env
-        output = process_helper.conda_execute(
+        output = env_manager.conda_execute(
             'update -y -q --json -n', env, *packages)
         self.update_swanproject()
-        return process_helper.clean_conda_json(output)
+        return env_manager.clean_conda_json(output)
 
     def remove_packages(self, packages):
         env = self.env
-        output = process_helper.conda_execute(
+        output = env_manager.conda_execute(
             'remove -y -q --json -n', env, *packages)
         self.update_swanproject()
-        return process_helper.clean_conda_json(output)
+        return env_manager.clean_conda_json(output)
+
+    @classmethod
+    def pkg_info_status(self, swandata, condadata):
+        '''
+        Combines the data available in both the lists and determines the status of each package
+        '''
+        packages = {x['name']: x for x in swandata + condadata}.values()
+        for i in packages:
+            if i in swandata and i in condadata:
+                i['status'] = 'installed'
+            elif i in swandata and i not in condadata:
+                i['status'] = 'not installed'
+            elif i not in swandata and i in condadata:
+                i['status'] = 'not synced'
+        return packages
+
+    @classmethod
+    def update_yaml(self, name, packages, directory):
+        '''
+        Updates the .swanproject file with new metadata
+        '''
+        directory = directory + ".swanproject"
+        data = {'ENV': name}
+        data['PACKAGE_INFO'] = packages
+        try:
+            with open(directory, 'w') as outfile:
+                yaml.dump(data, outfile, default_flow_style=False)
+        except:
+            raise Exception("Can't update .swanproject file")
+
+    @classmethod
+    def relativeDir(self, directory):
+        '''
+        Ensures that all directories are relative to home
+        '''
+        home = expanduser("~")
+        if directory[0] != '/':
+            directory = '/' + directory
+        if directory[-1] != '/':
+            directory = directory + '/'
+        return home + directory

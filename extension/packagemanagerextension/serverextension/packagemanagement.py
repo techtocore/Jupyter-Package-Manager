@@ -13,10 +13,7 @@ from notebook.base.handlers import (
 from tornado import web, escape
 
 from .envmanager import EnvManager
-from .processhelper import ProcessHelper
 from .swanproject import SwanProject
-
-process_helper = ProcessHelper()
 
 
 class EnvBaseHandler(APIHandler):
@@ -52,7 +49,6 @@ class PkgHandler(EnvBaseHandler):
     def post(self):
         data = escape.json_decode(self.request.body)
         directory = data.get('project')
-        directory = process_helper.relativeDir(directory)
         packages = data.get('packages')
         packages = self.clean(packages)
         try:
@@ -73,7 +69,6 @@ class PkgHandler(EnvBaseHandler):
     def patch(self):
         data = escape.json_decode(self.request.body)
         directory = data.get('project')
-        directory = process_helper.relativeDir(directory)
         packages = data.get('packages')
         packages = self.clean(packages)
         try:
@@ -94,7 +89,6 @@ class PkgHandler(EnvBaseHandler):
     def delete(self):
         data = escape.json_decode(self.request.body)
         directory = data.get('project')
-        directory = process_helper.relativeDir(directory)
         packages = data.get('packages')
         packages = self.clean(packages)
         try:
@@ -117,7 +111,6 @@ class CheckUpdatePkgHandler(EnvBaseHandler):
     @json_errors
     def get(self):
         directory = self.get_argument('project', "None")
-        directory = process_helper.relativeDir(directory)
         try:
             swanproj = SwanProject(directory)
             resp = swanproj.check_update

@@ -8,10 +8,7 @@ from notebook.base.handlers import (
 from tornado import web, escape
 
 from .envmanager import EnvManager, package_map
-from .processhelper import ProcessHelper
 from .swanproject import SwanProject
-
-process_helper = ProcessHelper()
 
 
 class EnvBaseHandler(APIHandler):
@@ -48,7 +45,6 @@ class ManageProjectsHandler(EnvBaseHandler):
     def post(self):
         data = escape.json_decode(self.request.body)
         directory = data.get('project')
-        directory = process_helper.relativeDir(directory)
         env_type = data.get('env_type', 'python3')
         if env_type not in package_map:
             raise web.HTTPError(400)
@@ -74,18 +70,27 @@ class ManageProjectsHandler(EnvBaseHandler):
 
     @json_errors
     def delete(self):
+        '''
+        try:
+            swanproj = SwanProject(directory)
+            env = swanproj.env
+        except Exception as e:
+            return {'error': str(e)}
+        
+        # Clear the contents of the .swanproject file
+        open(directory + ".swanproject", 'w').close()
+
+        '''
         data = escape.json_decode(self.request.body)
         try:
             dlist = []
             directory = data.get('project')
             if type(directory) == type(dlist):
                 for proj in directory:
-                    proj = process_helper.relativeDir(proj)
                     resp = self.env_manager.delete_project(proj)
                     dlist.append(resp)
                 resp = {'response': dlist}
             else:
-                directory = process_helper.relativeDir(directory)
                 resp = self.env_manager.delete_project(directory)
         except Exception as e:
                 resp = {'error': str(e)}
@@ -112,7 +117,6 @@ class ProjectInfoHandler(EnvBaseHandler):
     @json_errors
     def get(self):
         directory = self.get_argument('project', "None")
-        directory = process_helper.relativeDir(directory)
         if self.request.headers.get('Content-Type') == 'text/plain':
             # export requirements file
             folder = directory[:-1].split('/')[-1]
@@ -155,7 +159,6 @@ class ProjectInfoHandler(EnvBaseHandler):
         # get list of all packages
         file1 = self.request.files['file'][0]
         directory = self.get_argument('project', default=None)
-        directory = process_helper.relativeDir(directory)
         tmp = file1['body'].splitlines()
         packages = []
         for i in tmp:
@@ -187,7 +190,6 @@ class ProjectInfoHandler(EnvBaseHandler):
     def patch(self):
         data = escape.json_decode(self.request.body)
         directory = data.get('project')
-        directory = process_helper.relativeDir(directory)
         try:
             swanproj = SwanProject(directory)
             resp = swanproj.sync_packages()
