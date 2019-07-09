@@ -26,9 +26,7 @@ class PackageManager():
         Module for `GET /projects` which lists the projects.
         '''
 
-        projects = {}
-        projects['projects'] =  env_manager.list_envs()
-        return projects
+        return env_manager.list_envs()
 
     def create_project(self, directory, env_type):
 
@@ -54,14 +52,16 @@ class PackageManager():
 
         try:
             resp = env_manager.create_env(env, folder, env_type)
-            swanproj = SwanProject(directory, env)
-            swanproj.update_swanproject()
+            swanproj = SwanProject(directory)
+            swanproj.env = env
+            swanproj.packages = env_manager.list_packages(env)
+            swanproj.update_yaml()
         except Exception as e:
             resp = {'error': str(e)}
             
         return resp
 
-    def delete_project(self, directory):
+    def delete_project(self, directories):
 
         '''
         Module for `DELETE /projects` which
@@ -76,19 +76,13 @@ class PackageManager():
         
         try:
             dlist = []
-            if type(directory) == type(dlist):
-                for projectdir in directory:
-                    swanproject = SwanProject(projectdir)
-                    env = swanproject.env
-                    resp = env_manager.delete_env(env)
-                    dlist.append(resp)
-                    swanproject.clear_yaml()
-                resp = {'response': dlist}
-            else:
-                swanproject = SwanProject(directory)
+            for projectdir in directories:
+                swanproject = SwanProject(projectdir)
                 env = swanproject.env
                 resp = env_manager.delete_env(env)
+                dlist.append(resp)
                 swanproject.clear_yaml()
+            resp = {'response': dlist}
         except Exception as e:
                 resp = {'error': str(e)}
 
@@ -106,10 +100,8 @@ class PackageManager():
         for i in tmp:
             if i[0] != '#':
                 packages.append(i)
-
         try:
-            swanproj = SwanProject(directory)
-            resp = swanproj.install_packages(packages)
+            self.install_packages(directory, packages)
         except Exception as e:
             resp = {'error': str(e)}
 
@@ -124,12 +116,18 @@ class PackageManager():
 
         try:
             swanproj = SwanProject(directory)
-            resp = swanproj.sync_packages()
+            package_info = self.project_info(directory)
+            packages = []
+            for i in package_info['packages']:
+                if i['status'] != 'installed':
+                    packages.append(i['name'] + '=' + i['version'])
+            resp =  self.install_packages(directory, packages)
+            swanproj.packages = env_manager.list_packages(swanproj.env)
+            swanproj.update_yaml()
         except Exception as e:
             resp = {'error': str(e)}
 
         return resp
-
 
 
 
@@ -155,7 +153,10 @@ class PackageManager():
         packages = self.clean(packages)
         try:
             swanproj = SwanProject(directory)
-            resp = swanproj.install_packages(packages)
+            env = swanproj.env
+            resp = env_manager.install_packages(env, packages)
+            swanproj.packages = env_manager.list_packages(env)
+            swanproj.update_yaml()
         except Exception as e:
             resp = {'error': str(e)}
         return resp
@@ -170,7 +171,10 @@ class PackageManager():
         packages = self.clean(packages)
         try:
             swanproj = SwanProject(directory)
-            resp = swanproj.update_packages(packages)
+            env = swanproj.env
+            resp = env_manager.update_packages(env, packages)
+            swanproj.packages = env_manager.list_packages(env)
+            swanproj.update_yaml()
         except Exception as e:
             resp = {'error': str(e)}
         return resp
@@ -185,7 +189,10 @@ class PackageManager():
         packages = self.clean(packages)
         try:
             swanproj = SwanProject(directory)
-            resp = swanproj.remove_packages(packages)
+            env = swanproj.env
+            resp = env_manager.remove_packages(env, packages)
+            swanproj.packages = env_manager.list_packages(env)
+            swanproj.update_yaml()
         except Exception as e:
             resp = {'error': str(e)}
         return resp
@@ -200,7 +207,28 @@ class PackageManager():
 
         try:
             swanproj = SwanProject(directory)
-            resp = swanproj.check_update()
+            env = swanproj.env
+            packagesJson = swanproj.packages
+            packages = []
+            for it in packagesJson:
+                packages.append(it.get('name'))
+            data = env_manager.check_update(env, packages)
+            if 'error' in data:
+                # we didn't get back a list of packages, we got a dictionary with
+                # error info
+                resp = data
+            elif 'actions' in data:
+                links = data['actions'].get('LINK', [])
+                package_versions = [link for link in links]
+                resp = {
+                    "updates": [env_manager.pkg_info(pkg_version)
+                                for pkg_version in package_versions]
+                }
+            else:
+                # no action plan returned means everything is already up to date
+                resp = {
+                    "updates": []
+                }
         except Exception as e:
             resp = {'error': str(e)}
         return resp
@@ -208,21 +236,61 @@ class PackageManager():
     def export_package_text(self, directory):
         try:
             swanproj = SwanProject(directory)
-            resp = swanproj.export_project()
+            resp = env_manager.export_env(swanproj.env)
         except Exception as e:
             resp = str(e)
         return resp
     
     def project_info(self, directory):
         try:
+            swandata = []
             swanproj = SwanProject(directory)
-            resp = swanproj.project_info()
+            env = swanproj.env
+            packages = swanproj.packages
+            for item in packages:
+                swandata.append(env_manager.pkg_info(item))
+                # details of all packages in the .swanproject file
+
+            data = env_manager.list_packages(env)
+            if 'error' in data:
+                # we didn't get back a list of packages, we got a dictionary with
+                # error info
+                return data
+            condadata = []
+            for package in data:
+                condadata.append(env_manager.pkg_info(package))
+                # details of all packages in the corresponding env
+
+            resp = {}
+            resp['env'] = env
+            '''
+            Merge both the lists with the appropriate status of every package
+            If in swanproj but not in conda -> alert the user to install
+            if in conda but not in swanproj -> alert the user to sync the state (or do it automatically?)
+            if in both -> keep calm and carry on
+            '''
+            resp['packages'] = self.pkg_info_status(swandata, condadata)
         except Exception as e:
             resp = {'error': str(e)}
         return resp
 
     def search(self, query):
         return env_manager.package_search(query)
+
+    def pkg_info_status(self, swandata, condadata):
+        '''
+        Combines the data available in both the lists and determines the status of each package
+        '''
+        packages = {x['name']: x for x in swandata + condadata}.values()
+        for i in packages:
+            if i in swandata and i in condadata:
+                i['status'] = 'installed'
+            elif i in swandata and i not in condadata:
+                i['status'] = 'not installed'
+            elif i not in swandata and i in condadata:
+                i['status'] = 'not synced'
+        return packages
+
 
 class CondaSearcher(object):
 
