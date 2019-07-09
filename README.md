@@ -1,5 +1,8 @@
 # Package manager for SWAN and Jupyter Notebooks 
 
+[![Build status](https://ci.appveyor.com/api/projects/status/wo9msinix7vtotn3/branch/dev?svg=true)](https://ci.appveyor.com/project/techtocore/jupyter-package-manager/branch/dev)
+
+
 This Jupyter notebook extension will allow the users to specify python modules (and their respective versions) via a user interface and make them available automatically inside the corresponding project.
 
 Each project is internally mapped to a separate conda environment. This helps abstract the processing part, while providing an independent environment for each project. 
