@@ -132,6 +132,26 @@ class PackageManager():
 
         return resp
 
+    def clone_project(self, directory, new_directory):
+
+        '''
+        Module for 'POST /projects' which clones a project in a new location
+        '''
+
+        try:
+            swanproj1 = SwanProject(directory)
+            oldenv = swanproj1.env
+            env = uuid.uuid1()
+            env = 'swanproject-' + str(env)
+            resp = env_manager.clone_env(oldenv, env)
+            swanproj2 = SwanProject(new_directory)
+            swanproj2.env = env
+            swanproj2.packages = swanproj1.packages
+            swanproj2.update_yaml()
+        except Exception as e:
+            resp = {'error': str(e)}
+
+        return resp
 
 
 # -----------------------------------------------------------------------------

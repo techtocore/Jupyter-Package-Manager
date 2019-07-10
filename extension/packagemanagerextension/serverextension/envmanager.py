@@ -22,6 +22,7 @@ CONDA_EXE = os.environ.get("CONDA_EXE", "conda")  # type: str
 # try to match lines of json
 JSONISH_RE = r'(^\s*["\{\}\[\],\d])|(["\}\}\[\],\d]\s*$)'
 
+
 class EnvManager(LoggingConfigurable):
     '''
     This class defines all the actions done by conda
@@ -48,7 +49,7 @@ class EnvManager(LoggingConfigurable):
         '''
         packages = package_map[type]
         output = self.__conda_execute('create -y -q --json -n', env,
-                                              *packages.split(" "))
+                                      *packages.split(" "))
         resp = self.__clean_conda_json(output)
 
         '''
@@ -86,6 +87,59 @@ class EnvManager(LoggingConfigurable):
         kdir = '.local/share/jupyter/kernels/' + env
         os.remove(kdir + '/kernel.json')
         os.rmdir(kdir)
+        return self.__clean_conda_json(output)
+
+    def install_packages(self, env, packages):
+        '''
+        Installs a list of packages onto an env
+        '''
+        output = self.__conda_execute(
+            'install -y -q --json -n', env, *packages)
+        return self.__clean_conda_json(output)
+
+    def update_packages(self, env, packages):
+        '''
+        Updates package(s) in an env
+        '''
+        output = self.__conda_execute(
+            'update -y -q --json -n', env, *packages)
+        return self.__clean_conda_json(output)
+
+    def remove_packages(self, env, packages):
+        '''
+        Removes a list of packages from an env
+        '''
+        output = self.__conda_execute(
+            'remove -y -q --json -n', env, *packages)
+        return self.__clean_conda_json(output)
+
+    def list_packages(self, env):
+        '''
+        List the packages installed on an env
+        '''
+        packages = self.__conda_execute('list --json -n', env)
+        return self.__clean_conda_json(packages)
+
+    def export_env(self, env):
+        '''
+        Export the conda env specifiation as plain text
+        '''
+        return str(self.__conda_execute('list -e -n', env))
+
+    def check_update(self, env, packages):
+        '''
+        Checks for newer versions of packages in an env
+        '''
+        output = self.__conda_execute('update --dry-run -q --json -n', env,
+                                      *packages)
+        return self.__clean_conda_json(output)
+
+    def clone_env(self, oldenv, newenv):
+        '''
+        Make an exact copy of an environment by creating a clone of it
+        '''
+        output = self.__conda_execute(
+            'create -y -q --json -n', newenv, '--clone', oldenv)
         return self.__clean_conda_json(output)
 
     def package_search(self, q):
@@ -161,48 +215,3 @@ class EnvManager(LoggingConfigurable):
         except Exception as err:
             raise Exception(err)
         return cleanJson
-
-    def install_packages(self, env, packages):
-        '''
-        Installs a list of packages onto an env
-        '''
-        output = self.__conda_execute(
-            'install -y -q --json -n', env, *packages)
-        return self.__clean_conda_json(output)
-
-    def update_packages(self, env, packages):
-        '''
-        Updates package(s) in an env
-        '''
-        output = self.__conda_execute(
-            'update -y -q --json -n', env, *packages)
-        return self.__clean_conda_json(output)
-
-    def remove_packages(self, env, packages):
-        '''
-        Removes a list of packages from an env
-        '''
-        output = self.__conda_execute(
-            'remove -y -q --json -n', env, *packages)
-        return self.__clean_conda_json(output)
-    
-    def list_packages(self, env):
-        '''
-        List the packages installed on an env
-        '''
-        packages = self.__conda_execute('list --json -n', env)
-        return self.__clean_conda_json(packages)
-    
-    def export_env(self, env):
-        '''
-        Export the conda env specifiation as plain text
-        '''
-        return str(self.__conda_execute('list -e -n', env))
-
-    def check_update(self, env, packages):
-        '''
-        Checks for newer versions of packages in an env
-        '''
-        output = self.__conda_execute('update --dry-run -q --json -n', env,
-                                              *packages)
-        return self.__clean_conda_json(output)
