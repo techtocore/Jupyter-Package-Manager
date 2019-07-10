@@ -14,9 +14,10 @@ from .swanproject import SwanProject
 
 env_manager = EnvManager()
 
+
 class PackageManager():
     '''
-    This class essentially contains all the features of the server extension
+    This class contains all the logic of the server extension
     '''
 
 # -----------------------------------------------------------------------------
@@ -24,7 +25,6 @@ class PackageManager():
 # -----------------------------------------------------------------------------
 
     def list_projects(self):
-
         '''
         Module for `GET /projects` which lists the projects.
         '''
@@ -32,7 +32,6 @@ class PackageManager():
         return env_manager.list_envs()
 
     def create_project(self, directory, env_type):
-
         '''
         Module for `POST /projects` which
         creates the specified environment.
@@ -61,22 +60,21 @@ class PackageManager():
             swanproj.update_yaml()
         except Exception as e:
             resp = {'error': str(e)}
-            
+
         return resp
 
     def delete_project(self, directories):
-
         '''
         Module for `DELETE /projects` which
         deletes the specified projects.
         '''
-        
+
         # try:
         #     swanproj = SwanProject(directory)
         #     env = swanproj.env
         # except Exception as e:
         #     return {'error': str(e)}
-        
+
         try:
             dlist = []
             for projectdir in directories:
@@ -87,12 +85,11 @@ class PackageManager():
                 swanproject.clear_yaml()
             resp = {'response': dlist}
         except Exception as e:
-                resp = {'error': str(e)}
+            resp = {'error': str(e)}
 
         return resp
 
     def import_project(self, file1, directory):
-
         '''
         Module for `PUT /project_info` which
         updates a project with all the packages obtained from an export file
@@ -111,7 +108,6 @@ class PackageManager():
         return resp
 
     def sync_project(self, directory):
-
         '''
         Module for `PATCH /project_info` which
         syncs a .swanproject file and the corresponding conda env
@@ -124,16 +120,13 @@ class PackageManager():
             for i in package_info['packages']:
                 if i['status'] != 'installed':
                     packages.append(i['name'] + '=' + i['version'])
-            resp =  self.install_packages(directory, packages)
-            swanproj.packages = env_manager.list_packages(swanproj.env)
-            swanproj.update_yaml()
+            resp = self._install_packages_aux(swanproj, packages)
         except Exception as e:
             resp = {'error': str(e)}
 
         return resp
 
     def clone_project(self, directory, new_directory):
-
         '''
         Module for 'POST /projects' which clones a project in a new location
         '''
@@ -158,7 +151,6 @@ class PackageManager():
 # Package Management APIs
 # -----------------------------------------------------------------------------
 
-
     def clean(self, packages):
         # no hyphens up front, please
         _pkg_regex = r"(?P<pkg>[^\-][\-\da-zA-Z\._]+)"
@@ -166,8 +158,14 @@ class PackageManager():
         packages = [pkg for pkg in packages if re.match(_pkg_regex, pkg)]
         return packages
 
-    def install_packages(self, directory, packages):
+    def _install_packages_aux(self, swanproj, packages):
+        env = swanproj.env
+        resp = env_manager.install_packages(env, packages)
+        swanproj.packages = env_manager.list_packages(env)
+        swanproj.update_yaml()
+        return resp
 
+    def install_packages(self, directory, packages):
         '''
         Module for `POST /packages` which installs all
         the selected packages in the specified environment.
@@ -176,16 +174,12 @@ class PackageManager():
         packages = self.clean(packages)
         try:
             swanproj = SwanProject(directory)
-            env = swanproj.env
-            resp = env_manager.install_packages(env, packages)
-            swanproj.packages = env_manager.list_packages(env)
-            swanproj.update_yaml()
+            resp = self._install_packages_aux(swanproj, packages)
         except Exception as e:
             resp = {'error': str(e)}
         return resp
 
     def update_packages(self, directory, packages):
-
         '''
         Module for `PATCH /packages` which updates all
         the selected packages in the specified environment.
@@ -203,7 +197,6 @@ class PackageManager():
         return resp
 
     def delete_packages(self, directory, packages):
-
         '''
         Module for `DELETE /packages` which deletes all
         the selected packages in the specified environment.
@@ -220,9 +213,7 @@ class PackageManager():
             resp = {'error': str(e)}
         return resp
 
-
     def check_update(self, directory):
-
         '''
         Module for `GET /packages/check_update` which checks for updates of all
         the selected packages in the specified environment.
@@ -263,7 +254,7 @@ class PackageManager():
         except Exception as e:
             resp = str(e)
         return resp
-    
+
     def project_info(self, directory):
         try:
             swandata = []
@@ -318,17 +309,15 @@ class PackageManager():
 class CondaSearcher(object):
 
     def __init__(self):
-
         '''
         Helper object that runs `conda search` to retrieve the
         list of packages available in the current conda channels.
         '''
-        
+
         self.conda_process = None
         self.conda_temp = None
 
     def list_available(self, Module=None):
-
         '''
         List the available conda packages by kicking off a background
         conda process. Will return None. Call again to poll the process

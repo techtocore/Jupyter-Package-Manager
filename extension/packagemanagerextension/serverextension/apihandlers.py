@@ -15,20 +15,20 @@ This file contains the handler classes for API endpoints. Every request is servi
 an appropriate method from the PackageManager class
 '''
 
+
 class EnvBaseHandler(APIHandler):
 
     '''
     Maintains a reference to the
     'env_manager' which implements all of the conda functions.
     '''
-    
+
     @property
     def env_manager(self):
         '''
         Return our env_manager instance
         '''
         return self.settings['env_manager']
-
 
 
 # -----------------------------------------------------------------------------
@@ -40,7 +40,6 @@ class ManageProjectsHandler(EnvBaseHandler):
 
     @json_errors
     def get(self):
-
         '''
         Handler for `GET /projects` which lists the projects.
         '''
@@ -51,7 +50,6 @@ class ManageProjectsHandler(EnvBaseHandler):
 
     @json_errors
     def post(self):
-
         '''
         Handler for `POST /projects` which
         creates the specified environment.
@@ -61,7 +59,7 @@ class ManageProjectsHandler(EnvBaseHandler):
         directory = data.get('project')
         env_type = data.get('env_type', 'python3')
         resp = package_manager.create_project(directory, env_type)
-            
+
         if 'error' not in resp:
             status = 201  # CREATED
 
@@ -74,7 +72,6 @@ class ManageProjectsHandler(EnvBaseHandler):
 
     @json_errors
     def delete(self):
-
         '''
         Handler for `DELETE /projects` which
         deletes the specified projects.
@@ -99,7 +96,6 @@ class ProjectInfoHandler(EnvBaseHandler):
 
     @json_errors
     def get(self):
-
         '''
         Handler for `GET /project_info` which
         returns the internal name of the environment 
@@ -131,7 +127,6 @@ class ProjectInfoHandler(EnvBaseHandler):
 
     @json_errors
     def put(self):
-
         '''
         Handler for `PUT /project_info` which
         updates a project with all the packages obtained from an export file
@@ -140,7 +135,7 @@ class ProjectInfoHandler(EnvBaseHandler):
         # get list of all packages
         file1 = self.request.files['file'][0]
         directory = self.get_argument('project', default=None)
-        
+
         resp = package_manager.import_project(file1, directory)
 
         if 'error' not in resp:
@@ -155,7 +150,6 @@ class ProjectInfoHandler(EnvBaseHandler):
 
     @json_errors
     def patch(self):
-
         '''
         Handler for `PATCH /project_info` which
         syncs a .swanproject file and the corresponding conda env
@@ -163,7 +157,7 @@ class ProjectInfoHandler(EnvBaseHandler):
 
         data = escape.json_decode(self.request.body)
         directory = data.get('project')
-        
+
         resp = package_manager.sync_project(directory)
 
         if 'error' not in resp:
@@ -177,8 +171,6 @@ class ProjectInfoHandler(EnvBaseHandler):
         self.finish(json.dumps(resp))
 
 
-
-
 # -----------------------------------------------------------------------------
 # Package Management APIs
 # -----------------------------------------------------------------------------
@@ -188,7 +180,6 @@ class PkgHandler(EnvBaseHandler):
 
     @json_errors
     def post(self):
-
         '''
         Handler for `POST /packages` which installs all
         the selected packages in the specified environment.
@@ -204,7 +195,6 @@ class PkgHandler(EnvBaseHandler):
 
     @json_errors
     def patch(self):
-
         '''
         Handler for `PATCH /packages` which updates all
         the selected packages in the specified environment.
@@ -220,7 +210,6 @@ class PkgHandler(EnvBaseHandler):
 
     @json_errors
     def delete(self):
-
         '''
         Handler for `DELETE /packages` which deletes all
         the selected packages in the specified environment.
@@ -239,7 +228,6 @@ class CheckUpdatePkgHandler(EnvBaseHandler):
 
     @json_errors
     def get(self):
-
         '''
         Handler for `GET /packages/check_update` which checks for updates of all
         the selected packages in the specified environment.
@@ -254,11 +242,11 @@ class CheckUpdatePkgHandler(EnvBaseHandler):
 
 searcher = CondaSearcher()
 
+
 class AvailablePackagesHandler(EnvBaseHandler):
 
     @json_errors
     def get(self):
-
         '''
         Handler for `GET /packages/available`, which uses CondaSearcher
         to list the packages available for installation.
@@ -279,7 +267,6 @@ class SearchHandler(EnvBaseHandler):
 
     @json_errors
     def get(self):
-
         '''
         Handler for `GET /packages/search?q=<query>`, which uses CondaSearcher
         to search the available conda packages.
