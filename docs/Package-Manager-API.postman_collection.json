@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "a5caa9f9-6613-4088-8572-69311e725821",
+		"_postman_id": "5aed158e-3fed-4077-a7ac-921db046b886",
 		"name": "Package-Manager-API",
 		"description": "This file outlines the API specifications for the endpoints used by Jupyter Package Manager",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -56,7 +56,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"project\": \"/MySwanProjectA\"\n}"
+							"raw": "{\n\t\"project\": [\"/MySwanProjectA\"]\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8888/api/packagemanager/projects",
@@ -225,6 +225,39 @@
 							]
 						},
 						"description": "This API endpoint syncs a .swanproject file and the corresponding conda env."
+					},
+					"response": []
+				},
+				{
+					"name": "Clone Project",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"project\": \"/MySwanProjectB\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/project_clone",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"project_clone"
+							]
+						},
+						"description": "This enpoint creates a new env for a folder that has just been cloned."
 					},
 					"response": []
 				}

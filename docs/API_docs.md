@@ -13,6 +13,7 @@ This file outlines the API specifications for the endpoints used by Jupyter Pack
   * [Project Info](#4-project-info)
   * [Project Import](#5-project-import)
   * [Sync Project](#6-sync-project)
+  * [Clone Project](#7-clone-project)
 
 * [Package Management](#package-management)
 
@@ -305,7 +306,6 @@ The API endpoint creates a conda environment with a Python kernel installed (ipy
 
 The .swanproject file gets filled with the swanproject-UUID (name of the environment internally) and the installed packages.
 
-A 'kernel.json' file is generated and stored, to allow the users to create a notebook from the newly created environment corresponding to the project.
 
 
 ***Endpoint:***
@@ -378,30 +378,7 @@ Method: DELETE
 Type: RAW
 URL: http://localhost:8888/api/packagemanager/projects
 ```
-***Sample Output:***
 
-```js
-{
-    "prefix": "/home/akash/.conda/envs/swanproject-ad4d7f04-98c6-11e9-830c-ac2b6ebe8a16",
-    "success": true,
-    "actions": {
-        "PREFIX": "/home/akash/.conda/envs/swanproject-ad4d7f04-98c6-11e9-830c-ac2b6ebe8a16",
-        "UNLINK": [
-            {
-                "dist_name": "ipython_genutils-0.2.0-py37_0",
-                "build_number": 0,
-                "name": "ipython_genutils",
-                "build_string": "py37_0",
-                "base_url": "https://repo.anaconda.com/pkgs/main",
-                "platform": "linux-64",
-                "version": "0.2.0",
-                "channel": "pkgs/main"
-            }
-        ],
-        "FETCH": []
-    }
-}
-```
 
 ***Headers:***
 
@@ -415,7 +392,7 @@ URL: http://localhost:8888/api/packagemanager/projects
 
 ```js        
 {
-	"project": "/MySwanProjectA"
+	"project": ["/MySwanProjectA"]
 }
 ```
 
@@ -442,7 +419,7 @@ URL: http://localhost:8888/api/packagemanager/project_info
 | Key | Value | Description |
 | --- | ------|-------------|
 | Content-Type | text/plain |  |
-| Content-Disposition | attachment |  |
+
 
 
 ***Query params:***
@@ -569,6 +546,39 @@ URL: http://localhost:8888/api/packagemanager/project_info
 ```js        
 {
 	"project": "/MySwanProjectA"
+}
+```
+
+
+
+### 7. Clone Project
+
+
+This enpoint creates a new env for a folder that has just been cloned.
+
+
+***Endpoint:***
+
+```bash
+Method: POST
+Type: RAW
+URL: http://localhost:8888/api/packagemanager/project_clone
+```
+
+
+***Headers:***
+
+| Key | Value | Description |
+| --- | ------|-------------|
+| Content-Type | application/json |  |
+
+
+
+***Body:***
+
+```js        
+{
+	"project": "/MySwanProjectB"
 }
 ```
 
