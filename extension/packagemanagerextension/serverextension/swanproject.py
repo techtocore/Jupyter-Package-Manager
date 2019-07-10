@@ -15,24 +15,24 @@ class SwanProject(LoggingConfigurable):
 
     def __init__(self, directory):
         directory = self.__relative_dir(directory) + ".swanproject"
-        self.directory = directory 
+        self.directory = directory
         self.env = ""
         self.packages = {}
         try:
-            env = yaml.load(open(directory))['ENV']
-            packages = yaml.load(open(directory))['PACKAGE_INFO']
+            filecontent = yaml.load(open(directory))
+            env = filecontent['ENV']
+            packages = filecontent['PACKAGE_INFO']
             self.packages = packages
             self.env = env
         except:
             pass
-        
+
     def update_yaml(self):
         '''
         Updates the .swanproject file with new metadata
         '''
         directory = self.directory
-        data = {'ENV': self.env}
-        data['PACKAGE_INFO'] = self.packages
+        data = {'ENV': self.env, 'PACKAGE_INFO': self.packages}
         try:
             with open(directory, 'w') as outfile:
                 yaml.dump(data, outfile, default_flow_style=False)

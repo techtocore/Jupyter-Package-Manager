@@ -28,18 +28,17 @@ default_handlers = [
 ]
 
 
-def PackageManagerHandler(nbapp):
-    '''Load the nbserver extension'''
-    webapp = nbapp.web_app
-    webapp.settings['env_manager'] = EnvManager(parent=nbapp)
+def load_jupyter_server_extension(nb_server_app):
+    '''
+    Load the nbserver extension
+    '''
+
+    webapp = nb_server_app.web_app
+    webapp.settings['env_manager'] = EnvManager(parent=nb_server_app)
 
     base_url = webapp.settings['base_url']
     webapp.add_handlers(".*$", [
         (ujoin(base_url, NS, pat), handler)
         for pat, handler in default_handlers
     ])
-    nbapp.log.info("packagemanagerextension: Handlers enabled")
-
-
-def load_jupyter_server_extension(nb_server_app):
-    PackageManagerHandler(nb_server_app)
+    nb_server_app.log.info("packagemanagerextension: Handlers enabled")
