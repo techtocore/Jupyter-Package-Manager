@@ -113,17 +113,35 @@ define([
                     let pks = res.packages;
                     let html = ""
                     $('#searchlist').html(html);
-                    pks.forEach(element => {
+                    Array.from(pks).forEach(element => {
                         let name = element.name;
                         let version = element.version;
                         let entry = name + " - " + version;
-                        html += "<option>";
+                        html += "<option value='" + entry + "'>";
                         html += entry;
                         html += "</option>";
                     });
                     $('#searchlist').html(html);
                 }, 1000));
             });
+
+            document.querySelector('input[list="searchlist"]').addEventListener('input', onInput);
+
+            function onInput(e) {
+                var input = e.target;
+                var val = input.value;
+                var list = input.getAttribute('list');
+                var options = document.getElementById(list).childNodes;
+
+                for (var i = 0; i < options.length; i++) {
+                    if (options[i].innerText === val) {
+                        // An item was selected from the list!
+                        // yourCallbackHere()
+                        alert('item selected: ' + val);
+                        break;
+                    }
+                }
+            }
         }
     };
 

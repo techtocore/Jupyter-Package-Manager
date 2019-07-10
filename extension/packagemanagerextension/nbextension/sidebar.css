@@ -67,3 +67,9 @@
   margin-top: 18px;
   cursor: pointer;
 }
+
+.main-content {
+  max-height: 60vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
