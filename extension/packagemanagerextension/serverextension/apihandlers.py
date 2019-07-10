@@ -240,6 +240,22 @@ class CheckUpdatePkgHandler(EnvBaseHandler):
         self.finish(json.dumps(resp))
 
 
+class CloneProjectHandler(EnvBaseHandler):
+
+    @json_errors
+    def post(self):
+        '''
+        Handler for for `POST /project_clone` which clones a project in a new location
+        '''
+
+        data = escape.json_decode(self.request.body)
+        directory = data.get('project')
+        resp = package_manager.clone_project(directory)
+        if resp.get("error"):
+            self.set_status(400)
+        self.finish(json.dumps(resp))
+
+
 searcher = CondaSearcher()
 
 
