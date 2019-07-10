@@ -115,7 +115,7 @@ class PackageManager():
 
         try:
             swanproj = SwanProject(directory)
-            package_info = self.project_info(directory)
+            package_info = self.project_info_aux(swanproj)
             packages = []
             for i in package_info['packages']:
                 if i['status'] != 'installed':
@@ -126,21 +126,19 @@ class PackageManager():
 
         return resp
 
-    def clone_project(self, directory, new_directory):
+    def clone_project(self, directory):
         '''
-        Module for 'POST /projects' which clones a project in a new location
+        Module for `POST /project_clone` which clones a project in a new location
         '''
 
         try:
-            swanproj1 = SwanProject(directory)
-            oldenv = swanproj1.env
+            swanproj = SwanProject(directory)
             env = uuid.uuid1()
             env = 'swanproject-' + str(env)
-            resp = env_manager.clone_env(oldenv, env)
-            swanproj2 = SwanProject(new_directory)
-            swanproj2.env = env
-            swanproj2.packages = swanproj1.packages
-            swanproj2.update_yaml()
+            folder = directory[:-1].split('/')[-1]
+            resp = env_manager.create_env(env, folder, 'python3')
+            swanproj.env = env
+            swanproj.update_yaml()
         except Exception as e:
             resp = {'error': str(e)}
 
@@ -255,35 +253,40 @@ class PackageManager():
             resp = str(e)
         return resp
 
+    def project_info_aux(self, swanproj):
+        swandata = []
+        env = swanproj.env
+        packages = swanproj.packages
+        for item in packages:
+            swandata.append(env_manager.pkg_info(item))
+            # details of all packages in the .swanproject file
+
+        data = env_manager.list_packages(env)
+        if 'error' in data:
+            # we didn't get back a list of packages, we got a dictionary with
+            # error info
+            return data
+        condadata = []
+        for package in data:
+            condadata.append(env_manager.pkg_info(package))
+            # details of all packages in the corresponding env
+
+        resp = {}
+        resp['env'] = env
+        '''
+        Merge both the lists with the appropriate status of every package
+        If in swanproj but not in conda -> alert the user to install
+        if in conda but not in swanproj -> alert the user to sync the state (or do it automatically?)
+        if in both -> keep calm and carry on
+        '''
+        resp['packages'] = self.pkg_info_status(swandata, condadata)
+
+        return resp
+
     def project_info(self, directory):
         try:
-            swandata = []
             swanproj = SwanProject(directory)
-            env = swanproj.env
-            packages = swanproj.packages
-            for item in packages:
-                swandata.append(env_manager.pkg_info(item))
-                # details of all packages in the .swanproject file
-
-            data = env_manager.list_packages(env)
-            if 'error' in data:
-                # we didn't get back a list of packages, we got a dictionary with
-                # error info
-                return data
-            condadata = []
-            for package in data:
-                condadata.append(env_manager.pkg_info(package))
-                # details of all packages in the corresponding env
-
-            resp = {}
-            resp['env'] = env
-            '''
-            Merge both the lists with the appropriate status of every package
-            If in swanproj but not in conda -> alert the user to install
-            if in conda but not in swanproj -> alert the user to sync the state (or do it automatically?)
-            if in both -> keep calm and carry on
-            '''
-            resp['packages'] = self.pkg_info_status(swandata, condadata)
+            resp = self.project_info_aux(swanproj)
         except Exception as e:
             resp = {'error': str(e)}
         return resp

@@ -134,14 +134,6 @@ class EnvManager(LoggingConfigurable):
                                      *packages)
         return self._clean_conda_json(output)
 
-    def clone_env(self, oldenv, newenv):
-        '''
-        Make an exact copy of an environment by creating a clone of it
-        '''
-        output = self._conda_execute(
-            'create -y -q --json -n', newenv, '--clone', oldenv)
-        return self._clean_conda_json(output)
-
     def package_search(self, q):
         '''
         This function lets users search for available packages that match a search query

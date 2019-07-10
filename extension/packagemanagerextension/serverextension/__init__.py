@@ -25,6 +25,7 @@ default_handlers = [
     (r"/packages/check_update", CheckUpdatePkgHandler),
     (r"/packages/available", AvailablePackagesHandler),
     (r"/packages/search", SearchHandler),
+    (r"/project_clone", CloneProjectHandler),
 ]
 
 
