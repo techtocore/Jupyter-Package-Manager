@@ -1,0 +1,530 @@
+{
+	"info": {
+		"_postman_id": "5aed158e-3fed-4077-a7ac-921db046b886",
+		"name": "Package-Manager-API",
+		"description": "This file outlines the API specifications for the endpoints used by Jupyter Package Manager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Project Management",
+			"item": [
+				{
+					"name": "Create Project",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"project\": \"/MySwanProjectA\",\n\t\"env_type\": \"python3\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/projects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"projects"
+							]
+						},
+						"description": "The API endpoint creates a conda environment with a Python kernel installed (ipykernel).\n\nThe .swanproject file gets filled with the swanproject-UUID (name of the environment internally) and the installed packages.\n\nA 'kernel.json' file is generated and stored, to allow the users to create a notebook from the newly created environment corresponding to the project."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Project",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"project\": [\"/MySwanProjectA\"]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/projects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"projects"
+							]
+						},
+						"description": "The API endpoint deletes the conda environment corresponding to a project.\n\nThe 'kernel.json' for the environment corresponding to the project is removed.\n\nNote that the project directory has to exist while calling this endpoint, and it is left unmodified by invoking this API."
+					},
+					"response": []
+				},
+				{
+					"name": "Project Export",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "text/plain",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/project_info?project=/MySwanProjectA",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"project_info"
+							],
+							"query": [
+								{
+									"key": "project",
+									"value": "/MySwanProjectA"
+								}
+							]
+						},
+						"description": "The API endpoint exports the details of the conda environment corresponding to a project.\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Project Info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/project_info?project=/MySwanProjectA",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"project_info"
+							],
+							"query": [
+								{
+									"key": "project",
+									"value": "/MySwanProjectA"
+								}
+							]
+						},
+						"description": "The API endpoint outlines the details of the conda environment corresponding to a project.\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Project Import",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								},
+								{
+									"key": "project",
+									"value": "/MySwanProjectA",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/project_info",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"project_info"
+							]
+						},
+						"description": "This API endpoint updates a project with all the packages obtained from an export file."
+					},
+					"response": []
+				},
+				{
+					"name": "Sync Project",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"project\": \"/MySwanProjectA\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/project_info",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"project_info"
+							]
+						},
+						"description": "This API endpoint syncs a .swanproject file and the corresponding conda env."
+					},
+					"response": []
+				},
+				{
+					"name": "Clone Project",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"project\": \"/MySwanProjectB\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/project_clone",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"project_clone"
+							]
+						},
+						"description": "This enpoint creates a new env for a folder that has just been cloned."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Package Management",
+			"item": [
+				{
+					"name": "Install Packages",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"project\": \"/MySwanProjectA\",\n\t\"packages\": [\"pyyaml=3.13\"]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"packages"
+							]
+						},
+						"description": "The extension installs the package onto the corresponding project.\n\nThe .swanproject gets updated with the new package and respective version."
+					},
+					"response": []
+				},
+				{
+					"name": "Uninstall Packages",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"project\": \"/MySwanProjectA\",\n\t\"packages\": [\"pyyaml\"]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"packages"
+							]
+						},
+						"description": "The extension removes the package from the corresponding project.\n\nThe .swanproject gets updated with the current set of packages and respective versions.\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Check Updates for Packages",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/packages/check_update?project=/MySwanProjectA",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"packages",
+								"check_update"
+							],
+							"query": [
+								{
+									"key": "project",
+									"value": "/MySwanProjectA"
+								}
+							]
+						},
+						"description": "This API endpoint returns the list of packages that can be updated in the corresponding project."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Packages",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"project\": \"/MySwanProjectA\",\n\t\"packages\": [\"pyyaml\"]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"packages"
+							]
+						},
+						"description": "The API endpoint installs the latest versions of packages onto the corresponding project.\n\nThe .swanproject gets updated with the new packages and respective versions."
+					},
+					"response": []
+				},
+				{
+					"name": "Search Packages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/packages/search?q=pyyaml=3.13",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"packages",
+								"search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "pyyaml=3.13"
+								}
+							]
+						},
+						"description": "This API endpoint lets you search a package name for installation."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Maintenance Tasks",
+			"item": [
+				{
+					"name": "List Projects",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/projects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"projects"
+							]
+						},
+						"description": "This API endpoint lists down all the projects created with this extension."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Project List",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"project\": [\"/MySwanProjectA\", \"/MySwanProjectB\"]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/packagemanager/projects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"packagemanager",
+								"projects"
+							]
+						},
+						"description": "This API endpoint lets you delete multiple projects at once."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "a03159ad-09ad-4264-8fc8-3f10e979f157",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "e63cc583-2603-4d65-8e7c-4746ab04acb4",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
