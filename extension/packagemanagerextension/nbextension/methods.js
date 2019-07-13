@@ -107,8 +107,59 @@ define([
         }
     };
 
+    var installpkg = {
+
+        installp: function (packages, project) {
+            let payload = {};
+            payload['project'] = project;
+            payload['packages'] = packages;
+            let settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": "http://localhost:8888/api/packagemanager/packages",
+                "method": "POST",
+                "headers": {
+                    "Content-Type": "application/json",
+                    "cache-control": "no-cache",
+                },
+                "processData": false,
+                "data": JSON.stringify(payload)
+            };
+
+
+            return new Promise(resolve => {
+                $.ajax(settings).done(function (response) {
+                    resolve(response);
+                });
+            });
+        },
+
+        load: function () {
+            let installp = this.installp;
+            jQuery(function () {
+                $('#installbtn').click(function () {
+                    let toInstall = sessionStorage.getItem("toInstall").split(',');
+                    let project = sessionStorage.getItem("project");
+                    let html = "<p> The following packages are about to be added: </p> </br>";
+                    html += "<ul>";
+                    let packages = [];
+                    toInstall.forEach(element => {
+                        element = element.split('=')[0];
+                        packages.push(element);
+                        html += "<li>";
+                        html += element;
+                        html += "</li>";
+                    });
+                    html += "</ul>";
+                    common.confirm("Install Packages", $.parseHTML(html), "Confirm", installp(packages, project), undefined);
+                });
+            });
+        }
+    };
+
     return {
         'updatepkg': updatepkg,
-        'deletepkg': deletepkg
+        'deletepkg': deletepkg,
+        'installpkg': installpkg
     };
 });
