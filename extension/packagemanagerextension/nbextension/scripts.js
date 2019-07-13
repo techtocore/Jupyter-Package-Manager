@@ -36,28 +36,48 @@ define([
 
             let output = "";
             $.each(data, function (key, val) {
-                output += "<div class='values'>";
-                output += "<div class='row one'>";
-                output += "<div class='col-sm-10 two'>";
-                if (val.status === "installed")
+                if (val.status === "installed") {
+                    output += "<div class='installed-values'>";
+                    output += "<div class='row one'>";
+                    output += "<div class='col-sm-9 two'>";
                     output += "<i class='fas fa-box-open'></i> &nbsp;"
-                else
-                    output += "<i class='fas fa-exclamation-triangle'></i> &nbsp;"
-                output += '<span class="value-name">' + val.name + '</span>';
-                output += "</div>";
-                output += "<div class='col-sm-2 three'>";
-                output += '<span class="value-version">' + val.version + '</span>'
-                output += "</div>";
-                output += "</div>";
-                output += "</div>";
+                    output += '<span class="value-name">' + val.name + '</span>';
+                    output += "</div>";
+                    output += "<div class='col-sm-3 three'>";
+                    output += '<span class="value-version">' + val.version + '</span>'
+                    output += "</div>";
+                    output += "</div>";
+                    output += "</div>";
+                }
+
             });
 
-            $('#content').html(output);
+            $('#installed-packages').html(output);
+
+            output = "";
+
+            $.each(data, function (key, val) {
+                if (val.status != "installed") {
+                    output += "<div class='to-install-values'>";
+                    output += "<div class='row one'>";
+                    output += "<div class='col-sm-9 two'>";
+                    output += "<i class='fas fa-exclamation-triangle'></i> &nbsp;"
+                    output += '<span class="value-name">' + val.name + '</span>';
+                    output += "</div>";
+                    output += "<div class='col-sm-3 three'>";
+                    output += '<span class="value-version">' + val.version + '</span>'
+                    output += "</div>";
+                    output += "</div>";
+                    output += "</div>";
+                }
+            });
+
+
 
             let selectedPackages = [];
 
             jQuery(function () {
-                $('.values').click(function () {
+                $('.installed-values').click(function () {
                     let packageName = $(this).children(".one").children(".two").children(".value-name").text();
                     let version = $(this).children(".one").children(".three").children(".value-version").text();
                     let pkg = packageName + "=" + version;
@@ -70,6 +90,25 @@ define([
                         $(this).children(".one").children(".two").find('svg').attr("data-icon", "check");
                     }
                     sessionStorage.setItem("selectedPackages", selectedPackages);
+                });
+            });
+
+            let toInstall = [];
+
+            jQuery(function () {
+                $('.to-install-values').click(function () {
+                    let packageName = $(this).children(".one").children(".two").children(".value-name").text();
+                    let version = $(this).children(".one").children(".three").children(".value-version").text();
+                    let pkg = packageName + "=" + version;
+                    if (toInstall.includes(pkg)) {
+                        toInstall = toInstall.filter(item => item !== pkg);
+                        $(this).children(".one").children(".two").find('svg').attr("data-icon", "exclamation-triangle");
+                    }
+                    else {
+                        toInstall.push(pkg);
+                        $(this).children(".one").children(".two").find('svg').attr("data-icon", "check");
+                    }
+                    sessionStorage.setItem("toInstall", toInstall);
                 });
             });
         }

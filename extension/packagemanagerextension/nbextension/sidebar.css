@@ -1,4 +1,4 @@
-.sidenav {
+#mySidenav {
   height: 100%;
   width: 0;
   position: fixed;
@@ -69,7 +69,5 @@
 }
 
 .main-content {
-  max-height: 60vh;
-  overflow-y: scroll;
   overflow-x: hidden;
 }
