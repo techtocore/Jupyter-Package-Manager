@@ -1,7 +1,8 @@
 
 define([
     'jquery',
-], function ($) {
+    './views',
+], function ($, views) {
     "use strict";
 
     var packageview = {
@@ -34,44 +35,11 @@ define([
             let info = await this.get_info(dir);
             let data = info.packages;
 
-            let output = "";
-            $.each(data, function (key, val) {
-                if (val.status === "installed") {
-                    output += "<div class='installed-values'>";
-                    output += "<div class='row one'>";
-                    output += "<div class='col-sm-9 two'>";
-                    output += "<i class='fas fa-box-open'></i> &nbsp;"
-                    output += '<span class="value-name">' + val.name + '</span>';
-                    output += "</div>";
-                    output += "<div class='col-sm-3 three'>";
-                    output += '<span class="value-version">' + val.version + '</span>'
-                    output += "</div>";
-                    output += "</div>";
-                    output += "</div>";
-                }
-
-            });
-
+            let output = views.installed(data);
             $('#installed-packages').html(output);
 
-            output = "";
-
-            $.each(data, function (key, val) {
-                if (val.status != "installed") {
-                    output += "<div class='to-install-values'>";
-                    output += "<div class='row one'>";
-                    output += "<div class='col-sm-9 two'>";
-                    output += "<i class='fas fa-exclamation-triangle'></i> &nbsp;"
-                    output += '<span class="value-name">' + val.name + '</span>';
-                    output += "</div>";
-                    output += "<div class='col-sm-3 three'>";
-                    output += '<span class="value-version">' + val.version + '</span>'
-                    output += "</div>";
-                    output += "</div>";
-                    output += "</div>";
-                }
-            });
-
+            output = views.toinstall(data);
+            $('#to-install').html(output);
 
 
             let selectedPackages = [];

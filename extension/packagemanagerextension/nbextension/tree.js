@@ -40,6 +40,7 @@ define(function (require) {
                             $('<a>')
                                 .attr('id', 'package_manager_tab')
                                 .text('Package Manager')
+                                .css('cursor', 'pointer')
                                 .click(function (e) {
                                     document.getElementById("mySidenav").style.width = "440px";
                                     let dir = "/MySwanProjectA"
