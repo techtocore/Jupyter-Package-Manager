@@ -134,6 +134,37 @@ define([
 
             document.querySelector('input[list="searchlist"]').addEventListener('input', onInput);
 
+            function addtoinstall(val) {
+                let a = val.split(' - ');
+                let pkg = {
+                    'name': a[0],
+                    'version': a[1],
+                    'staus': ''
+                };
+                let data = [];
+                data.push(pkg);
+                let output = views.toinstall(data);
+                $('#to-install').append(output);
+                let toInstall = sessionStorage.getItem("toInstall").split(',');
+
+                jQuery(function () {
+                    $('.to-install-values').click(function () {
+                        let packageName = $(this).children(".one").children(".two").children(".value-name").text();
+                        let version = $(this).children(".one").children(".three").children(".value-version").text();
+                        let pkg = packageName + "=" + version;
+                        if (toInstall.includes(pkg)) {
+                            toInstall = toInstall.filter(item => item !== pkg);
+                            $(this).children(".one").children(".two").find('svg').attr("data-icon", "exclamation-triangle");
+                        }
+                        else {
+                            toInstall.push(pkg);
+                            $(this).children(".one").children(".two").find('svg').attr("data-icon", "check");
+                        }
+                        sessionStorage.setItem("toInstall", toInstall);
+                    });
+                });
+            }
+
             function onInput(e) {
                 var input = e.target;
                 var val = input.value;
@@ -144,7 +175,7 @@ define([
                     if (options[i].innerText === val) {
                         // An item was selected from the list!
                         // yourCallbackHere()
-                        alert('item selected: ' + val);
+                        addtoinstall(val);
                         break;
                     }
                 }
@@ -152,8 +183,22 @@ define([
         }
     };
 
+    var closeview = {
+        load: function () {
+            jQuery(function () {
+                $('.closebtn').click(function () {
+                    let arr = []
+                    sessionStorage.setItem("toInstall", arr);
+                    sessionStorage.setItem("selectedPackages", arr);
+                    document.getElementById("mySidenav").style.width = "0";
+                });
+            });
+        }
+    };
+
     return {
         'packageview': packageview,
-        'searchview': searchview
+        'searchview': searchview,
+        'closeview': closeview
     };
 });

@@ -9,6 +9,7 @@ define(function (require) {
     function init(dir) {
         scripts.packageview.load(dir);
         scripts.searchview.load();
+        scripts.closeview.load();
         methods.updatepkg.load();
         methods.deletepkg.load();
     };
