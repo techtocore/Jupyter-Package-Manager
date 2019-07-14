@@ -47,9 +47,44 @@ define([
         return output;
     }
 
+    function selecttoinstall(toInstall) {
+        $('.to-install-values').click(function () {
+            let packageName = $(this).children(".one").children(".two").children(".value-name").text();
+            let version = $(this).children(".one").children(".three").children(".value-version").text();
+            let pkg = packageName + "=" + version;
+            if (toInstall.includes(pkg)) {
+                toInstall = toInstall.filter(item => item !== pkg);
+                $(this).children(".one").children(".two").find('svg').attr("data-icon", "exclamation-triangle");
+            }
+            else {
+                toInstall.push(pkg);
+                $(this).children(".one").children(".two").find('svg').attr("data-icon", "check");
+            }
+            sessionStorage.setItem("toInstall", toInstall);
+        });
+    }
+
+    function selectinstalled(selectedPackages) {
+        $('.installed-values').click(function () {
+            let packageName = $(this).children(".one").children(".two").children(".value-name").text();
+            let version = $(this).children(".one").children(".three").children(".value-version").text();
+            let pkg = packageName + "=" + version;
+            if (selectedPackages.includes(pkg)) {
+                selectedPackages = selectedPackages.filter(item => item !== pkg);
+                $(this).children(".one").children(".two").find('svg').attr("data-icon", "box-open");
+            }
+            else {
+                selectedPackages.push(pkg);
+                $(this).children(".one").children(".two").find('svg').attr("data-icon", "check");
+            }
+            sessionStorage.setItem("selectedPackages", selectedPackages);
+        });
+    }
 
     return {
         'installed': installed,
-        'toinstall': toinstall
+        'toinstall': toinstall,
+        'selecttoinstall': selecttoinstall,
+        'selectinstalled': selectinstalled
     };
 });

@@ -12,6 +12,7 @@ define(function (require) {
         scripts.closeview.load();
         methods.updatepkg.load();
         methods.deletepkg.load();
+        methods.installpkg.load();
     };
 
 
