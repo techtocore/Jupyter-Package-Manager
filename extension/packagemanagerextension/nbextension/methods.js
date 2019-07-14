@@ -32,10 +32,43 @@ define([
             });
         },
 
-        load: function () {
+        checkupdate: function (project) {
+            var settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": "http://localhost:8888/api/packagemanager/packages/check_update?project=" + project,
+                "method": "GET",
+                "headers": {
+                    "Content-Type": "application/json",
+                    "cache-control": "no-cache"
+                },
+                "processData": false,
+                "data": ""
+            };
+
+            return new Promise(resolve => {
+                $.ajax(settings).done(function (response) {
+                    resolve(response);
+                });
+            });
+        },
+
+        checknewversion: function (updates, packagename, pkgversion) {
+            updates.forEach(element => {
+                console.log(element);
+                if (element.name === packagename) {
+                    return element.version;
+                }
+            });
+            return pkgversion;
+        },
+
+        load: async function () {
             let update = this.update;
-            jQuery(function () {
-                $('#updatebtn').click(function () {
+            let checkupdate = this.checkupdate;
+            let checknewversion = this.checknewversion;
+            jQuery(async function () {
+                $('#updatebtn').click(async function () {
                     let selectedPackages = sessionStorage.getItem("selectedPackages");
                     if (null === selectedPackages)
                         selectedPackages = [];
@@ -44,18 +77,26 @@ define([
                         if (selectedPackages[0].length < 1) selectedPackages = [];
                     }
                     let project = sessionStorage.getItem("project");
-                    // let resp = await update(selectedPackages, project);
                     let html = "<p> The following packages are about to be updated: </p> </br>";
-                    html += "<ul>";
+                    let resp = await checkupdate(project);
+                    let updates = resp.updates;
                     let packages = [];
-                    selectedPackages.forEach(element => {
-                        element = element.split('=')[0];
-                        packages.push(element);
-                        html += "<li>";
-                        html += element;
-                        html += "</li>";
-                    });
-                    html += "</ul>";
+                    if (selectedPackages.length > 0) {
+                        html += "<ul>";
+                        selectedPackages.forEach(element => {
+                            element = element.split('=');
+                            packages.push(element[0]);
+                            html += "<li>";
+                            html += element[0] + "  ";
+                            html += element[1] + " -> ";
+                            html += checknewversion(updates, element[0], element[1]);
+                            html += "</li>";
+                        });
+                        html += "</ul>";
+                    }
+                    else {
+                        html += "<br>";
+                    }
                     common.confirm("Update Packages", $.parseHTML(html), "Confirm", update(packages, project), undefined);
                 });
             });
