@@ -36,7 +36,13 @@ define([
             let update = this.update;
             jQuery(function () {
                 $('#updatebtn').click(function () {
-                    let selectedPackages = sessionStorage.getItem("selectedPackages").split(',');
+                    let selectedPackages = sessionStorage.getItem("selectedPackages");
+                    if (null === selectedPackages)
+                        selectedPackages = [];
+                    else {
+                        selectedPackages = selectedPackages.split(',');
+                        if (selectedPackages[0].length < 1) selectedPackages = [];
+                    }
                     let project = sessionStorage.getItem("project");
                     // let resp = await update(selectedPackages, project);
                     let html = "<p> The following packages are about to be updated: </p> </br>";

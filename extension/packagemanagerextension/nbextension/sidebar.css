@@ -71,3 +71,7 @@
 .main-content {
   overflow-x: hidden;
 }
+
+#deletebtn {
+  display: none;
+}

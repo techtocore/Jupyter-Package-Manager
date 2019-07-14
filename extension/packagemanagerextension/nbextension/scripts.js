@@ -117,9 +117,15 @@ define([
                 data.push(pkg);
                 let output = views.toinstall(data);
                 $('#to-install').append(output);
-                let toInstall = sessionStorage.getItem("toInstall").split(',');
-                if (toInstall[0].length < 1) toInstall = [];
+                let toInstall = sessionStorage.getItem("toInstall");
+                if (null === toInstall)
+                    toInstall = [];
+                else {
+                    toInstall = toInstall.split(',');
+                    if (toInstall[0].length < 1) toInstall = [];
+                }
                 jQuery(views.selecttoinstall(toInstall));
+                $('#to-install-main').css("display", "initial");
             }
 
             function onInput(e) {

@@ -78,13 +78,23 @@ define([
                 $(this).children(".one").children(".two").find('svg').attr("data-icon", "check");
             }
             sessionStorage.setItem("selectedPackages", selectedPackages);
+            deletebtndisp(selectedPackages);
         });
+    }
+
+    function deletebtndisp(selectedPackages) {
+        let n = selectedPackages.length;
+        if (n === 0)
+            $('#deletebtn').css("display", "none");
+        else $('#deletebtn').css("display", "inline");
+
     }
 
     return {
         'installed': installed,
         'toinstall': toinstall,
         'selecttoinstall': selecttoinstall,
-        'selectinstalled': selectinstalled
+        'selectinstalled': selectinstalled,
+        'deletebtndisp': deletebtndisp
     };
 });
