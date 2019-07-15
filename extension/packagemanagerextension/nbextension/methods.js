@@ -67,6 +67,7 @@ define([
             let checkupdate = this.checkupdate;
             let checknewversion = this.checknewversion;
             jQuery(async function () {
+                $('#updatebtn').unbind();
                 $('#updatebtn').click(async function () {
                     let selectedPackages = sessionStorage.getItem("selectedPackages");
                     if (null === selectedPackages)
@@ -158,10 +159,10 @@ define([
         load: function () {
             let deletep = this.deletep;
             jQuery(function () {
+                $('#deletebtn').unbind();
                 $('#deletebtn').click(function () {
                     let selectedPackages = sessionStorage.getItem("selectedPackages").split(',');
                     let project = sessionStorage.getItem("project");
-                    // let resp = await update(selectedPackages, project);
                     let html = "<p> The following packages are about to be deleted: </p> </br>";
                     html += "<ul>";
                     let packages = [];
@@ -209,6 +210,7 @@ define([
         load: function () {
             let installp = this.installp;
             jQuery(function () {
+                $('#installbtn').unbind();
                 $('#installbtn').click(function () {
                     let toInstall = sessionStorage.getItem("toInstall").split(',');
                     let project = sessionStorage.getItem("project");

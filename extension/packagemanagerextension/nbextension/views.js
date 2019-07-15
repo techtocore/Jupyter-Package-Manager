@@ -48,6 +48,7 @@ define([
     }
 
     function selecttoinstall(toInstall) {
+        $('.to-install-values').unbind();
         $('.to-install-values').click(function () {
             let packageName = $(this).children(".one").children(".two").children(".value-name").text();
             let version = $(this).children(".one").children(".three").children(".value-version").text();
@@ -65,6 +66,7 @@ define([
     }
 
     function selectinstalled(selectedPackages) {
+        $('.installed-values').unbind();
         $('.installed-values').click(function () {
             let packageName = $(this).children(".one").children(".two").children(".value-name").text();
             let version = $(this).children(".one").children(".three").children(".value-version").text();

@@ -84,6 +84,7 @@ define([
             let delay = this.delay;
             let search = this.search;
             jQuery(function () {
+                $('#package-name').unbind();
                 $('#package-name').keyup(delay(async function (e) {
                     let query = this.value;
                     let res = await search(query);
@@ -136,8 +137,6 @@ define([
 
                 for (var i = 0; i < options.length; i++) {
                     if (options[i].innerText === val) {
-                        // An item was selected from the list!
-                        // yourCallbackHere()
                         addtoinstall(val);
                         break;
                     }
@@ -149,6 +148,7 @@ define([
     var closeview = {
         load: function () {
             jQuery(function () {
+                $('.closebtn').unbind();
                 $('.closebtn').click(function () {
                     let arr = []
                     sessionStorage.setItem("toInstall", arr);
