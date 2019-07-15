@@ -54,12 +54,11 @@ define([
         },
 
         checknewversion: function (updates, packagename, pkgversion) {
-            updates.forEach(element => {
-                console.log(element);
+            for (let element of updates) {
                 if (element.name === packagename) {
                     return element.version;
                 }
-            });
+            }
             return pkgversion;
         },
 
@@ -81,21 +80,47 @@ define([
                     let resp = await checkupdate(project);
                     let updates = resp.updates;
                     let packages = [];
+                    let ct = 0;
                     if (selectedPackages.length > 0) {
                         html += "<ul>";
                         selectedPackages.forEach(element => {
                             element = element.split('=');
-                            packages.push(element[0]);
-                            html += "<li>";
-                            html += element[0] + "  ";
-                            html += element[1] + " -> ";
-                            html += checknewversion(updates, element[0], element[1]);
-                            html += "</li>";
+                            let pkg = element[0];
+                            let ver = element[1];
+                            let nver = checknewversion(updates, pkg, ver);
+                            if (nver != ver) {
+                                packages.push(pkg);
+                                html += "<li>";
+                                html += pkg + "  ";
+                                html += ver + " -> ";
+                                html += nver;
+                                html += "</li>";
+                                ct += 1;
+                            }
                         });
                         html += "</ul>";
                     }
                     else {
-                        html += "<br>";
+                        var list = document.getElementsByClassName("installed-values");
+                        html += "<ul>";
+                        for (let item of list) {
+                            let pkg = item.getElementsByClassName('value-name')[0].innerText;
+                            let ver = item.getElementsByClassName('value-version')[0].innerText;
+                            let nver = checknewversion(updates, pkg, ver);
+                            if (nver != ver) {
+                                packages.push(pkg);
+                                html += "<li>";
+                                html += pkg + "  ";
+                                html += ver + " -> ";
+                                html += nver;
+                                html += "</li>";
+                                ct += 1;
+                            };
+                        }
+                        html += "</ul>";
+                    }
+                    if (ct === 0) {
+                        html = "<p> There are no updates available </p>"
                     }
                     common.confirm("Update Packages", $.parseHTML(html), "Confirm", update(packages, project), undefined);
                 });
