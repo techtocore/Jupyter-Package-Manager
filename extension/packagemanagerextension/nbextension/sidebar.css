@@ -1,0 +1,77 @@
+#mySidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  right: 0;
+  background-color: rgb(255, 255, 255);
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 20px;
+}
+
+.sidenavcontent {
+  padding: 4px 8px 8px 16px;
+  text-decoration: none;
+  color: #424242;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidenavcontent:hover {
+  color: #252525;
+}
+
+.closebtn {
+  position: absolute;
+  right: 25px;
+  font-size: 30px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {
+    padding-top: 15px;
+  }
+}
+
+.dropdown-item {
+  display: block;
+}
+
+#package-name {
+  width: 400px;
+}
+
+#packageview {
+  padding-left: 10px;
+  width: 400px;
+}
+
+.value-name {
+  font-size: large;
+}
+
+.value-version {
+  font-size: larger;
+}
+
+.installed-values, .to-install-values {
+  line-height: 30px;
+  cursor: pointer;
+}
+
+.faicon {
+  width: 22px;
+  height: 22px;
+  margin-top: 18px;
+  cursor: pointer;
+}
+
+.main-content {
+  overflow-x: hidden;
+}
+
+#deletebtn {
+  display: none;
+}
