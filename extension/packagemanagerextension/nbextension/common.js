@@ -6,7 +6,7 @@ define([
 ], function ($, utils, dialog, keyboard) {
     "use strict";
 
-    function confirm(title, msg, button_text, callback, input) {
+    function confirm(title, msg, button_text, callback) {
         var buttons = { Cancel: {} };
         buttons[button_text] = {
             class: 'btn-danger btn-primary',
@@ -19,21 +19,7 @@ define([
             buttons: buttons
         };
 
-        var d;
-
-        if (input !== undefined) {
-            opts.open = function () {
-                // Upon ENTER, click the OK button.
-                input.keydown(function (event) {
-                    if (event.which === keyboard.keycodes.enter) {
-                        d.find('.btn-primary').first().click();
-                        return false;
-                    }
-                });
-                input.focus();
-            }
-        }
-        d = dialog.modal(opts);
+        dialog.modal(opts);
     }
 
     return {

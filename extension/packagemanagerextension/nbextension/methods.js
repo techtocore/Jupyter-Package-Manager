@@ -124,7 +124,9 @@ define([
                     if (ct === 0) {
                         html = "<p> There are no updates available </p>"
                     }
-                    common.confirm("Update Packages", $.parseHTML(html), "Confirm", update(packages, project), undefined);
+                    common.confirm("Update Packages", $.parseHTML(html), "Confirm", function () {
+                        update(packages, project);
+                    });
                 });
             });
         }
@@ -175,7 +177,9 @@ define([
                         html += "</li>";
                     });
                     html += "</ul>";
-                    common.confirm("Delete Packages", $.parseHTML(html), "Confirm", deletep(packages, project), undefined);
+                    common.confirm("Delete Packages", $.parseHTML(html), "Confirm", function () {
+                        deletep(packages, project);
+                    });
                 });
             });
         }
@@ -226,7 +230,9 @@ define([
                         html += "</li>";
                     });
                     html += "</ul>";
-                    common.confirm("Install Packages", $.parseHTML(html), "Confirm", installp(packages, project), undefined);
+                    common.confirm("Install Packages", $.parseHTML(html), "Confirm", function () {
+                        installp(packages, project);
+                    });
                 });
             });
         }
