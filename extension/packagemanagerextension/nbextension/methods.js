@@ -2,10 +2,11 @@
 define([
     'jquery',
     './common',
-], function ($, common) {
+    './urls',
+], function ($, common, urls) {
     "use strict";
 
-    var updatepkg = {
+    let updatepkg = {
 
         update: function (packages, project) {
             let payload = {};
@@ -14,7 +15,7 @@ define([
             let settings = {
                 "async": true,
                 "crossDomain": true,
-                "url": "http://localhost:8888/api/packagemanager/packages",
+                "url": urls.api_url + "packages",
                 "method": "PATCH",
                 "headers": {
                     "Content-Type": "application/json",
@@ -33,10 +34,10 @@ define([
         },
 
         checkupdate: function (project) {
-            var settings = {
+            let settings = {
                 "async": true,
                 "crossDomain": true,
-                "url": "http://localhost:8888/api/packagemanager/packages/check_update?project=" + project,
+                "url": urls.api_url + "packages/check_update?project=" + project,
                 "method": "GET",
                 "headers": {
                     "Content-Type": "application/json",
@@ -66,7 +67,7 @@ define([
             let update = this.update;
             let checkupdate = this.checkupdate;
             let checknewversion = this.checknewversion;
-            jQuery(async function () {
+            $(async function () {
                 $('#updatebtn').unbind();
                 $('#updatebtn').click(async function () {
                     let selectedPackages = sessionStorage.getItem("selectedPackages");
@@ -102,7 +103,7 @@ define([
                         html += "</ul>";
                     }
                     else {
-                        var list = document.getElementsByClassName("installed-values");
+                        let list = document.getElementsByClassName("installed-values");
                         html += "<ul>";
                         for (let item of list) {
                             let pkg = item.getElementsByClassName('value-name')[0].innerText;
@@ -129,7 +130,7 @@ define([
         }
     };
 
-    var deletepkg = {
+    let deletepkg = {
 
         deletep: function (packages, project) {
             let payload = {};
@@ -138,7 +139,7 @@ define([
             let settings = {
                 "async": true,
                 "crossDomain": true,
-                "url": "http://localhost:8888/api/packagemanager/packages",
+                "url": urls.api_url + "packages",
                 "method": "DELETE",
                 "headers": {
                     "Content-Type": "application/json",
@@ -158,7 +159,7 @@ define([
 
         load: function () {
             let deletep = this.deletep;
-            jQuery(function () {
+            $(function () {
                 $('#deletebtn').unbind();
                 $('#deletebtn').click(function () {
                     let selectedPackages = sessionStorage.getItem("selectedPackages").split(',');
@@ -180,7 +181,7 @@ define([
         }
     };
 
-    var installpkg = {
+    let installpkg = {
 
         installp: function (packages, project) {
             let payload = {};
@@ -189,7 +190,7 @@ define([
             let settings = {
                 "async": true,
                 "crossDomain": true,
-                "url": "http://localhost:8888/api/packagemanager/packages",
+                "url": urls.api_url + "packages",
                 "method": "POST",
                 "headers": {
                     "Content-Type": "application/json",
@@ -209,7 +210,7 @@ define([
 
         load: function () {
             let installp = this.installp;
-            jQuery(function () {
+            $(function () {
                 $('#installbtn').unbind();
                 $('#installbtn').click(function () {
                     let toInstall = sessionStorage.getItem("toInstall").split(',');

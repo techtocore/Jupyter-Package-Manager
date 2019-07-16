@@ -2,16 +2,17 @@
 define([
     'jquery',
     './views',
-], function ($, views) {
+    './urls'
+], function ($, views, urls) {
     "use strict";
 
-    var packageview = {
+    let packageview = {
 
         get_info: function (dir) {
             let settings = {
                 "async": true,
                 "crossDomain": true,
-                "url": "http://localhost:8888/api/packagemanager/project_info?project=" + dir,
+                "url": urls.api_url + "project_info?project=" + dir,
                 "method": "GET",
                 "headers": {
                     "Content-Type": "application/json",
@@ -45,20 +46,20 @@ define([
             }
 
             let selectedPackages = [];
-            jQuery(views.selectinstalled(selectedPackages));
+            $(views.selectinstalled(selectedPackages));
 
             let toInstall = [];
-            jQuery(views.selecttoinstall(toInstall));
+            $(views.selecttoinstall(toInstall));
         }
     };
 
-    var searchview = {
+    let searchview = {
 
         search: function (query) {
             let settings = {
                 "async": true,
                 "crossDomain": true,
-                "url": "http://localhost:8888/api/packagemanager/packages/search?q=" + query,
+                "url": urls.api_url + "packages/search?q=" + query,
                 "method": "GET",
                 "headers": {
                     "cache-control": "no-cache"
@@ -83,7 +84,7 @@ define([
         load: function () {
             let delay = this.delay;
             let search = this.search;
-            jQuery(function () {
+            $(function () {
                 $('#package-name').unbind();
                 $('#package-name').keyup(delay(async function (e) {
                     let query = this.value;
@@ -125,17 +126,17 @@ define([
                     toInstall = toInstall.split(',');
                     if (toInstall[0].length < 1) toInstall = [];
                 }
-                jQuery(views.selecttoinstall(toInstall));
+                $(views.selecttoinstall(toInstall));
                 $('#to-install-main').css("display", "initial");
             }
 
             function onInput(e) {
-                var input = e.target;
-                var val = input.value;
-                var list = input.getAttribute('list');
-                var options = document.getElementById(list).childNodes;
+                let input = e.target;
+                let val = input.value;
+                let list = input.getAttribute('list');
+                let options = document.getElementById(list).childNodes;
 
-                for (var i = 0; i < options.length; i++) {
+                for (let i = 0; i < options.length; i++) {
                     if (options[i].innerText === val) {
                         addtoinstall(val);
                         break;
@@ -145,9 +146,9 @@ define([
         }
     };
 
-    var closeview = {
+    let closeview = {
         load: function () {
-            jQuery(function () {
+            $(function () {
                 $('.closebtn').unbind();
                 $('.closebtn').click(function () {
                     let arr = []

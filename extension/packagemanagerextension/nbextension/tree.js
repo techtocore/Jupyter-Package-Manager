@@ -1,10 +1,10 @@
 define(function (require) {
-    var $ = require('jquery');
-    var Jupyter = require('base/js/namespace');
-    var utils = require('base/js/utils');
-    var scripts = require('./scripts');
-    var urls = require('./urls');
-    var methods = require('./methods');
+    let $ = require('jquery');
+    let Jupyter = require('base/js/namespace');
+    let utils = require('base/js/utils');
+    let scripts = require('./scripts');
+    let urls = require('./urls');
+    let methods = require('./methods');
 
     function init(dir) {
         scripts.packageview.load(dir);
@@ -34,7 +34,7 @@ define(function (require) {
         utils.ajax(urls.static_url + 'sidebar.html', {
             dataType: 'html',
             success: function (env_html, status, xhr) {
-                // Configure Conda tab
+                // Configure tab
                 $(".tab-content").append($(env_html));
                 $("#tabs").append(
                     $('<li>')
@@ -56,7 +56,6 @@ define(function (require) {
         utils.ajax(urls.static_url + 'packageview.html', {
             dataType: 'html',
             success: function (html, status, xhr) {
-                // Configure Conda tab
                 $("#packageview").append($(html));
             }
         });
