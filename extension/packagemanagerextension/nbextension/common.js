@@ -1,19 +1,16 @@
 define([
-    'jquery',
-    'base/js/utils',
     'base/js/dialog',
-    'base/js/keyboard',
-], function ($, utils, dialog, keyboard) {
+], function (dialog) {
     "use strict";
 
     function confirm(title, msg, button_text, callback) {
-        var buttons = { Cancel: {} };
+        let buttons = { Cancel: {} };
         buttons[button_text] = {
             class: 'btn-danger btn-primary',
             click: callback
         }
 
-        var opts = {
+        let opts = {
             title: title,
             body: msg,
             buttons: buttons

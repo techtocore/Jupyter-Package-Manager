@@ -23,15 +23,10 @@ define(function (require) {
             $('<link>')
                 .attr('rel', 'stylesheet')
                 .attr('type', 'text/css')
-                .attr('href', urls.static_url + 'sidebar.css')
-        );
-        $('head').append(
-            $('<script>')
-                .attr('src', urls.static_url + 'js/all.js')
+                .attr('href', urls.static_url + 'templates/sidebar.css')
         );
 
-
-        utils.ajax(urls.static_url + 'sidebar.html', {
+        utils.ajax(urls.static_url + 'templates/sidebar.html', {
             dataType: 'html',
             success: function (env_html, status, xhr) {
                 // Configure tab
@@ -52,14 +47,6 @@ define(function (require) {
                 );
             }
         });
-
-        utils.ajax(urls.static_url + 'packageview.html', {
-            dataType: 'html',
-            success: function (html, status, xhr) {
-                $("#packageview").append($(html));
-            }
-        });
-
     }
     return {
         load_ipython_extension: load

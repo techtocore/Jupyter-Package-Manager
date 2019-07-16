@@ -12,7 +12,7 @@ define([
                 output += "<div class='to-install-values'>";
                 output += "<div class='row one'>";
                 output += "<div class='col-sm-9 two'>";
-                output += "<i class='fas fa-exclamation-triangle'></i> &nbsp;"
+                output += "<i class='fa fa-exclamation-triangle'></i> &nbsp;"
                 output += '<span class="value-name">' + val.name + '</span>';
                 output += "</div>";
                 output += "<div class='col-sm-3 three'>";
@@ -33,7 +33,7 @@ define([
                 output += "<div class='installed-values'>";
                 output += "<div class='row one'>";
                 output += "<div class='col-sm-9 two'>";
-                output += "<i class='fas fa-box-open'></i> &nbsp;"
+                output += "<i class='fa fa-cube'></i> &nbsp;"
                 output += '<span class="value-name">' + val.name + '</span>';
                 output += "</div>";
                 output += "<div class='col-sm-3 three'>";
@@ -55,11 +55,11 @@ define([
             let pkg = packageName + "=" + version;
             if (toInstall.includes(pkg)) {
                 toInstall = toInstall.filter(item => item !== pkg);
-                $(this).children(".one").children(".two").find('svg').attr("data-icon", "exclamation-triangle");
+                $(this).children(".one").children(".two").find('i').toggleClass('fa-exclamation-triangle fa-check');
             }
             else {
                 toInstall.push(pkg);
-                $(this).children(".one").children(".two").find('svg').attr("data-icon", "check");
+                $(this).children(".one").children(".two").find('i').toggleClass('fa-exclamation-triangle fa-check');
             }
             sessionStorage.setItem("toInstall", toInstall);
         });
@@ -73,11 +73,11 @@ define([
             let pkg = packageName + "=" + version;
             if (selectedPackages.includes(pkg)) {
                 selectedPackages = selectedPackages.filter(item => item !== pkg);
-                $(this).children(".one").children(".two").find('svg').attr("data-icon", "box-open");
+                $(this).children(".one").children(".two").find('i').toggleClass('fa-cube fa-check');
             }
             else {
                 selectedPackages.push(pkg);
-                $(this).children(".one").children(".two").find('svg').attr("data-icon", "check");
+                $(this).children(".one").children(".two").find('i').toggleClass('fa-cube fa-check');
             }
             sessionStorage.setItem("selectedPackages", selectedPackages);
             deletebtndisp(selectedPackages);
