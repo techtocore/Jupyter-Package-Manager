@@ -12,7 +12,7 @@ define([
 
             sessionStorage.setItem("project", dir);
 
-            let info = await api.ajax.get_info(dir);
+            let info = await api.ajax.getinfo(dir);
             let data = info.packages;
 
             let output = views.installed(data);

@@ -1,20 +1,21 @@
 define([
     'jquery',
     './urls',
-], function ($, urls) {
+    './api_endpoints'
+], function ($, urls, endpoints) {
     "use strict";
 
     let ajax = {
 
-        update: function (packages, project) {
+        updatep: function (packages, project) {
             let payload = {};
             payload['project'] = project;
             payload['packages'] = packages;
             let settings = {
                 "async": true,
                 "crossDomain": true,
-                "url": urls.api_url + "packages",
-                "method": "PATCH",
+                "url": urls.api_url + endpoints.updatep.uri,
+                "method": endpoints.updatep.method,
                 "headers": {
                     "Content-Type": "application/json",
                     "cache-control": "no-cache",
@@ -35,8 +36,8 @@ define([
             let settings = {
                 "async": true,
                 "crossDomain": true,
-                "url": urls.api_url + "packages/check_update?project=" + project,
-                "method": "GET",
+                "url": urls.api_url + endpoints.checkupdate.uri + project,
+                "method": endpoints.checkupdate.method,
                 "headers": {
                     "Content-Type": "application/json",
                     "cache-control": "no-cache"
@@ -59,8 +60,8 @@ define([
             let settings = {
                 "async": true,
                 "crossDomain": true,
-                "url": urls.api_url + "packages",
-                "method": "DELETE",
+                "url": urls.api_url + endpoints.deletep.uri,
+                "method": endpoints.deletep.method,
                 "headers": {
                     "Content-Type": "application/json",
                     "cache-control": "no-cache",
@@ -84,8 +85,8 @@ define([
             let settings = {
                 "async": true,
                 "crossDomain": true,
-                "url": urls.api_url + "packages",
-                "method": "POST",
+                "url": urls.api_url + endpoints.installp.uri,
+                "method": endpoints.installp.method,
                 "headers": {
                     "Content-Type": "application/json",
                     "cache-control": "no-cache",
@@ -102,12 +103,12 @@ define([
             });
         },
 
-        get_info: function (dir) {
+        getinfo: function (dir) {
             let settings = {
                 "async": true,
                 "crossDomain": true,
-                "url": urls.api_url + "project_info?project=" + dir,
-                "method": "GET",
+                "url": urls.api_url + endpoints.getinfo.uri + dir,
+                "method": endpoints.getinfo.method,
                 "headers": {
                     "Content-Type": "application/json",
                     "cache-control": "no-cache",
@@ -127,8 +128,8 @@ define([
             let settings = {
                 "async": true,
                 "crossDomain": true,
-                "url": urls.api_url + "packages/search?q=" + query,
-                "method": "GET",
+                "url": urls.api_url + endpoints.search.uri + query,
+                "method": endpoints.search.method,
                 "headers": {
                     "cache-control": "no-cache"
                 }

@@ -18,7 +18,7 @@ define([
         },
 
         load: async function () {
-            let update = api.ajax.update;
+            let updatep = api.ajax.updatep;
             let checkupdate = api.ajax.checkupdate;
             let checknewversion = this.checknewversion;
             $(async function () {
@@ -79,7 +79,7 @@ define([
                         html = "<p> There are no updates available </p>"
                     }
                     common.confirm("Update Packages", $.parseHTML(html), "Confirm", function () {
-                        update(packages, project);
+                        updatep(packages, project);
                     });
                 });
             });
