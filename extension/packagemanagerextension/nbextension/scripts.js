@@ -18,7 +18,7 @@ define([
             let output = views.installed(data);
             $('#installed-packages').html(output);
 
-            output = views.toinstall(data);
+            output = views.toinstall(data, []);
             $('#to-install').html(output);
             if (output === "") {
                 $('#to-install-main').css("display", "none");
@@ -78,15 +78,16 @@ define([
                 };
                 let data = [];
                 data.push(pkg);
-                let output = views.toinstall(data);
-                $('#to-install').append(output);
                 let toInstall = sessionStorage.getItem("toInstall");
                 if (null === toInstall)
                     toInstall = [];
                 else {
                     toInstall = toInstall.split(',');
                     if (toInstall[0].length < 1) toInstall = [];
-                }
+                } 
+                let output = views.toinstall(data, toInstall);
+                $('#to-install').append(output);
+
                 $(views.selecttoinstall(toInstall));
                 $('#to-install-main').css("display", "initial");
             }

@@ -5,14 +5,14 @@ define([
 ], function ($) {
     "use strict";
 
-    function toinstall(data) {
+    function toinstall(data, toInstall) {
         let output = "";
         $.each(data, function (key, val) {
             if (val.status != "installed") {
                 output += "<div class='to-install-values'>";
                 output += "<div class='row one'>";
                 output += "<div class='col-sm-9 two'>";
-                output += "<i class='fa fa-exclamation-triangle'></i> &nbsp;"
+                output += "<i class='fa fa-check'></i> &nbsp;"
                 output += '<span class="value-name">' + val.name + '</span>';
                 output += "</div>";
                 output += "<div class='col-sm-3 three'>";
@@ -20,9 +20,11 @@ define([
                 output += "</div>";
                 output += "</div>";
                 output += "</div>";
+                let pkg = val.name + "=" + val.version;
+                toInstall.push(pkg);
             }
-
         });
+        sessionStorage.setItem("toInstall", toInstall);
         return output;
     }
 
@@ -49,17 +51,19 @@ define([
 
     function selecttoinstall(toInstall) {
         $('.to-install-values').unbind();
+        $('.to-install-values').hover(function () {
+            $(this).children(".one").children(".two").find('i').toggleClass('fa-close');
+        });
         $('.to-install-values').click(function () {
             let packageName = $(this).children(".one").children(".two").children(".value-name").text();
             let version = $(this).children(".one").children(".three").children(".value-version").text();
             let pkg = packageName + "=" + version;
             if (toInstall.includes(pkg)) {
                 toInstall = toInstall.filter(item => item !== pkg);
-                $(this).children(".one").children(".two").find('i').toggleClass('fa-exclamation-triangle fa-check');
+                $(this).remove();
             }
-            else {
-                toInstall.push(pkg);
-                $(this).children(".one").children(".two").find('i').toggleClass('fa-exclamation-triangle fa-check');
+            if (toInstall.length === 0) {
+                $('#to-install-main').css("display", "none");
             }
             sessionStorage.setItem("toInstall", toInstall);
         });
