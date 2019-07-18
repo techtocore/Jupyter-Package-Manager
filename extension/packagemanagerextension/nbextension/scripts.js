@@ -2,38 +2,17 @@
 define([
     'jquery',
     './views',
-    './urls'
-], function ($, views, urls) {
+    './api'
+], function ($, views, api) {
     "use strict";
 
     let packageview = {
-
-        get_info: function (dir) {
-            let settings = {
-                "async": true,
-                "crossDomain": true,
-                "url": urls.api_url + "project_info?project=" + dir,
-                "method": "GET",
-                "headers": {
-                    "Content-Type": "application/json",
-                    "cache-control": "no-cache",
-                },
-                "processData": false,
-                "data": ""
-            };
-
-            return new Promise(resolve => {
-                $.ajax(settings).done(function (response) {
-                    resolve(response);
-                });
-            });
-        },
 
         load: async function (dir) {
 
             sessionStorage.setItem("project", dir);
 
-            let info = await this.get_info(dir);
+            let info = await api.ajax.get_info(dir);
             let data = info.packages;
 
             let output = views.installed(data);
@@ -55,24 +34,6 @@ define([
 
     let searchview = {
 
-        search: function (query) {
-            let settings = {
-                "async": true,
-                "crossDomain": true,
-                "url": urls.api_url + "packages/search?q=" + query,
-                "method": "GET",
-                "headers": {
-                    "cache-control": "no-cache"
-                }
-            };
-
-            return new Promise(resolve => {
-                $.ajax(settings).done(function (response) {
-                    resolve(response);
-                });
-            });
-        },
-
         delay: function (fn, ms) {
             let timer = 0;
             return function (...args) {
@@ -83,7 +44,7 @@ define([
 
         load: function () {
             let delay = this.delay;
-            let search = this.search;
+            let search = api.ajax.search;
             $(function () {
                 $('#package-name').unbind();
                 $('#package-name').keyup(delay(async function (e) {

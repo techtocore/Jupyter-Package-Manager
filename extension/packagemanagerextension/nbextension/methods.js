@@ -2,57 +2,11 @@
 define([
     'jquery',
     './common',
-    './urls',
-], function ($, common, urls) {
+    './api',
+], function ($, common, api) {
     "use strict";
 
     let updatepkg = {
-
-        update: function (packages, project) {
-            let payload = {};
-            payload['project'] = project;
-            payload['packages'] = packages;
-            let settings = {
-                "async": true,
-                "crossDomain": true,
-                "url": urls.api_url + "packages",
-                "method": "PATCH",
-                "headers": {
-                    "Content-Type": "application/json",
-                    "cache-control": "no-cache",
-                },
-                "processData": false,
-                "data": JSON.stringify(payload)
-            };
-
-
-            return new Promise(resolve => {
-                $.ajax(settings).done(function (response) {
-                    resolve(response);
-                });
-            });
-        },
-
-        checkupdate: function (project) {
-            let settings = {
-                "async": true,
-                "crossDomain": true,
-                "url": urls.api_url + "packages/check_update?project=" + project,
-                "method": "GET",
-                "headers": {
-                    "Content-Type": "application/json",
-                    "cache-control": "no-cache"
-                },
-                "processData": false,
-                "data": ""
-            };
-
-            return new Promise(resolve => {
-                $.ajax(settings).done(function (response) {
-                    resolve(response);
-                });
-            });
-        },
 
         checknewversion: function (updates, packagename, pkgversion) {
             for (let element of updates) {
@@ -64,8 +18,8 @@ define([
         },
 
         load: async function () {
-            let update = this.update;
-            let checkupdate = this.checkupdate;
+            let update = api.ajax.update;
+            let checkupdate = api.ajax.checkupdate;
             let checknewversion = this.checknewversion;
             $(async function () {
                 $('#updatebtn').unbind();
@@ -134,33 +88,8 @@ define([
 
     let deletepkg = {
 
-        deletep: function (packages, project) {
-            let payload = {};
-            payload['project'] = project;
-            payload['packages'] = packages;
-            let settings = {
-                "async": true,
-                "crossDomain": true,
-                "url": urls.api_url + "packages",
-                "method": "DELETE",
-                "headers": {
-                    "Content-Type": "application/json",
-                    "cache-control": "no-cache",
-                },
-                "processData": false,
-                "data": JSON.stringify(payload)
-            };
-
-
-            return new Promise(resolve => {
-                $.ajax(settings).done(function (response) {
-                    resolve(response);
-                });
-            });
-        },
-
         load: function () {
-            let deletep = this.deletep;
+            let deletep = api.ajax.deletep;
             $(function () {
                 $('#deletebtn').unbind();
                 $('#deletebtn').click(function () {
@@ -187,33 +116,8 @@ define([
 
     let installpkg = {
 
-        installp: function (packages, project) {
-            let payload = {};
-            payload['project'] = project;
-            payload['packages'] = packages;
-            let settings = {
-                "async": true,
-                "crossDomain": true,
-                "url": urls.api_url + "packages",
-                "method": "POST",
-                "headers": {
-                    "Content-Type": "application/json",
-                    "cache-control": "no-cache",
-                },
-                "processData": false,
-                "data": JSON.stringify(payload)
-            };
-
-
-            return new Promise(resolve => {
-                $.ajax(settings).done(function (response) {
-                    resolve(response);
-                });
-            });
-        },
-
         load: function () {
-            let installp = this.installp;
+            let installp = api.ajax.installp;
             $(function () {
                 $('#installbtn').unbind();
                 $('#installbtn').click(function () {
