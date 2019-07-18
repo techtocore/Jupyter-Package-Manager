@@ -33,7 +33,9 @@ define([
                     }
                     let project = sessionStorage.getItem("project");
                     let html = "<p> The following packages are about to be updated: </p> </br>";
+                    $('#updatebtn').toggleClass('fa-wrench fa-spinner').addClass('fa-spin');
                     let resp = await checkupdate(project);
+                    $('#updatebtn').toggleClass('fa-wrench fa-spinner').removeClass('fa-spin');
                     let updates = resp.updates;
                     let packages = [];
                     let ct = 0;
