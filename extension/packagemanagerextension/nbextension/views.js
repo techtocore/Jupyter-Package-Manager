@@ -5,6 +5,10 @@ define([
 ], function ($) {
     "use strict";
 
+    /*
+    This function generates the DOM for displaying packages that are selected for installation.
+    */
+
     function toinstall(data, toInstall) {
         let output = "";
         $.each(data, function (key, val) {
@@ -28,6 +32,10 @@ define([
         return output;
     }
 
+    /*
+    This function generates the DOM for displaying packages that are currently installed.
+    */
+
     function installed(data) {
         let output = "";
         $.each(data, function (key, val) {
@@ -49,6 +57,10 @@ define([
         return output;
     }
 
+    /*
+    This function add an eventlistener to the DOM for handling packages that are selected for installation.
+    */
+
     function selecttoinstall(toInstall) {
         $('.to-install-values').unbind();
         $('.to-install-values').hover(function () {
@@ -69,6 +81,10 @@ define([
         });
     }
 
+    /*
+    This function add an eventlistener to the DOM for handling packages that are currently installed.
+    */
+
     function selectinstalled(selectedPackages) {
         $('.installed-values').unbind();
         $('.installed-values').click(function () {
@@ -87,6 +103,10 @@ define([
             deletebtndisp(selectedPackages);
         });
     }
+
+    /*
+    This function add an eventlistener to the DOM for showing the delete button only when packages are selected.
+    */
 
     function deletebtndisp(selectedPackages) {
         let n = selectedPackages.length;

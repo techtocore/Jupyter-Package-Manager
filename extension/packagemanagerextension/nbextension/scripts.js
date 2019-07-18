@@ -8,11 +8,15 @@ define([
 
     let packageview = {
 
+        /*
+        This function populates the sidebar each time it is opened.
+        */
+
         load: async function (dir) {
 
             sessionStorage.setItem("project", dir);
 
-            let info = await api.ajax.getinfo(dir);
+            let info = await api.getinfo(dir);
             let data = info.packages;
 
             let output = views.installed(data);
@@ -34,6 +38,10 @@ define([
 
     let searchview = {
 
+        /*
+        This function executes the given function after the specified timeout.
+        */
+
         delay: function (fn, ms) {
             let timer = 0;
             return function (...args) {
@@ -42,9 +50,13 @@ define([
             };
         },
 
+        /*
+        This function populates the dropdown datalist when something is searched.
+        */
+
         load: function () {
             let delay = this.delay;
-            let search = api.ajax.search;
+            let search = api.search;
             $(function () {
                 $('#package-name').unbind();
                 $('#package-name').keyup(delay(async function (e) {
@@ -67,6 +79,10 @@ define([
 
             document.querySelector('input[list="searchlist"]').addEventListener('input', onInput);
 
+            /*
+            This function adds the selected package to the list display.
+            */
+
             function addtoinstall(val) {
                 document.getElementById('package-name').value = '';
                 $('#package-name').blur();
@@ -84,7 +100,7 @@ define([
                 else {
                     toInstall = toInstall.split(',');
                     if (toInstall[0].length < 1) toInstall = [];
-                } 
+                }
                 let output = views.toinstall(data, toInstall);
                 $('#to-install').append(output);
 
@@ -109,6 +125,11 @@ define([
     };
 
     let closeview = {
+
+        /*
+        This function clears all locally stored data and hides the sidebar.
+        */
+
         load: function () {
             $(function () {
                 $('.closebtn').unbind();

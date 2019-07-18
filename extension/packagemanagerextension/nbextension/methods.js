@@ -8,6 +8,10 @@ define([
 
     let updatepkg = {
 
+        /*
+        This function returns the latest version of a package.
+        */
+
         checknewversion: function (updates, packagename, pkgversion) {
             for (let element of updates) {
                 if (element.name === packagename) {
@@ -17,9 +21,13 @@ define([
             return pkgversion;
         },
 
+        /*
+        This function lists down all the updates and requires a user confirmation.
+        */
+
         load: async function () {
-            let updatep = api.ajax.updatep;
-            let checkupdate = api.ajax.checkupdate;
+            let updatep = api.updatep;
+            let checkupdate = api.checkupdate;
             let checknewversion = this.checknewversion;
             $(async function () {
                 $('#updatebtn').unbind();
@@ -90,8 +98,12 @@ define([
 
     let deletepkg = {
 
+        /*
+        This function lists down all the packages selected for removal and requires a user confirmation.
+        */
+
         load: function () {
-            let deletep = api.ajax.deletep;
+            let deletep = api.deletep;
             $(function () {
                 $('#deletebtn').unbind();
                 $('#deletebtn').click(function () {
@@ -118,8 +130,12 @@ define([
 
     let installpkg = {
 
+        /*
+        This function lists down all the packages selected for installation and requires a user confirmation.
+        */
+
         load: function () {
-            let installp = api.ajax.installp;
+            let installp = api.installp;
             $(function () {
                 $('#installbtn').unbind();
                 $('#installbtn').click(function () {
