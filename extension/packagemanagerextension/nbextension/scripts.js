@@ -132,15 +132,9 @@ define([
         */
 
         load: function () {
-            $(function () {
-                $('.closebtn').unbind();
-                $('.closebtn').click(function () {
-                    let arr = []
-                    sessionStorage.setItem("toInstall", arr);
-                    sessionStorage.setItem("selectedPackages", arr);
-                    document.getElementById("mySidenav").style.width = "0";
-                });
-            });
+            let arr = [];
+            sessionStorage.setItem("toInstall", arr);
+            sessionStorage.setItem("selectedPackages", arr);
         }
     };
 

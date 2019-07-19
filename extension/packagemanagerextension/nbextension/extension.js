@@ -1,5 +1,6 @@
 define(function (require) {
     let $ = require('jquery');
+    let dialog = require('base/js/dialog');
     let Jupyter = require('base/js/namespace');
     let utils = require('base/js/utils');
     let scripts = require('./scripts');
@@ -9,7 +10,6 @@ define(function (require) {
     function init(dir) {
         scripts.packageview.load(dir);
         scripts.searchview.load();
-        scripts.closeview.load();
         methods.updatepkg.load();
         methods.deletepkg.load();
         methods.installpkg.load();
@@ -30,10 +30,26 @@ define(function (require) {
             dataType: 'html',
             success: function (env_html, status, xhr) {
                 // Configure tab
-                $("#tree").append($(env_html));
                 $(".page-tree").append('<button title="Configure Project" id="configure-project-button" class="btn btn-default btn-xs" style="display: inline-block;"><i class="fa fa-cog"></i></button>');
                 $('#configure-project-button').click(function (e) {
-                    document.getElementById("mySidenav").style.width = "440px";
+
+                    ////////////////
+
+                    modal = dialog.modal({
+                        draggable: false,
+                        title: 'Configure Project',
+                        body: env_html
+                    }).attr('id', 'package-manager-modal').addClass('right full-body');
+
+                    modal.find(".modal-header").unbind("mousedown");
+
+                    modal.on('hidden.bs.modal', function () {
+                        history_stack.splice(0);
+                        scripts.closeview.load();
+                    });
+
+                    ////////////////
+
                     let dir = location.href.split('/').slice(-1)[0];
                     dir = '/SWAN_projects/' + dir;
                     init(dir);

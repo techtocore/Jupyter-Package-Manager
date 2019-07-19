@@ -1,13 +1,5 @@
 #mySidenav {
-  height: 100%;
-  width: 0;
-  position: fixed;
-  z-index: 100;
-  top: 0;
-  right: 0;
-  background-color: rgb(255, 255, 255);
   overflow-x: hidden;
-  transition: 0.5s;
   padding-top: 20px;
 }
 
