@@ -306,7 +306,7 @@ class PackageManager():
                 i['status'] = 'not installed'
             elif i not in swandata and i in condadata:
                 i['status'] = 'not synced'
-        return packages
+        return list(packages)
 
 
 class CondaSearcher(object):
