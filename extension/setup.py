@@ -13,10 +13,5 @@ setup(name='packagemanagerextension',
       url='https://github.com/techtocore/Jupyter-Package-Manager',
       include_package_data=True,
       zip_safe=False,
-      install_requires=[
-          'conda >= 4.5',
-          'notebook >=4.3.1',
-          'packaging',
-          'pyyaml'
-      ],
+      install_requires=[],
       )
