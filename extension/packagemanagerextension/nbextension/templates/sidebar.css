@@ -75,6 +75,8 @@
   display: none;
 }
 
-.fa-search {
-  margin-top: 10px;
+#searchicon {
+  top: 10px;
+  z-index: 10 !important;
+  right: 25px;
 }

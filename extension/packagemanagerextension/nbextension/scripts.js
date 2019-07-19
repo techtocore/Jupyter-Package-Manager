@@ -56,12 +56,12 @@ define([
 
         load: function () {
             let delay = this.delay;
-            let search = api.search;
             $(function () {
                 $('#package-name').unbind();
                 $('#package-name').keyup(delay(async function (e) {
                     let query = this.value;
-                    let res = await search(query);
+                    $('#searchicon').toggleClass('fa-search fa-spinner');
+                    let res = await api.search(query);
                     let pks = res.packages;
                     let html = ""
                     $('#searchlist').html(html);
@@ -73,6 +73,7 @@ define([
                         html += entry;
                         html += "</option>";
                     });
+                    $('#searchicon').toggleClass('fa-search fa-spinner');
                     $('#searchlist').html(html);
                 }, 1000));
             });

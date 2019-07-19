@@ -100,7 +100,7 @@ define([
             "headers": {
                 "Content-Type": "application/json",
                 "cache-control": "no-cache",
-            }, updates
+            },
             "processData": false,
             "data": JSON.stringify(payload)
         };
