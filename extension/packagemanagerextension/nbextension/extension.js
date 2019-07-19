@@ -30,21 +30,14 @@ define(function (require) {
             dataType: 'html',
             success: function (env_html, status, xhr) {
                 // Configure tab
-                $(".tab-content").append($(env_html));
-                $("#tabs").append(
-                    $('<li>')
-                        .append(
-                            $('<a>')
-                                .attr('id', 'package_manager_tab')
-                                .text('Package Manager')
-                                .css('cursor', 'pointer')
-                                .click(function (e) {
-                                    document.getElementById("mySidenav").style.width = "440px";
-                                    let dir = "/MySwanProjectA"
-                                    init(dir);
-                                })
-                        )
-                );
+                $("#tree").append($(env_html));
+                $(".page-tree").append('<button title="Configure Project" id="configure-project-button" class="btn btn-default btn-xs" style="display: inline-block;"><i class="fa fa-cog"></i></button>');
+                $('#configure-project-button').click(function (e) {
+                    document.getElementById("mySidenav").style.width = "440px";
+                    let dir = location.href.split('/')[-1];
+                    dir = '/SWAN_projects/' + dir;
+                    init(dir);
+                })
             }
         });
     }
