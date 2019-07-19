@@ -62,9 +62,8 @@
 }
 
 .faicon {
-  width: 22px;
-  height: 22px;
-  margin-top: 18px;
+  font-size: 18px;
+  margin-top: 20px;
   cursor: pointer;
 }
 
@@ -74,4 +73,10 @@
 
 #deletebtn {
   display: none;
+}
+
+#searchicon {
+  top: 10px;
+  z-index: 10 !important;
+  right: 25px;
 }
