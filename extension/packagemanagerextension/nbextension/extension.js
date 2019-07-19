@@ -34,7 +34,7 @@ define(function (require) {
                 $(".page-tree").append('<button title="Configure Project" id="configure-project-button" class="btn btn-default btn-xs" style="display: inline-block;"><i class="fa fa-cog"></i></button>');
                 $('#configure-project-button').click(function (e) {
                     document.getElementById("mySidenav").style.width = "440px";
-                    let dir = location.href.split('/')[-1];
+                    let dir = location.href.split('/').slice(-1)[0];
                     dir = '/SWAN_projects/' + dir;
                     init(dir);
                 })
