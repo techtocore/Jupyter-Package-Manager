@@ -25,12 +25,13 @@ define(function (require) {
                 .attr('type', 'text/css')
                 .attr('href', urls.static_url + 'templates/sidebar.css')
         );
+    }
 
+    function show_button(project) {
         utils.ajax(urls.static_url + 'templates/sidebar.html', {
             dataType: 'html',
             success: function (env_html, status, xhr) {
                 // Configure tab
-                $(".page-tree").append('<button title="Configure Project" id="configure-project-button" class="btn btn-default btn-xs" style="display: inline-block;"><i class="fa fa-cog"></i></button>');
                 $('#configure-project-button').click(function (e) {
 
                     modal = dialog.modal({
@@ -42,9 +43,7 @@ define(function (require) {
                     modal.find(".modal-header").unbind("mousedown");
 
                     modal.on('shown.bs.modal', function (e) {
-                        let dir = location.href.split('/').slice(-1)[0];
-                        dir = '/SWAN_projects/' + dir;
-                        init(dir);
+                        init(project);
                     });
 
                     modal.on('hidden.bs.modal', function () {
@@ -55,7 +54,9 @@ define(function (require) {
             }
         });
     }
+
     return {
-        load_ipython_extension: load
+        load_ipython_extension: load,
+        show_button: show_button
     };
 });
