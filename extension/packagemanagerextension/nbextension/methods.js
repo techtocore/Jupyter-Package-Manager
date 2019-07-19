@@ -2,56 +2,15 @@
 define([
     'jquery',
     './common',
-], function ($, common) {
+    './api',
+], function ($, common, api) {
     "use strict";
 
-    var updatepkg = {
+    let updatepkg = {
 
-        update: function (packages, project) {
-            let payload = {};
-            payload['project'] = project;
-            payload['packages'] = packages;
-            let settings = {
-                "async": true,
-                "crossDomain": true,
-                "url": "http://localhost:8888/api/packagemanager/packages",
-                "method": "PATCH",
-                "headers": {
-                    "Content-Type": "application/json",
-                    "cache-control": "no-cache",
-                },
-                "processData": false,
-                "data": JSON.stringify(payload)
-            };
-
-
-            return new Promise(resolve => {
-                $.ajax(settings).done(function (response) {
-                    resolve(response);
-                });
-            });
-        },
-
-        checkupdate: function (project) {
-            var settings = {
-                "async": true,
-                "crossDomain": true,
-                "url": "http://localhost:8888/api/packagemanager/packages/check_update?project=" + project,
-                "method": "GET",
-                "headers": {
-                    "Content-Type": "application/json",
-                    "cache-control": "no-cache"
-                },
-                "processData": false,
-                "data": ""
-            };
-
-            return new Promise(resolve => {
-                $.ajax(settings).done(function (response) {
-                    resolve(response);
-                });
-            });
-        },
+        /*
+        This function returns the latest version of a package.
+        */
 
         checknewversion: function (updates, packagename, pkgversion) {
             for (let element of updates) {
@@ -62,11 +21,15 @@ define([
             return pkgversion;
         },
 
+        /*
+        This function lists down all the updates and requires a user confirmation.
+        */
+
         load: async function () {
-            let update = this.update;
-            let checkupdate = this.checkupdate;
+            let updatep = api.updatep;
+            let checkupdate = api.checkupdate;
             let checknewversion = this.checknewversion;
-            jQuery(async function () {
+            $(async function () {
                 $('#updatebtn').unbind();
                 $('#updatebtn').click(async function () {
                     let selectedPackages = sessionStorage.getItem("selectedPackages");
@@ -78,7 +41,9 @@ define([
                     }
                     let project = sessionStorage.getItem("project");
                     let html = "<p> The following packages are about to be updated: </p> </br>";
+                    $('#updatebtn').toggleClass('fa-wrench fa-spinner').addClass('fa-spin');
                     let resp = await checkupdate(project);
+                    $('#updatebtn').toggleClass('fa-wrench fa-spinner').removeClass('fa-spin');
                     let updates = resp.updates;
                     let packages = [];
                     let ct = 0;
@@ -102,7 +67,7 @@ define([
                         html += "</ul>";
                     }
                     else {
-                        var list = document.getElementsByClassName("installed-values");
+                        let list = document.getElementsByClassName("installed-values");
                         html += "<ul>";
                         for (let item of list) {
                             let pkg = item.getElementsByClassName('value-name')[0].innerText;
@@ -123,42 +88,23 @@ define([
                     if (ct === 0) {
                         html = "<p> There are no updates available </p>"
                     }
-                    common.confirm("Update Packages", $.parseHTML(html), "Confirm", update(packages, project), undefined);
+                    common.confirm("Update Packages", $.parseHTML(html), "Confirm", function () {
+                        updatep(packages, project);
+                    });
                 });
             });
         }
     };
 
-    var deletepkg = {
+    let deletepkg = {
 
-        deletep: function (packages, project) {
-            let payload = {};
-            payload['project'] = project;
-            payload['packages'] = packages;
-            let settings = {
-                "async": true,
-                "crossDomain": true,
-                "url": "http://localhost:8888/api/packagemanager/packages",
-                "method": "DELETE",
-                "headers": {
-                    "Content-Type": "application/json",
-                    "cache-control": "no-cache",
-                },
-                "processData": false,
-                "data": JSON.stringify(payload)
-            };
-
-
-            return new Promise(resolve => {
-                $.ajax(settings).done(function (response) {
-                    resolve(response);
-                });
-            });
-        },
+        /*
+        This function lists down all the packages selected for removal and requires a user confirmation.
+        */
 
         load: function () {
-            let deletep = this.deletep;
-            jQuery(function () {
+            let deletep = api.deletep;
+            $(function () {
                 $('#deletebtn').unbind();
                 $('#deletebtn').click(function () {
                     let selectedPackages = sessionStorage.getItem("selectedPackages").split(',');
@@ -174,42 +120,23 @@ define([
                         html += "</li>";
                     });
                     html += "</ul>";
-                    common.confirm("Delete Packages", $.parseHTML(html), "Confirm", deletep(packages, project), undefined);
+                    common.confirm("Delete Packages", $.parseHTML(html), "Confirm", function () {
+                        deletep(packages, project);
+                    });
                 });
             });
         }
     };
 
-    var installpkg = {
+    let installpkg = {
 
-        installp: function (packages, project) {
-            let payload = {};
-            payload['project'] = project;
-            payload['packages'] = packages;
-            let settings = {
-                "async": true,
-                "crossDomain": true,
-                "url": "http://localhost:8888/api/packagemanager/packages",
-                "method": "POST",
-                "headers": {
-                    "Content-Type": "application/json",
-                    "cache-control": "no-cache",
-                },
-                "processData": false,
-                "data": JSON.stringify(payload)
-            };
-
-
-            return new Promise(resolve => {
-                $.ajax(settings).done(function (response) {
-                    resolve(response);
-                });
-            });
-        },
+        /*
+        This function lists down all the packages selected for installation and requires a user confirmation.
+        */
 
         load: function () {
-            let installp = this.installp;
-            jQuery(function () {
+            let installp = api.installp;
+            $(function () {
                 $('#installbtn').unbind();
                 $('#installbtn').click(function () {
                     let toInstall = sessionStorage.getItem("toInstall").split(',');
@@ -225,7 +152,9 @@ define([
                         html += "</li>";
                     });
                     html += "</ul>";
-                    common.confirm("Install Packages", $.parseHTML(html), "Confirm", installp(packages, project), undefined);
+                    common.confirm("Install Packages", $.parseHTML(html), "Confirm", function () {
+                        installp(packages, project);
+                    });
                 });
             });
         }
