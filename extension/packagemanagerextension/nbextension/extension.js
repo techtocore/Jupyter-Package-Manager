@@ -33,8 +33,6 @@ define(function (require) {
                 $(".page-tree").append('<button title="Configure Project" id="configure-project-button" class="btn btn-default btn-xs" style="display: inline-block;"><i class="fa fa-cog"></i></button>');
                 $('#configure-project-button').click(function (e) {
 
-                    ////////////////
-
                     modal = dialog.modal({
                         draggable: false,
                         title: 'Configure Project',
@@ -44,16 +42,15 @@ define(function (require) {
                     modal.find(".modal-header").unbind("mousedown");
 
                     modal.on('hidden.bs.modal', function () {
-                        history_stack.splice(0);
                         scripts.closeview.load();
                     });
 
-                    ////////////////
-
-                    let dir = location.href.split('/').slice(-1)[0];
-                    dir = '/SWAN_projects/' + dir;
-                    init(dir);
-                })
+                });
+            },
+            complete: function (env_html) {
+                let dir = location.href.split('/').slice(-1)[0];
+                dir = '/SWAN_projects/' + dir;
+                init(dir);
             }
         });
     }

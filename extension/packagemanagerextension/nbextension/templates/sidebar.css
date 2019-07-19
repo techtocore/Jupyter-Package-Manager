@@ -1,24 +1,9 @@
 #mySidenav {
   overflow-x: hidden;
-  padding-top: 20px;
 }
 
 .sidenavcontent {
-  padding: 4px 8px 8px 16px;
-  text-decoration: none;
   color: #424242;
-  display: block;
-  transition: 0.3s;
-}
-
-.sidenavcontent:hover {
-  color: #252525;
-}
-
-.closebtn {
-  position: absolute;
-  right: 25px;
-  font-size: 30px;
 }
 
 @media screen and (max-height: 450px) {
@@ -32,12 +17,12 @@
 }
 
 #package-name {
-  width: 400px;
+  width: 380px;
 }
 
 #packageview {
   padding-left: 10px;
-  width: 400px;
+  width: 410px;
 }
 
 .value-name {
