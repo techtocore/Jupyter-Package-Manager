@@ -36,7 +36,7 @@ define(function (require) {
                     modal = dialog.modal({
                         draggable: false,
                         title: 'Configure Project',
-                        body: env_html
+                        body: $.parseHTML(env_html)
                     }).attr('id', 'package-manager-modal').addClass('right full-body');
 
                     modal.find(".modal-header").unbind("mousedown");
