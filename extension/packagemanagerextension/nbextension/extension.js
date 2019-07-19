@@ -41,16 +41,17 @@ define(function (require) {
 
                     modal.find(".modal-header").unbind("mousedown");
 
+                    modal.on('shown.bs.modal', function (e) {
+                        let dir = location.href.split('/').slice(-1)[0];
+                        dir = '/SWAN_projects/' + dir;
+                        init(dir);
+                    });
+
                     modal.on('hidden.bs.modal', function () {
                         scripts.closeview.load();
                     });
 
                 });
-            },
-            complete: function (env_html) {
-                let dir = location.href.split('/').slice(-1)[0];
-                dir = '/SWAN_projects/' + dir;
-                init(dir);
             }
         });
     }
