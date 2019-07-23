@@ -1,37 +1,69 @@
 define([
     'jquery',
-    './urls',
-    './api_endpoints'
-], function ($, urls, endpoints) {
+    './urls'
+], function ($, urls) {
     "use strict";
 
-    /*
-    This function updates all the selected packages.
-    */
+    let endpoints = {
+        "update_packages": {
+            "uri": "packages",
+            "method": "PATCH"
+        },
+        "checkupdate": {
+            "uri": "packages/check_update?project=",
+            "method": "GET"
+        },
+        "delete_packages": {
+            "uri": "packages",
+            "method": "DELETE"
+        },
+        "install_packages": {
+            "uri": "packages",
+            "method": "POST"
+        },
+        "getinfo": {
+            "uri": "project_info?project=",
+            "method": "GET"
+        },
+        "search": {
+            "uri": "packages/search?q=",
+            "method": "GET"
+        }
+    };
 
-    function updatep(packages, project) {
-        let payload = {};
-        payload['project'] = project;
-        payload['packages'] = packages;
+    /*
+    This function makes the API calls to the specified endpoint with the corresponding headers
+    */
+    function api_call(url, method, payload = "") {
         let settings = {
             "async": true,
             "crossDomain": true,
-            "url": urls.api_url + endpoints.updatep.uri,
-            "method": endpoints.updatep.method,
+            "url": url,
+            "method": method,
             "headers": {
                 "Content-Type": "application/json",
                 "cache-control": "no-cache",
             },
             "processData": false,
-            "data": JSON.stringify(payload)
+            "data": payload
         };
-
 
         return new Promise(resolve => {
             $.ajax(settings).done(function (response) {
                 resolve(response);
             });
         });
+    }
+
+    /*
+    This function updates all the selected packages.
+    */
+
+    function update_packages(packages, project) {
+        let payload = {};
+        payload['project'] = project;
+        payload['packages'] = packages;
+        return api_call(urls.api_url + endpoints.update_packages.uri, endpoints.update_packages.method, JSON.stringify(payload));
     }
 
     /*
@@ -39,78 +71,25 @@ define([
     */
 
     function checkupdate(project) {
-        let settings = {
-            "async": true,
-            "crossDomain": true,
-            "url": urls.api_url + endpoints.checkupdate.uri + project,
-            "method": endpoints.checkupdate.method,
-            "headers": {
-                "Content-Type": "application/json",
-                "cache-control": "no-cache"
-            },
-            "processData": false,
-            "data": ""
-        };
-
-        return new Promise(resolve => {
-            $.ajax(settings).done(function (response) {
-                resolve(response);
-            });
-        });
+        return api_call(urls.api_url + endpoints.checkupdate.uri + project, endpoints.checkupdate.method);
     }
 
     /*
     This function removes all the selected packages.
     */
 
-    function deletep(packages, project) {
+    function delete_packages(packages, project) {
         let payload = {};
         payload['project'] = project;
         payload['packages'] = packages;
-        let settings = {
-            "async": true,
-            "crossDomain": true,
-            "url": urls.api_url + endpoints.deletep.uri,
-            "method": endpoints.deletep.method,
-            "headers": {
-                "Content-Type": "application/json",
-                "cache-control": "no-cache",
-            },
-            "processData": false,
-            "data": JSON.stringify(payload)
-        };
-
-
-        return new Promise(resolve => {
-            $.ajax(settings).done(function (response) {
-                resolve(response);
-            });
-        });
+        return api_call(urls.api_url + endpoints.delete_packages.uri, endpoints.delete_packages.method, JSON.stringify(payload));
     }
 
-    function installp(packages, project) {
+    function install_packages(packages, project) {
         let payload = {};
         payload['project'] = project;
         payload['packages'] = packages;
-        let settings = {
-            "async": true,
-            "crossDomain": true,
-            "url": urls.api_url + endpoints.installp.uri,
-            "method": endpoints.installp.method,
-            "headers": {
-                "Content-Type": "application/json",
-                "cache-control": "no-cache",
-            },
-            "processData": false,
-            "data": JSON.stringify(payload)
-        };
-
-
-        return new Promise(resolve => {
-            $.ajax(settings).done(function (response) {
-                resolve(response);
-            });
-        });
+        return api_call(urls.api_url + endpoints.install_packages.uri, endpoints.install_packages.method, JSON.stringify(payload));
     }
 
     /*
@@ -118,24 +97,7 @@ define([
     */
 
     function getinfo(dir) {
-        let settings = {
-            "async": true,
-            "crossDomain": true,
-            "url": urls.api_url + endpoints.getinfo.uri + dir,
-            "method": endpoints.getinfo.method,
-            "headers": {
-                "Content-Type": "application/json",
-                "cache-control": "no-cache",
-            },
-            "processData": false,
-            "data": ""
-        };
-
-        return new Promise(resolve => {
-            $.ajax(settings).done(function (response) {
-                resolve(response);
-            });
-        });
+        return api_call(urls.api_url + endpoints.getinfo.uri + dir, endpoints.getinfo.method);
     }
 
     /*
@@ -143,27 +105,13 @@ define([
     */
 
     function search(query) {
-        let settings = {
-            "async": true,
-            "crossDomain": true,
-            "url": urls.api_url + endpoints.search.uri + query,
-            "method": endpoints.search.method,
-            "headers": {
-                "cache-control": "no-cache"
-            }
-        };
-
-        return new Promise(resolve => {
-            $.ajax(settings).done(function (response) {
-                resolve(response);
-            });
-        });
+        return api_call(urls.api_url + endpoints.search.uri + query, endpoints.search.method);
     }
 
     return {
-        'updatep': updatep,
-        'installp': installp,
-        'deletep': deletep,
+        'update_packages': update_packages,
+        'install_packages': install_packages,
+        'delete_packages': delete_packages,
         'getinfo': getinfo,
         'search': search,
         'checkupdate': checkupdate

@@ -26,7 +26,7 @@ define([
         */
 
         load: async function () {
-            let updatep = api.updatep;
+            let update_packages = api.update_packages;
             let checkupdate = api.checkupdate;
             let checknewversion = this.checknewversion;
             $(async function () {
@@ -89,7 +89,7 @@ define([
                         html = "<p> There are no updates available </p>"
                     }
                     common.confirm("Update Packages", $.parseHTML(html), "Confirm", function () {
-                        updatep(packages, project);
+                        update_packages(packages, project);
                     });
                 });
             });
@@ -103,7 +103,7 @@ define([
         */
 
         load: function () {
-            let deletep = api.deletep;
+            let delete_packages = api.delete_packages;
             $(function () {
                 $('#deletebtn').unbind();
                 $('#deletebtn').click(function () {
@@ -121,7 +121,7 @@ define([
                     });
                     html += "</ul>";
                     common.confirm("Delete Packages", $.parseHTML(html), "Confirm", function () {
-                        deletep(packages, project);
+                        delete_packages(packages, project);
                     });
                 });
             });
@@ -135,7 +135,7 @@ define([
         */
 
         load: function () {
-            let installp = api.installp;
+            let install_packages = api.install_packages;
             $(function () {
                 $('#installbtn').unbind();
                 $('#installbtn').click(function () {
@@ -153,7 +153,7 @@ define([
                     });
                     html += "</ul>";
                     common.confirm("Install Packages", $.parseHTML(html), "Confirm", function () {
-                        installp(packages, project);
+                        install_packages(packages, project);
                     });
                 });
             });
