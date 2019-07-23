@@ -32,24 +32,20 @@ define(function (require) {
             dataType: 'html',
             success: function (env_html, status, xhr) {
                 // Configure tab
-                $('#configure-project-button').click(function (e) {
+                modal = dialog.modal({
+                    draggable: false,
+                    title: 'Configure Project',
+                    body: $.parseHTML(env_html)
+                }).attr('id', 'package-manager-modal').addClass('right full-body');
 
-                    modal = dialog.modal({
-                        draggable: false,
-                        title: 'Configure Project',
-                        body: $.parseHTML(env_html)
-                    }).attr('id', 'package-manager-modal').addClass('right full-body');
+                modal.find(".modal-header").unbind("mousedown");
 
-                    modal.find(".modal-header").unbind("mousedown");
+                modal.on('shown.bs.modal', function (e) {
+                    init(project);
+                });
 
-                    modal.on('shown.bs.modal', function (e) {
-                        init(project);
-                    });
-
-                    modal.on('hidden.bs.modal', function () {
-                        scripts.closeview.load();
-                    });
-
+                modal.on('hidden.bs.modal', function () {
+                    scripts.closeview.load();
                 });
             }
         });
