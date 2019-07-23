@@ -26,8 +26,6 @@ define([
         */
 
         load: async function () {
-            let update_packages = api.update_packages;
-            let checkupdate = api.checkupdate;
             let checknewversion = this.checknewversion;
             $(async function () {
                 $('#updatebtn').unbind();
@@ -42,11 +40,12 @@ define([
                     let project = sessionStorage.getItem("project");
                     let html = "<p> The following packages are about to be updated: </p> </br>";
                     $('#updatebtn').toggleClass('fa-wrench fa-spinner').addClass('fa-spin');
-                    let resp = await checkupdate(project);
+                    let resp = await api.checkupdate(project);
                     $('#updatebtn').toggleClass('fa-wrench fa-spinner').removeClass('fa-spin');
                     let updates = resp.updates;
                     let packages = [];
                     let ct = 0;
+
                     if (selectedPackages.length > 0) {
                         html += "<ul>";
                         selectedPackages.forEach(element => {
@@ -67,11 +66,11 @@ define([
                         html += "</ul>";
                     }
                     else {
-                        let list = document.getElementsByClassName("installed-values");
+                        let list = $('.installed-values');
                         html += "<ul>";
                         for (let item of list) {
-                            let pkg = item.getElementsByClassName('value-name')[0].innerText;
-                            let ver = item.getElementsByClassName('value-version')[0].innerText;
+                            let pkg = $(item).find('.value-name')[0].innerText;
+                            let ver = $(item).find('.value-version')[0].innerText;
                             let nver = checknewversion(updates, pkg, ver);
                             if (nver != ver) {
                                 packages.push(pkg);
@@ -81,7 +80,7 @@ define([
                                 html += nver;
                                 html += "</li>";
                                 ct += 1;
-                            };
+                            }
                         }
                         html += "</ul>";
                     }
@@ -89,7 +88,7 @@ define([
                         html = "<p> There are no updates available </p>"
                     }
                     common.confirm("Update Packages", $.parseHTML(html), "Confirm", function () {
-                        update_packages(packages, project);
+                        api.update_packages(packages, project);
                     });
                 });
             });
@@ -103,7 +102,6 @@ define([
         */
 
         load: function () {
-            let delete_packages = api.delete_packages;
             $(function () {
                 $('#deletebtn').unbind();
                 $('#deletebtn').click(function () {
@@ -121,7 +119,7 @@ define([
                     });
                     html += "</ul>";
                     common.confirm("Delete Packages", $.parseHTML(html), "Confirm", function () {
-                        delete_packages(packages, project);
+                        api.delete_packages(packages, project);
                     });
                 });
             });
@@ -135,7 +133,6 @@ define([
         */
 
         load: function () {
-            let install_packages = api.install_packages;
             $(function () {
                 $('#installbtn').unbind();
                 $('#installbtn').click(function () {
@@ -153,7 +150,7 @@ define([
                     });
                     html += "</ul>";
                     common.confirm("Install Packages", $.parseHTML(html), "Confirm", function () {
-                        install_packages(packages, project);
+                        api.install_packages(packages, project);
                     });
                 });
             });

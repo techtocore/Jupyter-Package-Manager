@@ -36,8 +36,6 @@ define([
     */
     function api_call(url, method, payload = "") {
         let settings = {
-            "async": true,
-            "crossDomain": true,
             "url": url,
             "method": method,
             "headers": {
