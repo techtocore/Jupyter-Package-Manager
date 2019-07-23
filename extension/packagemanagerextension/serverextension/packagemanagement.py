@@ -41,19 +41,9 @@ class PackageManager():
             raise web.HTTPError(400)
         env = uuid.uuid1()
         env = 'swanproject-' + str(env)
-        folder = directory[:-1].split('/')[-1]
-
-        # if not os.path.exists(directory):
-        #     raise Exception('Project directory not available')
-        # try:
-        #     swanproj = SwanProject(directory)
-        #     resp = {'error': 'Project directory already associated with an env'}
-        #     return res
-        # except:
-        #     pass
 
         try:
-            resp = env_manager.create_env(env, folder, env_type)
+            resp = env_manager.create_env(env, env_type)
             swanproj = SwanProject(directory)
             swanproj.env = env
             swanproj.packages = env_manager.list_packages(env)
@@ -68,12 +58,6 @@ class PackageManager():
         Module for `DELETE /projects` which
         deletes the specified projects.
         '''
-
-        # try:
-        #     swanproj = SwanProject(directory)
-        #     env = swanproj.env
-        # except Exception as e:
-        #     return {'error': str(e)}
 
         try:
             dlist = []
@@ -135,8 +119,7 @@ class PackageManager():
             swanproj = SwanProject(directory)
             env = uuid.uuid1()
             env = 'swanproject-' + str(env)
-            folder = directory[:-1].split('/')[-1]
-            resp = env_manager.create_env(env, folder, 'python3')
+            resp = env_manager.create_env(env, 'python3')
             swanproj.env = env
             swanproj.update_yaml()
         except Exception as e:
