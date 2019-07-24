@@ -30,7 +30,7 @@ define([
             $(async function () {
                 $('#updatebtn').unbind();
                 $('#updatebtn').click(async function () {
-                    let selectedPackages = sessionStorage.getItem("selectedPackages");
+                    let selectedPackages = common.get_selected_packages();
                     if (null === selectedPackages)
                         selectedPackages = [];
                     else {
@@ -105,7 +105,8 @@ define([
             $(function () {
                 $('#deletebtn').unbind();
                 $('#deletebtn').click(function () {
-                    let selectedPackages = sessionStorage.getItem("selectedPackages").split(',');
+                    let selectedPackages = common.get_selected_packages();
+                    console.log(selectedPackages);
                     let project = sessionStorage.getItem("project");
                     let html = "<p> The following packages are about to be deleted: </p> </br>";
                     html += "<ul>";
@@ -136,7 +137,7 @@ define([
             $(function () {
                 $('#installbtn').unbind();
                 $('#installbtn').click(function () {
-                    let toInstall = sessionStorage.getItem("toInstall").split(',');
+                    let toInstall = common.get_to_install();
                     let project = sessionStorage.getItem("project");
                     let html = "<p> The following packages are about to be added: </p> </br>";
                     html += "<ul>";

@@ -2,8 +2,9 @@
 define([
     'jquery',
     './views',
-    './api'
-], function ($, views, api) {
+    './api',
+    './common'
+], function ($, views, api, common) {
     "use strict";
 
     let packageview = {
@@ -95,7 +96,7 @@ define([
                 };
                 let data = [];
                 data.push(pkg);
-                let toInstall = sessionStorage.getItem("toInstall");
+                let toInstall = common.get_to_install();
                 if (null === toInstall)
                     toInstall = [];
                 else {
@@ -125,22 +126,8 @@ define([
         }
     };
 
-    let closeview = {
-
-        /*
-        This function clears all locally stored data and hides the sidebar.
-        */
-
-        load: function () {
-            let arr = [];
-            sessionStorage.setItem("toInstall", arr);
-            sessionStorage.setItem("selectedPackages", arr);
-        }
-    };
-
     return {
         'packageview': packageview,
-        'searchview': searchview,
-        'closeview': closeview
+        'searchview': searchview
     };
 });

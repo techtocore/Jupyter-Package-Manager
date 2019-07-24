@@ -28,7 +28,6 @@ define([
                 toInstall.push(pkg);
             }
         });
-        sessionStorage.setItem("toInstall", toInstall);
         return output;
     }
 
@@ -77,7 +76,6 @@ define([
             if (toInstall.length === 0) {
                 $('#to-install-main').css("display", "none");
             }
-            sessionStorage.setItem("toInstall", toInstall);
         });
     }
 
@@ -99,7 +97,6 @@ define([
                 selectedPackages.push(pkg);
                 $(this).children(".one").children(".two").find('i').toggleClass('fa-cube fa-check');
             }
-            sessionStorage.setItem("selectedPackages", selectedPackages);
             deletebtndisp(selectedPackages);
         });
     }

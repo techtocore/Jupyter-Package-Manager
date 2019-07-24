@@ -44,9 +44,6 @@ define(function (require) {
                     init(project);
                 });
 
-                modal.on('hidden.bs.modal', function () {
-                    scripts.closeview.load();
-                });
             }
         });
     }
