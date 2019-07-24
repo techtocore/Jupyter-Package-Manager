@@ -29,10 +29,10 @@ define([
             }
 
             let selectedPackages = [];
-            $(views.selectinstalled(selectedPackages));
+            views.selectinstalled(selectedPackages);
 
             let toInstall = [];
-            $(views.selecttoinstall(toInstall));
+            views.selecttoinstall(toInstall);
         }
     };
 
