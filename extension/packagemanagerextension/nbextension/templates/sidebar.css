@@ -17,7 +17,7 @@
 }
 
 #package-name {
-  width: 380px;
+  width: 390px;
 }
 
 #packageview {
@@ -26,6 +26,7 @@
 }
 
 .value-name {
+  padding-left: 10px;
   font-size: large;
 }
 
@@ -55,5 +56,5 @@
 #searchicon {
   top: 10px;
   z-index: 10 !important;
-  right: 25px;
+  right: 20px;
 }

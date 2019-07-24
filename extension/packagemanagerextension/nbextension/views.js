@@ -9,7 +9,7 @@ define([
     This function generates the DOM for displaying packages that are selected for installation.
     */
 
-    function toinstall(data, toInstall) {
+    function toinstall(data) {
         let output = "";
         $.each(data, function (key, val) {
             if (val.status != "installed") {
@@ -24,11 +24,8 @@ define([
                 output += "</div>";
                 output += "</div>";
                 output += "</div>";
-                let pkg = val.name + "=" + val.version;
-                toInstall.push(pkg);
             }
         });
-        sessionStorage.setItem("toInstall", toInstall);
         return output;
     }
 
@@ -77,7 +74,6 @@ define([
             if (toInstall.length === 0) {
                 $('#to-install-main').css("display", "none");
             }
-            sessionStorage.setItem("toInstall", toInstall);
         });
     }
 
@@ -99,7 +95,6 @@ define([
                 selectedPackages.push(pkg);
                 $(this).children(".one").children(".two").find('i').toggleClass('fa-cube fa-check');
             }
-            sessionStorage.setItem("selectedPackages", selectedPackages);
             deletebtndisp(selectedPackages);
         });
     }
