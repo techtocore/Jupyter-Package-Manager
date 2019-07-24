@@ -31,13 +31,8 @@ define([
                 $('#updatebtn').unbind();
                 $('#updatebtn').click(async function () {
                     let selectedPackages = common.get_selected_packages();
-                    if (null === selectedPackages)
-                        selectedPackages = [];
-                    else {
-                        selectedPackages = selectedPackages.split(',');
-                        if (selectedPackages[0].length < 1) selectedPackages = [];
-                    }
-                    let project = 'SWAN_projects/' + location.href.split('/')[this.length];
+                    let url = location.href.split('/');
+                    let project = 'SWAN_projects/' + url[url.length - 1];
                     let html = "<p> The following packages are about to be updated: </p> </br>";
                     $('#updatebtn').toggleClass('fa-wrench fa-spinner').addClass('fa-spin');
                     let resp = await api.checkupdate(project);
@@ -106,7 +101,8 @@ define([
                 $('#deletebtn').unbind();
                 $('#deletebtn').click(function () {
                     let selectedPackages = common.get_selected_packages();
-                    let project = 'SWAN_projects/' + location.href.split('/')[this.length];
+                    let url = location.href.split('/');
+                    let project = 'SWAN_projects/' + url[url.length - 1];
                     let html = "<p> The following packages are about to be deleted: </p> </br>";
                     html += "<ul>";
                     let packages = [];
@@ -118,6 +114,8 @@ define([
                         html += "</li>";
                     });
                     html += "</ul>";
+                    if (packages.length === 0)
+                        html = "<p> No packages selected </p>";
                     common.confirm("Delete Packages", $.parseHTML(html), "Confirm", function () {
                         api.delete_packages(packages, project);
                     });
@@ -140,17 +138,17 @@ define([
                     let project = 'SWAN_projects/' + location.href.split('/')[this.length];
                     let html = "<p> The following packages are about to be added: </p> </br>";
                     html += "<ul>";
-                    let packages = [];
                     toInstall.forEach(element => {
                         element = element.split('=')[0];
-                        packages.push(element);
                         html += "<li>";
                         html += element;
                         html += "</li>";
                     });
                     html += "</ul>";
+                    if (toInstall.length === 0)
+                        html = "<p> No packages selected </p>";
                     common.confirm("Install Packages", $.parseHTML(html), "Confirm", function () {
-                        api.install_packages(packages, project);
+                        api.install_packages(toInstall, project);
                     });
                 });
             });

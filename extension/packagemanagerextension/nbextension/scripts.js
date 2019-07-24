@@ -94,17 +94,10 @@ define([
                 };
                 let data = [];
                 data.push(pkg);
-                let toInstall = common.get_to_install();
-                if (null === toInstall)
-                    toInstall = [];
-                else {
-                    toInstall = toInstall.split(',');
-                    if (toInstall[0].length < 1) toInstall = [];
-                }
-                let output = views.toinstall(data, toInstall);
+                let output = views.toinstall(data);
                 $('#to-install').append(output);
-
-                $(views.selecttoinstall(toInstall));
+                let toInstall = common.get_to_install();
+                views.selecttoinstall(toInstall);
                 $('#to-install-main').css("display", "initial");
             }
 
