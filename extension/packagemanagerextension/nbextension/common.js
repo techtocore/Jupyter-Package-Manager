@@ -25,7 +25,8 @@ define([
         for (let i = 0; i < list.length; i++) {
             let element = list[i];
             let val = $(element).children(".two").find('i');
-            if ($(val).find('.fa-check')[0]) {
+            let classes = $(val).attr('class').split(' ');
+            if (classes.includes('fa-check')) {
                 let packageName = $(element).children(".two").children(".value-name").text();
                 let version = $(element).children(".three").children(".value-version").text();
                 let pkg = packageName + "=" + version;

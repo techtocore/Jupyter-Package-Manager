@@ -37,7 +37,7 @@ define([
                         selectedPackages = selectedPackages.split(',');
                         if (selectedPackages[0].length < 1) selectedPackages = [];
                     }
-                    let project = sessionStorage.getItem("project");
+                    let project = 'SWAN_projects/' + location.href.split('/')[this.length];
                     let html = "<p> The following packages are about to be updated: </p> </br>";
                     $('#updatebtn').toggleClass('fa-wrench fa-spinner').addClass('fa-spin');
                     let resp = await api.checkupdate(project);
@@ -106,8 +106,7 @@ define([
                 $('#deletebtn').unbind();
                 $('#deletebtn').click(function () {
                     let selectedPackages = common.get_selected_packages();
-                    console.log(selectedPackages);
-                    let project = sessionStorage.getItem("project");
+                    let project = 'SWAN_projects/' + location.href.split('/')[this.length];
                     let html = "<p> The following packages are about to be deleted: </p> </br>";
                     html += "<ul>";
                     let packages = [];
@@ -138,7 +137,7 @@ define([
                 $('#installbtn').unbind();
                 $('#installbtn').click(function () {
                     let toInstall = common.get_to_install();
-                    let project = sessionStorage.getItem("project");
+                    let project = 'SWAN_projects/' + location.href.split('/')[this.length];
                     let html = "<p> The following packages are about to be added: </p> </br>";
                     html += "<ul>";
                     let packages = [];

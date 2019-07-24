@@ -15,8 +15,6 @@ define([
 
         load: async function (dir) {
 
-            sessionStorage.setItem("project", dir);
-
             let info = await api.getinfo(dir);
             let data = info.packages;
 
