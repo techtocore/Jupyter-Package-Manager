@@ -8,8 +8,6 @@ define([
     './methods'
 ], function (Jupyter, $, dialog, utils, scripts, urls, methods) {
 
-    "use strict";
-
     /*
     This function populates all the data onto the sidebar and registers appropriate event handlers.
     */
@@ -45,8 +43,8 @@ define([
     function show_button(project) {
         utils.ajax(urls.static_url + 'templates/sidebar.html', {
             dataType: 'html',
-            success: function (env_html, status, xhr) {
-                // Configure tab
+            success: function (env_html) {
+                // Configure Sidebar
                 modal = dialog.modal({
                     draggable: false,
                     title: 'Configure Project',
