@@ -1,11 +1,18 @@
-define(function (require) {
-    let $ = require('jquery');
-    let dialog = require('base/js/dialog');
-    let Jupyter = require('base/js/namespace');
-    let utils = require('base/js/utils');
-    let scripts = require('./scripts');
-    let urls = require('./urls');
-    let methods = require('./methods');
+define([
+    'base/js/namespace',
+    'jquery',
+    'base/js/dialog',
+    'base/js/utils',
+    './scripts',
+    './urls',
+    './methods'
+], function (Jupyter, $, dialog, utils, scripts, urls, methods) {
+
+    "use strict";
+
+    /*
+    This function populates all the data onto the sidebar and registers appropriate event handlers.
+    */
 
     function init(dir) {
         scripts.packageview(dir);
@@ -15,6 +22,9 @@ define(function (require) {
         methods.installpkg();
     };
 
+    /*
+    This function is the entry point to the extension. It loads the custom CSS files.
+    */
 
     function load() {
         if (!Jupyter.notebook_list) return;
@@ -26,6 +36,11 @@ define(function (require) {
                 .attr('href', urls.static_url + 'templates/sidebar.css')
         );
     }
+
+    /*
+    This is the function that will be invoked on clicking the cog button on SWAN.
+    A new sidebar will be created each time corresponding to the project from where it is called.
+    */
 
     function show_button(project) {
         utils.ajax(urls.static_url + 'templates/sidebar.html', {

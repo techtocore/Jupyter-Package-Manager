@@ -4,6 +4,10 @@ define([
 ], function (dialog, $) {
     "use strict";
 
+    /*
+    This function is responsible for the generation of confirmation modals.
+    */
+
     function confirm(title, msg, button_text, callback) {
         let buttons = { Cancel: {} };
         buttons[button_text] = {
@@ -20,6 +24,10 @@ define([
         dialog.modal(opts);
     }
 
+    /*
+    Auxiliary function for checking the DOM for selected packages.
+    */
+
     function get_from_list(list) {
         let arr = [];
         for (let i = 0; i < list.length; i++) {
@@ -35,6 +43,10 @@ define([
         }
         return arr;
     }
+
+    /*
+    These functions return the list of currently selected packages.
+    */
 
     function get_to_install() {
         let list = $('.to-install-values').children(".one");
