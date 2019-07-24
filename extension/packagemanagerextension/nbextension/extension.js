@@ -8,11 +8,11 @@ define(function (require) {
     let methods = require('./methods');
 
     function init(dir) {
-        scripts.packageview.load(dir);
-        scripts.searchview.load();
-        methods.updatepkg.load();
-        methods.deletepkg.load();
-        methods.installpkg.load();
+        scripts.packageview(dir);
+        scripts.searchview();
+        methods.updatepkg();
+        methods.deletepkg();
+        methods.installpkg();
     };
 
 
