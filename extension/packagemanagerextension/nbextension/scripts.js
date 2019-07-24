@@ -74,6 +74,18 @@ define([
                     });
                     $('#searchicon').toggleClass('fa-search fa-spinner');
                     $('#searchlist').html(html);
+
+                    $('input[list="searchlist"]').each(function () {
+                        var elem = $(this),
+                            list = $(document.getElementById(elem.attr('datalist')));
+                        elem[0].value = elem[0].value.split('=')[0];
+                        elem.autocomplete({
+                            source: list.children().map(function () {
+                                return $(this).text();
+                            }).get()
+                        });
+                    });
+
                 }, 1000));
             });
 
