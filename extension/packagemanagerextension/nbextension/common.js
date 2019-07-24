@@ -20,34 +20,29 @@ define([
         dialog.modal(opts);
     }
 
-    function get_to_install() {
-        let to_install = [];
-        let list = $('.to-install-values').children(".one")
-        list.forEach(element => {
+    function get_from_list(list) {
+        let arr = [];
+        for (let i = 0; i < list.length; i++) {
+            let element = list[i];
             let val = $(element).children(".two").find('i');
             if ($(val).find('.fa-check')[0]) {
                 let packageName = $(element).children(".two").children(".value-name").text();
                 let version = $(element).children(".three").children(".value-version").text();
                 let pkg = packageName + "=" + version;
-                to_install.push(pkg);
+                arr.push(pkg);
             }
-        });
-        return to_install;
+        }
+        return arr;
+    }
+
+    function get_to_install() {
+        let list = $('.to-install-values').children(".one");
+        return get_from_list(list);
     }
 
     function get_selected_packages() {
-        let selected_packages = [];
         let list = $('.installed-values').children(".one")
-        list.forEach(element => {
-            let val = $(element).children(".two").find('i');
-            if ($(val).find('.fa-check')[0]) {
-                let packageName = $(element).children(".two").children(".value-name").text();
-                let version = $(element).children(".three").children(".value-version").text();
-                let pkg = packageName + "=" + version;
-                selected_packages.push(pkg);
-            }
-        });
-        return selected_packages;
+        return get_from_list(list);
     }
 
     return {
