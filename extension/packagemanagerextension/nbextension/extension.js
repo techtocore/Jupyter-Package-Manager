@@ -1,20 +1,28 @@
-define(function (require) {
-    let $ = require('jquery');
-    let dialog = require('base/js/dialog');
-    let Jupyter = require('base/js/namespace');
-    let utils = require('base/js/utils');
-    let scripts = require('./scripts');
-    let urls = require('./urls');
-    let methods = require('./methods');
+define([
+    'base/js/namespace',
+    'jquery',
+    'base/js/dialog',
+    'base/js/utils',
+    './scripts',
+    './urls',
+    './methods'
+], function (Jupyter, $, dialog, utils, scripts, urls, methods) {
+
+    /*
+    This function populates all the data onto the sidebar and registers appropriate event handlers.
+    */
 
     function init(dir) {
-        scripts.packageview.load(dir);
-        scripts.searchview.load();
-        methods.updatepkg.load();
-        methods.deletepkg.load();
-        methods.installpkg.load();
+        scripts.packageview(dir);
+        scripts.searchview();
+        methods.updatepkg();
+        methods.deletepkg();
+        methods.installpkg();
     };
 
+    /*
+    This function is the entry point to the extension. It loads the custom CSS files.
+    */
 
     function load() {
         if (!Jupyter.notebook_list) return;
@@ -27,11 +35,16 @@ define(function (require) {
         );
     }
 
+    /*
+    This is the function that will be invoked on clicking the cog button on SWAN.
+    A new sidebar will be created each time corresponding to the project from where it is called.
+    */
+
     function show_button(project) {
         utils.ajax(urls.static_url + 'templates/sidebar.html', {
             dataType: 'html',
-            success: function (env_html, status, xhr) {
-                // Configure tab
+            success: function (env_html) {
+                // Configure Sidebar
                 modal = dialog.modal({
                     draggable: false,
                     title: 'Configure Project',
@@ -44,9 +57,6 @@ define(function (require) {
                     init(project);
                 });
 
-                modal.on('hidden.bs.modal', function () {
-                    scripts.closeview.load();
-                });
             }
         });
     }

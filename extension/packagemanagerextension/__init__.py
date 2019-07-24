@@ -9,7 +9,7 @@ def _jupyter_nbextension_paths():
         # directory in the `nbextension/` namespace
         dest="packagemanagerextension",
         # _also_ in the `nbextension/` namespace
-        require="packagemanagerextension/tree")]
+        require="packagemanagerextension/extension")]
 
 
 def _jupyter_server_extension_paths():
