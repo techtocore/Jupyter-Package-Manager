@@ -9,7 +9,7 @@ define([
     This function generates the DOM for displaying packages that are selected for installation.
     */
 
-    function toinstall(data) {
+    function to_install(data) {
         let output = "";
         $.each(data, function (key, val) {
             if (val.status != "installed") {
@@ -58,7 +58,7 @@ define([
     This function add an eventlistener to the DOM for handling packages that are selected for installation.
     */
 
-    function selecttoinstall(toInstall) {
+    function select_to_install(toInstall) {
         $('.to-install-values').unbind();
         $('.to-install-values').hover(function () {
             $(this).children(".one").children(".two").find('i').toggleClass('fa-close');
@@ -81,7 +81,7 @@ define([
     This function add an eventlistener to the DOM for handling packages that are currently installed.
     */
 
-    function selectinstalled(selectedPackages) {
+    function select_installed(selectedPackages) {
         $('.installed-values').unbind();
         $('.installed-values').click(function () {
             let packageName = $(this).children(".one").children(".two").children(".value-name").text();
@@ -95,7 +95,7 @@ define([
                 selectedPackages.push(pkg);
                 $(this).children(".one").children(".two").find('i').toggleClass('fa-cube fa-check');
             }
-            deletebtndisp(selectedPackages);
+            delete_btn_disp(selectedPackages);
         });
     }
 
@@ -103,7 +103,7 @@ define([
     This function add an eventlistener to the DOM for showing the delete button only when packages are selected.
     */
 
-    function deletebtndisp(selectedPackages) {
+    function delete_btn_disp(selectedPackages) {
         let n = selectedPackages.length;
         if (n === 0)
             $('#deletebtn').css("display", "none");
@@ -113,9 +113,9 @@ define([
 
     return {
         'installed': installed,
-        'toinstall': toinstall,
-        'selecttoinstall': selecttoinstall,
-        'selectinstalled': selectinstalled,
-        'deletebtndisp': deletebtndisp
+        'to_install': to_install,
+        'select_to_install': select_to_install,
+        'select_installed': select_installed,
+        'delete_btn_disp': delete_btn_disp
     };
 });

@@ -13,11 +13,11 @@ define([
     */
 
     function init(dir) {
-        scripts.packageview(dir);
-        scripts.searchview();
-        methods.updatepkg();
-        methods.deletepkg();
-        methods.installpkg();
+        scripts.package_view(dir);
+        scripts.search_view();
+        methods.update_packages();
+        methods.delete_packages();
+        methods.install_packages();
     };
 
     /*

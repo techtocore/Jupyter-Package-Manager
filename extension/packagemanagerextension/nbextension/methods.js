@@ -11,7 +11,7 @@ define([
     This function returns the latest version of a package.
     */
 
-    function checknewversion(updates, packagename, pkgversion) {
+    function check_new_version(updates, packagename, pkgversion) {
         for (let element of updates) {
             if (element.name === packagename) {
                 return element.version;
@@ -24,7 +24,7 @@ define([
     This function lists down all the updates and requires a user confirmation.
     */
 
-    async function updatepkg() {
+    async function update_packages() {
         $('#updatebtn').unbind();
         $('#updatebtn').click(async function () {
             let selectedPackages = common.get_selected_packages();
@@ -32,7 +32,7 @@ define([
             let project = 'SWAN_projects/' + url[url.length - 1];
             let html = "<p> The following packages are about to be updated: </p> </br>";
             $('#updatebtn').toggleClass('fa-wrench fa-spinner').addClass('fa-spin');
-            let resp = await api.checkupdate(project);
+            let resp = await api.check_update(project);
             $('#updatebtn').toggleClass('fa-wrench fa-spinner').removeClass('fa-spin');
             let updates = resp.updates;
             let packages = [];
@@ -44,7 +44,7 @@ define([
                     element = element.split('=');
                     let pkg = element[0];
                     let ver = element[1];
-                    let nver = checknewversion(updates, pkg, ver);
+                    let nver = check_new_version(updates, pkg, ver);
                     if (nver != ver) {
                         packages.push(pkg);
                         html += "<li>";
@@ -61,7 +61,7 @@ define([
                 for (let item of list) {
                     let pkg = $(item).find('.value-name')[0].innerText;
                     let ver = $(item).find('.value-version')[0].innerText;
-                    let nver = checknewversion(updates, pkg, ver);
+                    let nver = check_new_version(updates, pkg, ver);
                     if (nver != ver) {
                         packages.push(pkg);
                         html += "<li>";
@@ -86,7 +86,7 @@ define([
     This function lists down all the packages selected for removal and requires a user confirmation.
     */
 
-    function deletepkg() {
+    function delete_packages() {
         $('#deletebtn').unbind();
         $('#deletebtn').click(function () {
             let selectedPackages = common.get_selected_packages();
@@ -116,7 +116,7 @@ define([
     This function lists down all the packages selected for installation and requires a user confirmation.
     */
 
-    function installpkg() {
+    function install_packages() {
         $('#installbtn').unbind();
         $('#installbtn').click(function () {
             let toInstall = common.get_to_install();
@@ -139,8 +139,8 @@ define([
     }
 
     return {
-        'updatepkg': updatepkg,
-        'deletepkg': deletepkg,
-        'installpkg': installpkg
+        'update_packages': update_packages,
+        'delete_packages': delete_packages,
+        'install_packages': install_packages
     };
 });

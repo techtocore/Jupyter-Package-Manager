@@ -69,7 +69,7 @@ define([
     This function checks for updates in the selected project.
     */
 
-    function checkupdate(project) {
+    function check_update(project) {
         return api_call(endpoints.checkupdate, project);
     }
 
@@ -97,7 +97,7 @@ define([
     This function returns the status of all the packages in a project.
     */
 
-    function getinfo(dir) {
+    function get_info(dir) {
         return api_call(endpoints.getinfo, dir);
     }
 
@@ -113,8 +113,8 @@ define([
         'update_packages': update_packages,
         'install_packages': install_packages,
         'delete_packages': delete_packages,
-        'getinfo': getinfo,
+        'get_info': get_info,
         'search': search,
-        'checkupdate': checkupdate
+        'check_update': check_update
     };
 });

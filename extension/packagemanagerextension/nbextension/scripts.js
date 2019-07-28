@@ -12,25 +12,25 @@ define([
     This function populates the sidebar each time it is opened.
     */
 
-    async function packageview(dir) {
+    async function package_view(dir) {
 
-        let info = await api.getinfo(dir);
+        let info = await api.get_info(dir);
         let data = info.packages;
 
         let output = views.installed(data);
         $('#installed-packages').html(output);
 
-        output = views.toinstall(data, []);
+        output = views.to_install(data, []);
         $('#to-install').html(output);
         if (output === "") {
             $('#to-install-main').css("display", "none");
         }
 
         let selectedPackages = [];
-        views.selectinstalled(selectedPackages);
+        views.select_installed(selectedPackages);
 
         let toInstall = [];
-        views.selecttoinstall(toInstall);
+        views.select_to_install(toInstall);
     }
 
 
@@ -50,7 +50,7 @@ define([
     This function populates the dropdown datalist when something is searched.
     */
 
-    function searchview() {
+    function search_view() {
 
         $(function () {
             $('#package-name').unbind();
@@ -103,10 +103,10 @@ define([
             };
             let data = [];
             data.push(pkg);
-            let output = views.toinstall(data);
+            let output = views.to_install(data);
             $('#to-install').append(output);
             let toInstall = common.get_to_install();
-            views.selecttoinstall(toInstall);
+            views.select_to_install(toInstall);
             $('#to-install-main').css("display", "initial");
         }
 
@@ -126,7 +126,7 @@ define([
     }
 
     return {
-        'packageview': packageview,
-        'searchview': searchview
+        'package_view': package_view,
+        'search_view': search_view
     };
 });
