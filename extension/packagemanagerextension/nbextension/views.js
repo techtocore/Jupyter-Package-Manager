@@ -61,11 +61,11 @@ define([
     function select_to_install(toInstall) {
         $('.to-install-values').unbind();
         $('.to-install-values').hover(function () {
-            $(this).children(".one").children(".two").find('i').toggleClass('fa-close');
+            $(this).children(".one .two").find('i').toggleClass('fa-close');
         });
         $('.to-install-values').click(function () {
-            let packageName = $(this).children(".one").children(".two").children(".value-name").text();
-            let version = $(this).children(".one").children(".three").children(".value-version").text();
+            let packageName = $(this).children(".one .two .value-name").text();
+            let version = $(this).children(".one .three .value-version").text();
             let pkg = packageName + "=" + version;
             if (toInstall.includes(pkg)) {
                 toInstall = toInstall.filter(item => item !== pkg);
@@ -84,16 +84,16 @@ define([
     function select_installed(selectedPackages) {
         $('.installed-values').unbind();
         $('.installed-values').click(function () {
-            let packageName = $(this).children(".one").children(".two").children(".value-name").text();
-            let version = $(this).children(".one").children(".three").children(".value-version").text();
+            let packageName = $(this).children(".one .two .value-name").text();
+            let version = $(this).children(".one .three .value-version").text();
             let pkg = packageName + "=" + version;
             if (selectedPackages.includes(pkg)) {
                 selectedPackages = selectedPackages.filter(item => item !== pkg);
-                $(this).children(".one").children(".two").find('i').toggleClass('fa-cube fa-check');
+                $(this).children(".one .two").find('i').toggleClass('fa-cube fa-check');
             }
             else {
                 selectedPackages.push(pkg);
-                $(this).children(".one").children(".two").find('i').toggleClass('fa-cube fa-check');
+                $(this).children(".one .two").find('i').toggleClass('fa-cube fa-check');
             }
             delete_btn_disp(selectedPackages);
         });
@@ -112,10 +112,10 @@ define([
     }
 
     return {
-        'installed': installed,
-        'to_install': to_install,
-        'select_to_install': select_to_install,
-        'select_installed': select_installed,
-        'delete_btn_disp': delete_btn_disp
+        installed,
+        to_install,
+        select_to_install,
+        select_installed,
+        delete_btn_disp
     };
 });

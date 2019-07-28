@@ -13,7 +13,7 @@ define([
         buttons[button_text] = {
             class: 'btn-danger btn-primary',
             click: callback
-        }
+        };
 
         let opts = {
             title: title,
@@ -23,6 +23,10 @@ define([
 
         dialog.modal(opts);
     }
+
+    /*
+    This function is responsible for the generation of alert/info modals.
+    */
 
     function display_msg(title, msg) {
         let buttons = { Cancel: {} };
@@ -46,8 +50,8 @@ define([
             let val = $(element).children(".two").find('i');
             let classes = $(val).attr('class').split(' ');
             if (classes.includes('fa-check')) {
-                let packageName = $(element).children(".two").children(".value-name").text();
-                let version = $(element).children(".three").children(".value-version").text();
+                let packageName = $(element).children(".two .value-name").text();
+                let version = $(element).children(".three .value-version").text();
                 let pkg = packageName + "=" + version;
                 arr.push(pkg);
             }
@@ -65,14 +69,14 @@ define([
     }
 
     function get_selected_packages() {
-        let list = $('.installed-values').children(".one")
+        let list = $('.installed-values').children(".one");
         return get_from_list(list);
     }
 
     return {
-        'confirm': confirm,
-        'get_selected_packages': get_selected_packages,
-        'get_to_install': get_to_install,
-        'display_msg': display_msg
+        confirm,
+        get_selected_packages,
+        get_to_install,
+        display_msg
     };
 });

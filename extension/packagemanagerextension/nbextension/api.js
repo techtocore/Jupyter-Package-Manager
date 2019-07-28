@@ -35,6 +35,7 @@ define([
     /*
     This function makes the API calls to the specified endpoint with the corresponding headers
     */
+
     function api_call(endpoint, url, payload = {}) {
 
         let settings = {
@@ -46,6 +47,8 @@ define([
             },
             "processData": false
         };
+
+        // Send the payload only if it is not empty
 
         if (!(Object.keys(payload).length === 0 && payload.constructor === Object)) {
             settings.data = JSON.stringify(payload);
@@ -117,11 +120,11 @@ define([
     }
 
     return {
-        'update_packages': update_packages,
-        'install_packages': install_packages,
-        'delete_packages': delete_packages,
-        'get_info': get_info,
-        'search': search,
-        'check_update': check_update
+        update_packages,
+        install_packages,
+        delete_packages,
+        get_info,
+        search,
+        check_update
     };
 });

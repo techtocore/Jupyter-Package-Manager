@@ -4,8 +4,8 @@ define(["base/js/namespace"], function (Jupyter) {
     let static_url = base_url + "nbextensions/packagemanagerextension/";
 
     return {
-        base_url: base_url,
-        api_url: api_url,
-        static_url: static_url
+        base_url,
+        api_url,
+        static_url
     };
 });

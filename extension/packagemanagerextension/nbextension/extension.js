@@ -63,6 +63,6 @@ define([
 
     return {
         load_ipython_extension: load,
-        show_button: show_button
+        show_button
     };
 });

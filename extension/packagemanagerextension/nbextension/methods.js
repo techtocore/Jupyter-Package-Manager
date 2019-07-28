@@ -6,7 +6,6 @@ define([
 ], function ($, common, api) {
     "use strict";
 
-
     /*
     This function returns the latest version of a package.
     */
@@ -142,8 +141,8 @@ define([
     }
 
     return {
-        'update_packages': update_packages,
-        'delete_packages': delete_packages,
-        'install_packages': install_packages
+        update_packages,
+        delete_packages,
+        install_packages
     };
 });

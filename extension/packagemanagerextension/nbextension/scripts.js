@@ -7,7 +7,6 @@ define([
 ], function ($, views, api, common) {
     "use strict";
 
-
     /*
     This function populates the sidebar each time it is opened.
     */
@@ -55,10 +54,14 @@ define([
         $('#package-name').unbind();
         $('#package-name').keyup(delay(async function (e) {
             let query = this.value;
-            $('#searchicon').toggleClass('fa-search fa-spinner');
+            if (query.length <= 1) {
+                // Do not query if the string size is too small. This will save a lot of time.
+                return;
+            }
+            $('#searchicon').toggleClass('fa-search fa-dot-circle-o').addClass('Blink');
             let res = await api.search(query);
             let pks = res.packages;
-            let html = ""
+            let html = "";
             $('#searchlist').html(html);
             Array.from(pks).forEach(element => {
                 let name = element.name;
@@ -68,12 +71,12 @@ define([
                 html += entry;
                 html += "</option>";
             });
-            $('#searchicon').toggleClass('fa-search fa-spinner');
+            $('#searchicon').toggleClass('fa-search fa-dot-circle-o').removeClass('Blink');
             $('#searchlist').html(html);
 
             $('input[list="searchlist"]').each(function () {
                 let elem = $(this),
-                    list = $(document.getElementById(elem.attr('datalist')));
+                    list = $('#searchlist');
                 elem[0].value = elem[0].value.split('=')[0];
                 elem.autocomplete({
                     source: list.children().map(function () {
@@ -119,7 +122,7 @@ define([
     }
 
     return {
-        'package_view': package_view,
-        'search_view': search_view
+        package_view,
+        search_view
     };
 });
