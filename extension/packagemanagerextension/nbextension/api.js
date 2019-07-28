@@ -34,16 +34,16 @@ define([
     /*
     This function makes the API calls to the specified endpoint with the corresponding headers
     */
-    function api_call(url, method, payload = "") {
+    function api_call(endpoint, url, payload = {}) {
         let settings = {
-            "url": url,
-            "method": method,
+            "url": urls.api_url + endpoint.uri + url,
+            "method": endpoint.method,
             "headers": {
                 "Content-Type": "application/json",
                 "cache-control": "no-cache",
             },
             "processData": false,
-            "data": payload
+            "data": JSON.stringify(payload)
         };
 
         return new Promise(resolve => {
@@ -58,10 +58,11 @@ define([
     */
 
     function update_packages(packages, project) {
-        let payload = {};
-        payload['project'] = project;
-        payload['packages'] = packages;
-        return api_call(urls.api_url + endpoints.update_packages.uri, endpoints.update_packages.method, JSON.stringify(payload));
+        let payload = {
+            'project': project,
+            'packages': packages
+        };
+        return api_call(endpoints.update_packages, "", payload);
     }
 
     /*
@@ -69,7 +70,7 @@ define([
     */
 
     function checkupdate(project) {
-        return api_call(urls.api_url + endpoints.checkupdate.uri + project, endpoints.checkupdate.method);
+        return api_call(endpoints.checkupdate, project);
     }
 
     /*
@@ -77,17 +78,19 @@ define([
     */
 
     function delete_packages(packages, project) {
-        let payload = {};
-        payload['project'] = project;
-        payload['packages'] = packages;
-        return api_call(urls.api_url + endpoints.delete_packages.uri, endpoints.delete_packages.method, JSON.stringify(payload));
+        let payload = {
+            'project': project,
+            'packages': packages
+        };
+        return api_call(endpoints.delete_packages, "", payload);
     }
 
     function install_packages(packages, project) {
-        let payload = {};
-        payload['project'] = project;
-        payload['packages'] = packages;
-        return api_call(urls.api_url + endpoints.install_packages.uri, endpoints.install_packages.method, JSON.stringify(payload));
+        let payload = {
+            'project': project,
+            'packages': packages
+        };
+        return api_call(endpoints.install_packages, "", payload);
     }
 
     /*
@@ -95,7 +98,7 @@ define([
     */
 
     function getinfo(dir) {
-        return api_call(urls.api_url + endpoints.getinfo.uri + dir, endpoints.getinfo.method);
+        return api_call(endpoints.getinfo, dir);
     }
 
     /*
@@ -103,7 +106,7 @@ define([
     */
 
     function search(query) {
-        return api_call(urls.api_url + endpoints.search.uri + query, endpoints.search.method);
+        return api_call(endpoints.search, query);
     }
 
     return {
