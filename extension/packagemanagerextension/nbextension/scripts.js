@@ -73,7 +73,7 @@ define([
                 $('#searchlist').html(html);
 
                 $('input[list="searchlist"]').each(function () {
-                    var elem = $(this),
+                    let elem = $(this),
                         list = $(document.getElementById(elem.attr('datalist')));
                     elem[0].value = elem[0].value.split('=')[0];
                     elem.autocomplete({
@@ -116,8 +116,8 @@ define([
             let list = input.getAttribute('list');
             let options = document.getElementById(list).childNodes;
 
-            for (let i = 0; i < options.length; i++) {
-                if (options[i].innerText === val) {
+            for (let option in options) {
+                if (option.innerText === val) {
                     addtoinstall(val);
                     break;
                 }

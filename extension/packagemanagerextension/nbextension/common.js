@@ -30,8 +30,7 @@ define([
 
     function get_from_list(list) {
         let arr = [];
-        for (let i = 0; i < list.length; i++) {
-            let element = list[i];
+        for (let element in list) {
             let val = $(element).children(".two").find('i');
             let classes = $(val).attr('class').split(' ');
             if (classes.includes('fa-check')) {

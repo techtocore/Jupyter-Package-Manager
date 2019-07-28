@@ -38,7 +38,7 @@ define([
 
             if (selectedPackages.length > 0) {
                 html += "<ul>";
-                selectedPackages.forEach(element => {
+                for (let element of selectedPackages) {
                     element = element.split('=');
                     let pkg = element[0];
                     let ver = element[1];
@@ -50,7 +50,7 @@ define([
                         html += "</li>";
                         ct += 1;
                     }
-                });
+                }
                 html += "</ul>";
             }
             else {
@@ -91,13 +91,13 @@ define([
             let html = "<p> The following packages are about to be deleted: </p> </br>";
             html += "<ul>";
             let packages = [];
-            selectedPackages.forEach(element => {
+            for (let element of selectedPackages) {
                 element = element.split('=')[0];
                 packages.push(element);
                 html += "<li>";
                 html += element;
                 html += "</li>";
-            });
+            }
             html += "</ul>";
             if (packages.length === 0)
                 html = "<p> No packages selected </p>";
@@ -118,12 +118,12 @@ define([
             let toInstall = common.get_to_install();
             let html = "<p> The following packages are about to be added: </p> </br>";
             html += "<ul>";
-            toInstall.forEach(element => {
+            for (let element in toInstall) {
                 element = element.split('=')[0];
                 html += "<li>";
                 html += element;
                 html += "</li>";
-            });
+            }
             html += "</ul>";
             if (toInstall.length === 0)
                 html = "<p> No packages selected </p>";

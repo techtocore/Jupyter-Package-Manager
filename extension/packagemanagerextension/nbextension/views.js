@@ -11,7 +11,7 @@ define([
 
     function to_install(data) {
         let output = "";
-        $.each(data, function (key, val) {
+        for (let val in data) {
             if (val.status != "installed") {
                 output += "<div class='to-install-values'>";
                 output += "<div class='row one'>";
@@ -25,7 +25,7 @@ define([
                 output += "</div>";
                 output += "</div>";
             }
-        });
+        }
         return output;
     }
 
@@ -35,7 +35,7 @@ define([
 
     function installed(data) {
         let output = "";
-        $.each(data, function (key, val) {
+        for (let val in data) {
             if (val.status === "installed") {
                 output += "<div class='installed-values'>";
                 output += "<div class='row one'>";
@@ -50,7 +50,7 @@ define([
                 output += "</div>";
             }
 
-        });
+        }
         return output;
     }
 
