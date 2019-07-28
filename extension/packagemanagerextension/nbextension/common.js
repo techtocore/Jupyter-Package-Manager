@@ -24,13 +24,25 @@ define([
         dialog.modal(opts);
     }
 
+    function display_msg(title, msg) {
+        let buttons = { Cancel: {} };
+
+        let opts = {
+            title: title,
+            body: msg,
+            buttons: buttons
+        };
+
+        dialog.modal(opts);
+    }
+
     /*
     Auxiliary function for checking the DOM for selected packages.
     */
 
     function get_from_list(list) {
         let arr = [];
-        for (let element in list) {
+        for (let element of list) {
             let val = $(element).children(".two").find('i');
             let classes = $(val).attr('class').split(' ');
             if (classes.includes('fa-check')) {
@@ -60,6 +72,7 @@ define([
     return {
         'confirm': confirm,
         'get_selected_packages': get_selected_packages,
-        'get_to_install': get_to_install
+        'get_to_install': get_to_install,
+        'display_msg': display_msg
     };
 });

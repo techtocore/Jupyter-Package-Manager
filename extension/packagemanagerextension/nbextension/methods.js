@@ -72,10 +72,12 @@ define([
             }
             if (ct === 0) {
                 html = "<p> There are no updates available </p>"
+                common.dispay_msg("Install Packages", $.parseHTML(html));
             }
-            common.confirm("Update Packages", $.parseHTML(html), "Confirm", function () {
-                api.update_packages(packages, project);
-            });
+            else
+                common.confirm("Update Packages", $.parseHTML(html), "Confirm", function () {
+                    api.update_packages(packages, project);
+                });
         });
     }
 
@@ -99,11 +101,14 @@ define([
                 html += "</li>";
             }
             html += "</ul>";
-            if (packages.length === 0)
+            if (packages.length === 0) {
                 html = "<p> No packages selected </p>";
-            common.confirm("Delete Packages", $.parseHTML(html), "Confirm", function () {
-                api.delete_packages(packages, project);
-            });
+                common.dispay_msg("Install Packages", $.parseHTML(html));
+            }
+            else
+                common.confirm("Delete Packages", $.parseHTML(html), "Confirm", function () {
+                    api.delete_packages(packages, project);
+                });
         });
     }
 
@@ -118,18 +123,21 @@ define([
             let toInstall = common.get_to_install();
             let html = "<p> The following packages are about to be added: </p> </br>";
             html += "<ul>";
-            for (let element in toInstall) {
+            for (let element of toInstall) {
                 element = element.split('=')[0];
                 html += "<li>";
                 html += element;
                 html += "</li>";
             }
             html += "</ul>";
-            if (toInstall.length === 0)
+            if (toInstall.length === 0) {
                 html = "<p> No packages selected </p>";
-            common.confirm("Install Packages", $.parseHTML(html), "Confirm", function () {
-                api.install_packages(toInstall, project);
-            });
+                common.dispay_msg("Install Packages", $.parseHTML(html));
+            }
+            else
+                common.confirm("Install Packages", $.parseHTML(html), "Confirm", function () {
+                    api.install_packages(toInstall, project);
+                });
         });
     }
 

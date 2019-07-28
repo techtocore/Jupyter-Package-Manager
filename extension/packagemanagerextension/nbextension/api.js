@@ -1,7 +1,8 @@
 define([
     'jquery',
-    './urls'
-], function ($, urls) {
+    './urls',
+    './common'
+], function ($, urls, common) {
     "use strict";
 
     let endpoints = {
@@ -35,6 +36,7 @@ define([
     This function makes the API calls to the specified endpoint with the corresponding headers
     */
     function api_call(endpoint, url, payload = {}) {
+
         let settings = {
             "url": urls.api_url + endpoint.uri + url,
             "method": endpoint.method,
@@ -42,13 +44,18 @@ define([
                 "Content-Type": "application/json",
                 "cache-control": "no-cache",
             },
-            "processData": false,
-            "data": JSON.stringify(payload)
+            "processData": false
         };
+
+        if (!(Object.keys(payload).length === 0 && payload.constructor === Object)) {
+            settings.data = JSON.stringify(payload);
+        }
 
         return new Promise(resolve => {
             $.ajax(settings).done(function (response) {
                 resolve(response);
+            }).fail(function () {
+                common.display_msg("Server Error", "Please Try again");
             });
         });
     }

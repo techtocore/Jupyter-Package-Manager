@@ -11,7 +11,7 @@ define([
 
     function to_install(data) {
         let output = "";
-        for (let val in data) {
+        for (let val of data) {
             if (val.status != "installed") {
                 output += "<div class='to-install-values'>";
                 output += "<div class='row one'>";
@@ -35,7 +35,7 @@ define([
 
     function installed(data) {
         let output = "";
-        for (let val in data) {
+        for (let val of data) {
             if (val.status === "installed") {
                 output += "<div class='installed-values'>";
                 output += "<div class='row one'>";

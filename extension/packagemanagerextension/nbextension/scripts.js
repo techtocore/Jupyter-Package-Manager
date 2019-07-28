@@ -52,48 +52,44 @@ define([
 
     function search_view() {
 
-        $(function () {
-            $('#package-name').unbind();
-            $('#package-name').keyup(delay(async function (e) {
-                let query = this.value;
-                $('#searchicon').toggleClass('fa-search fa-spinner');
-                let res = await api.search(query);
-                let pks = res.packages;
-                let html = ""
-                $('#searchlist').html(html);
-                Array.from(pks).forEach(element => {
-                    let name = element.name;
-                    let version = element.version;
-                    let entry = name + " - " + version;
-                    html += "<option value='" + entry + "'>";
-                    html += entry;
-                    html += "</option>";
+        $('#package-name').unbind();
+        $('#package-name').keyup(delay(async function (e) {
+            let query = this.value;
+            $('#searchicon').toggleClass('fa-search fa-spinner');
+            let res = await api.search(query);
+            let pks = res.packages;
+            let html = ""
+            $('#searchlist').html(html);
+            Array.from(pks).forEach(element => {
+                let name = element.name;
+                let version = element.version;
+                let entry = name + " - " + version;
+                html += "<option value='" + entry + "'>";
+                html += entry;
+                html += "</option>";
+            });
+            $('#searchicon').toggleClass('fa-search fa-spinner');
+            $('#searchlist').html(html);
+
+            $('input[list="searchlist"]').each(function () {
+                let elem = $(this),
+                    list = $(document.getElementById(elem.attr('datalist')));
+                elem[0].value = elem[0].value.split('=')[0];
+                elem.autocomplete({
+                    source: list.children().map(function () {
+                        return $(this).text();
+                    }).get()
                 });
-                $('#searchicon').toggleClass('fa-search fa-spinner');
-                $('#searchlist').html(html);
+            });
 
-                $('input[list="searchlist"]').each(function () {
-                    let elem = $(this),
-                        list = $(document.getElementById(elem.attr('datalist')));
-                    elem[0].value = elem[0].value.split('=')[0];
-                    elem.autocomplete({
-                        source: list.children().map(function () {
-                            return $(this).text();
-                        }).get()
-                    });
-                });
-
-            }, 1000));
-        });
-
-        document.querySelector('input[list="searchlist"]').addEventListener('input', onInput);
+        }, 1000));
 
         /*
         This function adds the selected package to the list display.
         */
 
-        function addtoinstall(val) {
-            document.getElementById('package-name').value = '';
+        function add_to_install(val) {
+            $('#package-name').val("");
             $('#package-name').blur();
             let a = val.split(' - ');
             let pkg = {
@@ -110,19 +106,16 @@ define([
             $('#to-install-main').css("display", "initial");
         }
 
-        function onInput(e) {
-            let input = e.target;
-            let val = input.value;
-            let list = input.getAttribute('list');
-            let options = document.getElementById(list).childNodes;
+        $('#package-name').on('input', function () {
+            var userText = $(this).val();
 
-            for (let option in options) {
-                if (option.innerText === val) {
-                    addtoinstall(val);
-                    break;
+            $("#searchlist").find("option").each(function () {
+                if ($(this).val() == userText) {
+                    add_to_install(userText);
                 }
-            }
-        }
+            })
+        });
+
     }
 
     return {
