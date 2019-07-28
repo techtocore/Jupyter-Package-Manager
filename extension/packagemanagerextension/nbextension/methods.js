@@ -24,12 +24,10 @@ define([
     This function lists down all the updates and requires a user confirmation.
     */
 
-    async function update_packages() {
+    async function update_packages(project) {
         $('#updatebtn').unbind();
         $('#updatebtn').click(async function () {
             let selectedPackages = common.get_selected_packages();
-            let url = location.href.split('/');
-            let project = 'SWAN_projects/' + url[url.length - 1];
             let html = "<p> The following packages are about to be updated: </p> </br>";
             $('#updatebtn').toggleClass('fa-wrench fa-spinner').addClass('fa-spin');
             let resp = await api.check_update(project);
@@ -86,12 +84,10 @@ define([
     This function lists down all the packages selected for removal and requires a user confirmation.
     */
 
-    function delete_packages() {
+    function delete_packages(project) {
         $('#deletebtn').unbind();
         $('#deletebtn').click(function () {
             let selectedPackages = common.get_selected_packages();
-            let url = location.href.split('/');
-            let project = 'SWAN_projects/' + url[url.length - 1];
             let html = "<p> The following packages are about to be deleted: </p> </br>";
             html += "<ul>";
             let packages = [];
@@ -116,11 +112,10 @@ define([
     This function lists down all the packages selected for installation and requires a user confirmation.
     */
 
-    function install_packages() {
+    function install_packages(project) {
         $('#installbtn').unbind();
         $('#installbtn').click(function () {
             let toInstall = common.get_to_install();
-            let project = 'SWAN_projects/' + location.href.split('/')[this.length];
             let html = "<p> The following packages are about to be added: </p> </br>";
             html += "<ul>";
             toInstall.forEach(element => {

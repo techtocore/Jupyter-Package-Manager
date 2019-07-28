@@ -15,9 +15,9 @@ define([
     function init(dir) {
         scripts.package_view(dir);
         scripts.search_view();
-        methods.update_packages();
-        methods.delete_packages();
-        methods.install_packages();
+        methods.update_packages(dir);
+        methods.delete_packages(dir);
+        methods.install_packages(dir);
     };
 
     /*
