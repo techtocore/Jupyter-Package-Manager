@@ -7,30 +7,29 @@ define([
 ], function ($, views, api, common) {
     "use strict";
 
-
     /*
     This function populates the sidebar each time it is opened.
     */
 
-    async function packageview(dir) {
+    async function package_view(dir) {
 
-        let info = await api.getinfo(dir);
+        let info = await api.get_info(dir);
         let data = info.packages;
 
         let output = views.installed(data);
         $('#installed-packages').html(output);
 
-        output = views.toinstall(data, []);
+        output = views.to_install(data, []);
         $('#to-install').html(output);
         if (output === "") {
             $('#to-install-main').css("display", "none");
         }
 
         let selectedPackages = [];
-        views.selectinstalled(selectedPackages);
+        views.select_installed(selectedPackages);
 
         let toInstall = [];
-        views.selecttoinstall(toInstall);
+        views.select_to_install(toInstall);
     }
 
 
@@ -50,50 +49,50 @@ define([
     This function populates the dropdown datalist when something is searched.
     */
 
-    function searchview() {
+    function search_view() {
 
-        $(function () {
-            $('#package-name').unbind();
-            $('#package-name').keyup(delay(async function (e) {
-                let query = this.value;
-                $('#searchicon').toggleClass('fa-search fa-spinner');
-                let res = await api.search(query);
-                let pks = res.packages;
-                let html = ""
-                $('#searchlist').html(html);
-                Array.from(pks).forEach(element => {
-                    let name = element.name;
-                    let version = element.version;
-                    let entry = name + " - " + version;
-                    html += "<option value='" + entry + "'>";
-                    html += entry;
-                    html += "</option>";
+        $('#package-name').unbind();
+        $('#package-name').keyup(delay(async function (e) {
+            let query = this.value;
+            if (query.length <= 1) {
+                // Do not query if the string size is too small. This will save a lot of time.
+                return;
+            }
+            $('#searchicon').toggleClass('fa-search fa-dot-circle-o').addClass('Blink');
+            let res = await api.search(query);
+            let pks = res.packages;
+            let html = "";
+            $('#searchlist').html(html);
+            Array.from(pks).forEach(element => {
+                let name = element.name;
+                let version = element.version;
+                let entry = name + " - " + version;
+                html += "<option value='" + entry + "'>";
+                html += entry;
+                html += "</option>";
+            });
+            $('#searchicon').toggleClass('fa-search fa-dot-circle-o').removeClass('Blink');
+            $('#searchlist').html(html);
+
+            $('input[list="searchlist"]').each(function () {
+                let elem = $(this),
+                    list = $('#searchlist');
+                elem[0].value = elem[0].value.split('=')[0];
+                elem.autocomplete({
+                    source: list.children().map(function () {
+                        return $(this).text();
+                    }).get()
                 });
-                $('#searchicon').toggleClass('fa-search fa-spinner');
-                $('#searchlist').html(html);
+            });
 
-                $('input[list="searchlist"]').each(function () {
-                    var elem = $(this),
-                        list = $(document.getElementById(elem.attr('datalist')));
-                    elem[0].value = elem[0].value.split('=')[0];
-                    elem.autocomplete({
-                        source: list.children().map(function () {
-                            return $(this).text();
-                        }).get()
-                    });
-                });
-
-            }, 1000));
-        });
-
-        document.querySelector('input[list="searchlist"]').addEventListener('input', onInput);
+        }, 1000));
 
         /*
         This function adds the selected package to the list display.
         */
 
-        function addtoinstall(val) {
-            document.getElementById('package-name').value = '';
+        function add_to_install(val) {
+            $('#package-name').val("");
             $('#package-name').blur();
             let a = val.split(' - ');
             let pkg = {
@@ -103,30 +102,27 @@ define([
             };
             let data = [];
             data.push(pkg);
-            let output = views.toinstall(data);
+            let output = views.to_install(data);
             $('#to-install').append(output);
             let toInstall = common.get_to_install();
-            views.selecttoinstall(toInstall);
+            views.select_to_install(toInstall);
             $('#to-install-main').css("display", "initial");
         }
 
-        function onInput(e) {
-            let input = e.target;
-            let val = input.value;
-            let list = input.getAttribute('list');
-            let options = document.getElementById(list).childNodes;
+        $('#package-name').on('input', function () {
+            var userText = $(this).val();
 
-            for (let i = 0; i < options.length; i++) {
-                if (options[i].innerText === val) {
-                    addtoinstall(val);
-                    break;
+            $("#searchlist").find("option").each(function () {
+                if ($(this).val() == userText) {
+                    add_to_install(userText);
                 }
-            }
-        }
+            })
+        });
+
     }
 
     return {
-        'packageview': packageview,
-        'searchview': searchview
+        package_view,
+        search_view
     };
 });

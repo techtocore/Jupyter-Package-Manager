@@ -13,11 +13,11 @@ define([
     */
 
     function init(dir) {
-        scripts.packageview(dir);
-        scripts.searchview();
-        methods.updatepkg();
-        methods.deletepkg();
-        methods.installpkg();
+        scripts.package_view(dir);
+        scripts.search_view();
+        methods.update_packages(dir);
+        methods.delete_packages(dir);
+        methods.install_packages(dir);
     };
 
     /*
@@ -63,6 +63,6 @@ define([
 
     return {
         load_ipython_extension: load,
-        show_button: show_button
+        show_button
     };
 });
