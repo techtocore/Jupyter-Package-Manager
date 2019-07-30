@@ -1,8 +1,7 @@
 define([
     'jquery',
     './urls',
-    './common'
-], function ($, urls, common) {
+], function ($, urls) {
     "use strict";
 
     let endpoints = {
@@ -36,16 +35,17 @@ define([
     This function makes the API calls to the specified endpoint with the corresponding headers
     */
 
-    function api_call(endpoint, url, payload = {}) {
+    function api_call(endpoint, url, payload = {}, success) {
 
         let settings = {
-            "url": urls.api_url + endpoint.uri + url,
-            "method": endpoint.method,
-            "headers": {
+            url: urls.api_url + endpoint.uri + url,
+            method: endpoint.method,
+            headers: {
                 "Content-Type": "application/json",
                 "cache-control": "no-cache",
             },
-            "processData": false
+            processData: false,
+            success: success
         };
 
         // Send the payload only if it is not empty
@@ -54,13 +54,7 @@ define([
             settings.data = JSON.stringify(payload);
         }
 
-        return new Promise(resolve => {
-            $.ajax(settings).done(function (response) {
-                resolve(response);
-            }).fail(function () {
-                common.display_msg("Server Error", "Please Try again");
-            });
-        });
+        $.ajax(settings);
     }
 
     /*
@@ -72,15 +66,15 @@ define([
             'project': project,
             'packages': packages
         };
-        return api_call(endpoints.update_packages, "", payload);
+        api_call(endpoints.update_packages, "", payload);
     }
 
     /*
     This function checks for updates in the selected project.
     */
 
-    function check_update(project) {
-        return api_call(endpoints.checkupdate, project);
+    function check_update(project, success) {
+        api_call(endpoints.checkupdate, project, {}, success);
     }
 
     /*
@@ -92,7 +86,7 @@ define([
             'project': project,
             'packages': packages
         };
-        return api_call(endpoints.delete_packages, "", payload);
+        api_call(endpoints.delete_packages, "", payload);
     }
 
     function install_packages(packages, project) {
@@ -100,23 +94,23 @@ define([
             'project': project,
             'packages': packages
         };
-        return api_call(endpoints.install_packages, "", payload);
+        api_call(endpoints.install_packages, "", payload);
     }
 
     /*
     This function returns the status of all the packages in a project.
     */
 
-    function get_info(dir) {
-        return api_call(endpoints.getinfo, dir);
+    function get_info(dir, success) {
+        api_call(endpoints.getinfo, dir, {}, success);
     }
 
     /*
     This function lets users search using any input query.
     */
 
-    function search(query) {
-        return api_call(endpoints.search, query);
+    function search(query, success) {
+        api_call(endpoints.search, query, {}, success);
     }
 
     return {

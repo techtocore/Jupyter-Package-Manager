@@ -11,25 +11,26 @@ define([
     This function populates the sidebar each time it is opened.
     */
 
-    async function package_view(dir) {
+    function package_view(dir) {
 
-        let info = await api.get_info(dir);
-        let data = info.packages;
+        api.get_info(dir, function (info) {
+            let data = info.packages;
 
-        let output = views.installed(data);
-        $('#installed-packages').html(output);
+            let output = views.installed(data);
+            $('#installed-packages').html(output);
 
-        output = views.to_install(data, []);
-        $('#to-install').html(output);
-        if (output === "") {
-            $('#to-install-main').css("display", "none");
-        }
+            output = views.to_install(data, []);
+            $('#to-install').html(output);
+            if (output === "") {
+                $('#to-install-main').css("display", "none");
+            }
 
-        let selectedPackages = [];
-        views.select_installed(selectedPackages);
+            let selectedPackages = [];
+            views.select_installed(selectedPackages);
 
-        let toInstall = [];
-        views.select_to_install(toInstall);
+            let toInstall = [];
+            views.select_to_install(toInstall);
+        });
     }
 
 
@@ -52,39 +53,39 @@ define([
     function search_view() {
 
         $('#package-name').unbind();
-        $('#package-name').keyup(delay(async function (e) {
+        $('#package-name').keyup(delay(function (e) {
             let query = this.value;
             if (query.length <= 1) {
                 // Do not query if the string size is too small. This will save a lot of time.
                 return;
             }
             $('#searchicon').toggleClass('fa-search fa-dot-circle-o').addClass('Blink');
-            let res = await api.search(query);
-            let pks = res.packages;
-            let html = "";
-            $('#searchlist').html(html);
-            Array.from(pks).forEach(element => {
-                let name = element.name;
-                let version = element.version;
-                let entry = name + " - " + version;
-                html += "<option value='" + entry + "'>";
-                html += entry;
-                html += "</option>";
-            });
-            $('#searchicon').toggleClass('fa-search fa-dot-circle-o').removeClass('Blink');
-            $('#searchlist').html(html);
+            api.search(query, function (res) {
+                let pks = res.packages;
+                let html = "";
+                $('#searchlist').html(html);
+                Array.from(pks).forEach(element => {
+                    let name = element.name;
+                    let version = element.version;
+                    let entry = name + " - " + version;
+                    html += "<option value='" + entry + "'>";
+                    html += entry;
+                    html += "</option>";
+                });
+                $('#searchicon').toggleClass('fa-search fa-dot-circle-o').removeClass('Blink');
+                $('#searchlist').html(html);
 
-            $('input[list="searchlist"]').each(function () {
-                let elem = $(this),
-                    list = $('#searchlist');
-                elem[0].value = elem[0].value.split('=')[0];
-                elem.autocomplete({
-                    source: list.children().map(function () {
-                        return $(this).text();
-                    }).get()
+                $('input[list="searchlist"]').each(function () {
+                    let elem = $(this),
+                        list = $('#searchlist');
+                    elem[0].value = elem[0].value.split('=')[0];
+                    elem.autocomplete({
+                        source: list.children().map(function () {
+                            return $(this).text();
+                        }).get()
+                    });
                 });
             });
-
         }, 1000));
 
         /*

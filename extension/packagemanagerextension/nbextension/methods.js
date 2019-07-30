@@ -23,60 +23,62 @@ define([
     This function lists down all the updates and requires a user confirmation.
     */
 
-    async function update_packages(project) {
+    function update_packages(project) {
         $('#updatebtn').unbind();
-        $('#updatebtn').click(async function () {
+        $('#updatebtn').click(function () {
             let selectedPackages = common.get_selected_packages();
             let html = "<p> The following packages are about to be updated: </p> </br>";
             $('#updatebtn').toggleClass('fa-wrench fa-spinner').addClass('fa-spin');
-            let resp = await api.check_update(project);
-            $('#updatebtn').toggleClass('fa-wrench fa-spinner').removeClass('fa-spin');
-            let updates = resp.updates;
-            let packages = [];
-            let ct = 0;
+            api.check_update(project, function (resp) {
+                $('#updatebtn').toggleClass('fa-wrench fa-spinner').removeClass('fa-spin');
+                let updates = resp.updates;
+                let packages = [];
+                let ct = 0;
 
-            if (selectedPackages.length > 0) {
-                html += "<ul>";
-                for (let element of selectedPackages) {
-                    element = element.split('=');
-                    let pkg = element[0];
-                    let ver = element[1];
-                    let nver = check_new_version(updates, pkg, ver);
-                    if (nver != ver) {
-                        packages.push(pkg);
-                        html += "<li>";
-                        html += pkg + "    " + ver + " -> " + nver;
-                        html += "</li>";
-                        ct += 1;
+                if (selectedPackages.length > 0) {
+                    html += "<ul>";
+                    for (let element of selectedPackages) {
+                        element = element.split('=');
+                        let pkg = element[0];
+                        let ver = element[1];
+                        let nver = check_new_version(updates, pkg, ver);
+                        if (nver != ver) {
+                            packages.push(pkg);
+                            html += "<li>";
+                            html += pkg + "    " + ver + " -> " + nver;
+                            html += "</li>";
+                            ct += 1;
+                        }
                     }
+                    html += "</ul>";
                 }
-                html += "</ul>";
-            }
-            else {
-                let list = $('.installed-values');
-                html += "<ul>";
-                for (let item of list) {
-                    let pkg = $(item).find('.value-name')[0].innerText;
-                    let ver = $(item).find('.value-version')[0].innerText;
-                    let nver = check_new_version(updates, pkg, ver);
-                    if (nver != ver) {
-                        packages.push(pkg);
-                        html += "<li>";
-                        html += pkg + "    " + ver + " -> " + nver;
-                        html += "</li>";
-                        ct += 1;
+                else {
+                    let list = $('.installed-values');
+                    html += "<ul>";
+                    for (let item of list) {
+                        let pkg = $(item).find('.value-name')[0].innerText;
+                        let ver = $(item).find('.value-version')[0].innerText;
+                        let nver = check_new_version(updates, pkg, ver);
+                        if (nver != ver) {
+                            packages.push(pkg);
+                            html += "<li>";
+                            html += pkg + "    " + ver + " -> " + nver;
+                            html += "</li>";
+                            ct += 1;
+                        }
                     }
+                    html += "</ul>";
                 }
-                html += "</ul>";
-            }
-            if (ct === 0) {
-                html = "<p> There are no updates available </p>"
-                common.dispay_msg("Install Packages", $.parseHTML(html));
-            }
-            else
-                common.confirm("Update Packages", $.parseHTML(html), "Confirm", function () {
-                    api.update_packages(packages, project);
-                });
+                if (ct === 0) {
+                    html = "<p> There are no updates available </p>"
+                    common.dispay_msg("Install Packages", $.parseHTML(html));
+                }
+                else
+                    common.confirm("Update Packages", $.parseHTML(html), "Confirm", function () {
+                        api.update_packages(packages, project);
+                    });
+            });
+
         });
     }
 
