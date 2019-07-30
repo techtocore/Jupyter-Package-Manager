@@ -1,0 +1,19 @@
+{
+  "name": "packagemanagerextension",
+  "version": "0.2.1",
+  "description": "Jupyter notebook extension to manage packages in SWAN projects",
+  "keywords": [
+    "Jupyter",
+    "Extension",
+    "Notebook"
+  ],
+  "author": "Akash Ravi",
+  "devDependencies": {
+    "html-loader": "^0.5.1",
+    "webpack": "^3.3.0"
+  },
+  "scripts": {
+    "webpack": "webpack -p --config webpack.config.js",
+    "dev": "webpack --watch --config webpack.config.js"
+  }
+}
