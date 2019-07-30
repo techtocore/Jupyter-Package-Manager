@@ -138,8 +138,8 @@ function install_packages(project) {
     });
 }
 
-return {
+export {
     update_packages,
     delete_packages,
     install_packages
-};
+}

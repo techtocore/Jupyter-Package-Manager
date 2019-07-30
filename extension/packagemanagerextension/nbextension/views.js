@@ -106,10 +106,10 @@ function delete_btn_disp(selectedPackages) {
 
 }
 
-return {
+export {
     installed,
     to_install,
     select_to_install,
     select_installed,
     delete_btn_disp
-};
+}

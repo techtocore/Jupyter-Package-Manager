@@ -110,11 +110,11 @@ function search(query, success) {
     api_call(endpoints.search, query, {}, success);
 }
 
-return {
+export {
     update_packages,
     install_packages,
     delete_packages,
     get_info,
     search,
     check_update
-};
+}

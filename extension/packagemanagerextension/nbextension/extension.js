@@ -22,7 +22,7 @@ function init(dir) {
 This function is the entry point to the extension. It loads the custom CSS files.
 */
 
-function load() {
+function load_ipython_extension() {
     if (!Jupyter.notebook_list) return;
 
     $('head').append(
@@ -59,7 +59,7 @@ function show_button(project) {
     });
 }
 
-return {
-    load_ipython_extension: load,
+export {
+    load_ipython_extension,
     show_button
-};
+}
