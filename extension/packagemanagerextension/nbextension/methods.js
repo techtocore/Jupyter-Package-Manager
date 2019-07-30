@@ -138,8 +138,8 @@ function install_packages(project) {
     });
 }
 
-export {
-    update_packages,
-    delete_packages,
-    install_packages
+export default{
+    update_packages: update_packages,
+    delete_packages: delete_packages,
+    install_packages: install_packages
 }

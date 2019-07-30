@@ -70,9 +70,9 @@ function get_selected_packages() {
     return get_from_list(list);
 }
 
-export {
-    confirm,
-    get_selected_packages,
-    get_to_install,
-    display_msg
+export default{
+    confirm: confirm,
+    get_selected_packages: get_selected_packages,
+    get_to_install: get_to_install,
+    display_msg: display_msg
 }

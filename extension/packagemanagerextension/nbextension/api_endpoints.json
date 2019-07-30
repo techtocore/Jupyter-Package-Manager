@@ -1,0 +1,26 @@
+{
+    "update_packages": {
+        "uri": "packages",
+        "method": "PATCH"
+    },
+    "checkupdate": {
+        "uri": "packages/check_update?project=",
+        "method": "GET"
+    },
+    "delete_packages": {
+        "uri": "packages",
+        "method": "DELETE"
+    },
+    "install_packages": {
+        "uri": "packages",
+        "method": "POST"
+    },
+    "getinfo": {
+        "uri": "project_info?project=",
+        "method": "GET"
+    },
+    "search": {
+        "uri": "packages/search?q=",
+        "method": "GET"
+    }
+}

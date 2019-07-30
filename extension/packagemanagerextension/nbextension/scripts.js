@@ -118,7 +118,7 @@ function search_view() {
 
 }
 
-export {
-    package_view,
-    search_view
+export default{
+    package_view: package_view,
+    search_view: search_view
 }

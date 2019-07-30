@@ -1,32 +1,6 @@
 import $ from 'jquery';
 import urls from './urls';
-
-let endpoints = {
-    "update_packages": {
-        "uri": "packages",
-        "method": "PATCH"
-    },
-    "checkupdate": {
-        "uri": "packages/check_update?project=",
-        "method": "GET"
-    },
-    "delete_packages": {
-        "uri": "packages",
-        "method": "DELETE"
-    },
-    "install_packages": {
-        "uri": "packages",
-        "method": "POST"
-    },
-    "getinfo": {
-        "uri": "project_info?project=",
-        "method": "GET"
-    },
-    "search": {
-        "uri": "packages/search?q=",
-        "method": "GET"
-    }
-};
+import endpoints from './api_endpoints.json';
 
 /*
 This function makes the API calls to the specified endpoint with the corresponding headers
@@ -110,11 +84,11 @@ function search(query, success) {
     api_call(endpoints.search, query, {}, success);
 }
 
-export {
-    update_packages,
-    install_packages,
-    delete_packages,
-    get_info,
-    search,
-    check_update
+export default{
+    update_packages: update_packages,
+    install_packages: install_packages,
+    delete_packages: delete_packages,
+    get_info: get_info,
+    search: search,
+    check_update: check_update
 }
