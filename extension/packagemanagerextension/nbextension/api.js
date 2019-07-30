@@ -1,15 +1,18 @@
+import Jupyter from 'base/js/namespace';
 import $ from 'jquery';
-import urls from './urls';
 import endpoints from './api_endpoints.json';
+
+let base_url = (Jupyter.notebook_list || Jupyter.notebook).base_url;
+let api_url = base_url + "api/packagemanager/";
 
 /*
 This function makes the API calls to the specified endpoint with the corresponding headers
 */
 
-function api_call(endpoint, url, payload = {}, success) {
+function api_call(endpoint, url, payload, success) {
 
     let settings = {
-        url: urls.api_url + endpoint.uri + url,
+        url: api_url + endpoint.uri + url,
         method: endpoint.method,
         headers: {
             "Content-Type": "application/json",

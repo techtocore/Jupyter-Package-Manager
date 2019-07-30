@@ -3,8 +3,10 @@ import $ from 'jquery';
 import dialog from 'base/js/dialog';
 import utils from 'base/js/utils';
 import scripts from './scripts';
-import urls from './urls';
 import methods from './methods';
+
+let base_url = (Jupyter.notebook_list || Jupyter.notebook).base_url;
+let static_url = base_url + "nbextensions/packagemanagerextension/";
 
 /*
 This function populates all the data onto the sidebar and registers appropriate event handlers.
@@ -29,7 +31,7 @@ function load_ipython_extension() {
         $('<link>')
             .attr('rel', 'stylesheet')
             .attr('type', 'text/css')
-            .attr('href', urls.static_url + 'templates/sidebar.css')
+            .attr('href', static_url + 'templates/sidebar.css')
     );
 }
 
@@ -39,7 +41,7 @@ A new sidebar will be created each time corresponding to the project from where 
 */
 
 function show_button(project) {
-    utils.ajax(urls.static_url + 'templates/sidebar.html', {
+    utils.ajax(static_url + 'templates/sidebar.html', {
         dataType: 'html',
         success: function (env_html) {
             // Configure Sidebar
