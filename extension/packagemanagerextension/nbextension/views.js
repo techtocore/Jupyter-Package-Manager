@@ -5,8 +5,9 @@ This function generates the DOM for displaying packages that are selected for in
 */
 
 function to_install(data) {
-    let output = "";
-    for (let val of data) {
+    var output = "";
+    for (var i = 0; i < data.length; i++) {
+        var val = data[i];
         if (val.status != "installed") {
             output += "<div class='to-install-values'>";
             output += "<div class='row one'>";
@@ -29,8 +30,9 @@ This function generates the DOM for displaying packages that are currently insta
 */
 
 function installed(data) {
-    let output = "";
-    for (let val of data) {
+    var output = "";
+    for (var i = 0; i < data.length; i++) {
+        var val = data[i];
         if (val.status === "installed") {
             output += "<div class='installed-values'>";
             output += "<div class='row one'>";
@@ -49,6 +51,13 @@ function installed(data) {
     return output;
 }
 
+function remove_element(array, elem) {
+    var index = array.indexOf(elem);
+    if (index > -1) {
+        array.splice(index, 1);
+    }
+}
+
 /*
 This function add an eventlistener to the DOM for handling packages that are selected for installation.
 */
@@ -59,11 +68,11 @@ function select_to_install(toInstall) {
         $(this).find(".one .two i").toggleClass('fa-close');
     });
     $('.to-install-values').click(function () {
-        let packageName = $(this).find(".one .two .value-name").text();
-        let version = $(this).find(".one .three .value-version").text();
-        let pkg = packageName + "=" + version;
+        var packageName = $(this).find(".one .two .value-name").text();
+        var version = $(this).find(".one .three .value-version").text();
+        var pkg = packageName + "=" + version;
         if (toInstall.includes(pkg)) {
-            toInstall = toInstall.filter(item => item !== pkg);
+            remove_element(toInstall, pkg);
             $(this).remove();
         }
         if (toInstall.length === 0) {
@@ -79,11 +88,11 @@ This function add an eventlistener to the DOM for handling packages that are cur
 function select_installed(selectedPackages) {
     $('.installed-values').unbind();
     $('.installed-values').click(function () {
-        let packageName = $(this).find(".one .two .value-name").text();
-        let version = $(this).find(".one .three .value-version").text();
-        let pkg = packageName + "=" + version;
+        var packageName = $(this).find(".one .two .value-name").text();
+        var version = $(this).find(".one .three .value-version").text();
+        var pkg = packageName + "=" + version;
         if (selectedPackages.includes(pkg)) {
-            selectedPackages = selectedPackages.filter(item => item !== pkg);
+            remove_element(selectedPackages, pkg);
             $(this).find(".one .two i").toggleClass('fa-cube fa-check');
         }
         else {
@@ -99,14 +108,14 @@ This function add an eventlistener to the DOM for showing the delete button only
 */
 
 function delete_btn_disp(selectedPackages) {
-    let n = selectedPackages.length;
+    var n = selectedPackages.length;
     if (n === 0)
         $('#deletebtn').css("display", "none");
     else $('#deletebtn').css("display", "inline");
 
 }
 
-export default{
+export default {
     installed: installed,
     to_install: to_install,
     select_to_install: select_to_install,

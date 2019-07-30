@@ -7,7 +7,8 @@ This function returns the latest version of a package.
 */
 
 function check_new_version(updates, packagename, pkgversion) {
-    for (let element of updates) {
+    for (var i = 0; i < updates.length; i++) {
+        var element = updates[i];
         if (element.name === packagename) {
             return element.version;
         }
@@ -22,22 +23,23 @@ This function lists down all the updates and requires a user confirmation.
 function update_packages(project) {
     $('#updatebtn').unbind();
     $('#updatebtn').click(function () {
-        let selectedPackages = common.get_selected_packages();
-        let html = "<p> The following packages are about to be updated: </p> </br>";
+        var selectedPackages = common.get_selected_packages();
+        var html = "<p> The following packages are about to be updated: </p> </br>";
         $('#updatebtn').toggleClass('fa-wrench fa-spinner').addClass('fa-spin');
         api.check_update(project, function (resp) {
             $('#updatebtn').toggleClass('fa-wrench fa-spinner').removeClass('fa-spin');
-            let updates = resp.updates;
-            let packages = [];
-            let ct = 0;
+            var updates = resp.updates;
+            var packages = [];
+            var ct = 0;
 
             if (selectedPackages.length > 0) {
                 html += "<ul>";
-                for (let element of selectedPackages) {
+                for (var i = 0; i < selectedPackages.length; i++) {
+                    var element = selectedPackages[i];
                     element = element.split('=');
-                    let pkg = element[0];
-                    let ver = element[1];
-                    let nver = check_new_version(updates, pkg, ver);
+                    var pkg = element[0];
+                    var ver = element[1];
+                    var nver = check_new_version(updates, pkg, ver);
                     if (nver != ver) {
                         packages.push(pkg);
                         html += "<li>";
@@ -49,12 +51,13 @@ function update_packages(project) {
                 html += "</ul>";
             }
             else {
-                let list = $('.installed-values');
+                var list = $('.installed-values');
                 html += "<ul>";
-                for (let item of list) {
-                    let pkg = $(item).find('.value-name')[0].innerText;
-                    let ver = $(item).find('.value-version')[0].innerText;
-                    let nver = check_new_version(updates, pkg, ver);
+                for (var i = 0; i < list.length; i++) {
+                    var element = list[i];
+                    var pkg = $(item).find('.value-name')[0].innerText;
+                    var ver = $(item).find('.value-version')[0].innerText;
+                    var nver = check_new_version(updates, pkg, ver);
                     if (nver != ver) {
                         packages.push(pkg);
                         html += "<li>";
@@ -86,11 +89,12 @@ This function lists down all the packages selected for removal and requires a us
 function delete_packages(project) {
     $('#deletebtn').unbind();
     $('#deletebtn').click(function () {
-        let selectedPackages = common.get_selected_packages();
-        let html = "<p> The following packages are about to be deleted: </p> </br>";
+        var selectedPackages = common.get_selected_packages();
+        var html = "<p> The following packages are about to be deleted: </p> </br>";
         html += "<ul>";
-        let packages = [];
-        for (let element of selectedPackages) {
+        var packages = [];
+        for (var i = 0; i < selectedPackages.length; i++) {
+            var element = selectedPackages[i];
             element = element.split('=')[0];
             packages.push(element);
             html += "<li>";
@@ -117,10 +121,11 @@ This function lists down all the packages selected for installation and requires
 function install_packages(project) {
     $('#installbtn').unbind();
     $('#installbtn').click(function () {
-        let toInstall = common.get_to_install();
-        let html = "<p> The following packages are about to be added: </p> </br>";
+        var toInstall = common.get_to_install();
+        var html = "<p> The following packages are about to be added: </p> </br>";
         html += "<ul>";
-        for (let element of toInstall) {
+        for (var i = 0; i < toInstall.length; i++) {
+            var element = toInstall[i];
             element = element.split('=')[0];
             html += "<li>";
             html += element;
@@ -138,7 +143,7 @@ function install_packages(project) {
     });
 }
 
-export default{
+export default {
     update_packages: update_packages,
     delete_packages: delete_packages,
     install_packages: install_packages

@@ -1,9 +1,7 @@
-import Jupyter from 'base/js/namespace';
 import $ from 'jquery';
 import endpoints from './api_endpoints.json';
 
-let base_url = (Jupyter.notebook_list || Jupyter.notebook).base_url;
-let api_url = base_url + "api/packagemanager/";
+var api_url = base_url + "api/packagemanager/";
 
 /*
 This function makes the API calls to the specified endpoint with the corresponding headers
@@ -11,7 +9,7 @@ This function makes the API calls to the specified endpoint with the correspondi
 
 function api_call(endpoint, url, payload, success) {
 
-    let settings = {
+    var settings = {
         url: api_url + endpoint.uri + url,
         method: endpoint.method,
         headers: {
@@ -36,7 +34,7 @@ This function updates all the selected packages.
 */
 
 function update_packages(packages, project) {
-    let payload = {
+    var payload = {
         'project': project,
         'packages': packages
     };
@@ -56,7 +54,7 @@ This function removes all the selected packages.
 */
 
 function delete_packages(packages, project) {
-    let payload = {
+    var payload = {
         'project': project,
         'packages': packages
     };
@@ -64,7 +62,7 @@ function delete_packages(packages, project) {
 }
 
 function install_packages(packages, project) {
-    let payload = {
+    var payload = {
         'project': project,
         'packages': packages
     };

@@ -5,8 +5,8 @@ import utils from 'base/js/utils';
 import scripts from './scripts';
 import methods from './methods';
 
-let base_url = (Jupyter.notebook_list || Jupyter.notebook).base_url;
-let static_url = base_url + "nbextensions/packagemanagerextension/";
+var base_url = (Jupyter.notebook_list || Jupyter.notebook).base_url;
+var static_url = base_url + "nbextensions/packagemanagerextension/";
 
 /*
 This function populates all the data onto the sidebar and registers appropriate event handlers.

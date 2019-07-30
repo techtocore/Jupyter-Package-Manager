@@ -104,3 +104,5 @@ venv.bak/
 .mypy_cache/
 extension/packagemanagerextension/.vscode/settings.json
 extension/.vscode/settings.json
+
+/extension/packagemanagerextension/node_modules

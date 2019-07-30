@@ -6,13 +6,13 @@ This function is responsible for the generation of confirmation modals.
 */
 
 function confirm(title, msg, button_text, callback) {
-    let buttons = { Cancel: {} };
+    var buttons = { Cancel: {} };
     buttons[button_text] = {
         class: 'btn-danger btn-primary',
         click: callback
     };
 
-    let opts = {
+    var opts = {
         title: title,
         body: msg,
         buttons: buttons
@@ -26,9 +26,9 @@ This function is responsible for the generation of alert/info modals.
 */
 
 function display_msg(title, msg) {
-    let buttons = { Cancel: {} };
+    var buttons = { Cancel: {} };
 
-    let opts = {
+    var opts = {
         title: title,
         body: msg,
         buttons: buttons
@@ -42,14 +42,15 @@ Auxiliary function for checking the DOM for selected packages.
 */
 
 function get_from_list(list) {
-    let arr = [];
-    for (let element of list) {
-        let val = $(element).children(".two").find('i');
-        let classes = $(val).attr('class').split(' ');
+    var arr = [];
+    for (var i = 0; i< list.length; i++) {
+        var element = list[i];
+        var val = $(element).children(".two").find('i');
+        var classes = $(val).attr('class').split(' ');
         if (classes.includes('fa-check')) {
-            let packageName = $(element).find(".two .value-name").text();
-            let version = $(element).find(".three .value-version").text();
-            let pkg = packageName + "=" + version;
+            var packageName = $(element).find(".two .value-name").text();
+            var version = $(element).find(".three .value-version").text();
+            var pkg = packageName + "=" + version;
             arr.push(pkg);
         }
     }
@@ -61,12 +62,12 @@ These functions return the list of currently selected packages.
 */
 
 function get_to_install() {
-    let list = $(".to-install-values .one");
+    var list = $(".to-install-values .one");
     return get_from_list(list);
 }
 
 function get_selected_packages() {
-    let list = $(".installed-values .one");
+    var list = $(".installed-values .one");
     return get_from_list(list);
 }
 

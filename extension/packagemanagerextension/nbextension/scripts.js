@@ -10,9 +10,9 @@ This function populates the sidebar each time it is opened.
 function package_view(dir) {
 
     api.get_info(dir, function (info) {
-        let data = info.packages;
+        var data = info.packages;
 
-        let output = views.installed(data);
+        var output = views.installed(data);
         $('#installed-packages').html(output);
 
         output = views.to_install(data, []);
@@ -21,26 +21,14 @@ function package_view(dir) {
             $('#to-install-main').css("display", "none");
         }
 
-        let selectedPackages = [];
+        var selectedPackages = [];
         views.select_installed(selectedPackages);
 
-        let toInstall = [];
+        var toInstall = [];
         views.select_to_install(toInstall);
     });
 }
 
-
-/*
-This function executes the given function after the specified timeout.
-*/
-
-function delay(fn, ms) {
-    let timer = 0;
-    return function (...args) {
-        clearTimeout(timer);
-        timer = setTimeout(fn.bind(this, ...args), ms || 0);
-    };
-}
 
 /*
 This function populates the dropdown datalist when something is searched.
@@ -49,30 +37,31 @@ This function populates the dropdown datalist when something is searched.
 function search_view() {
 
     $('#package-name').unbind();
-    $('#package-name').keyup(delay(function (e) {
-        let query = this.value;
+    $('#package-name').keyup(setTimeout(function () {
+        var query = this.value;
         if (query.length <= 1) {
             // Do not query if the string size is too small. This will save a lot of time.
             return;
         }
         $('#searchicon').toggleClass('fa-search fa-dot-circle-o').addClass('Blink');
         api.search(query, function (res) {
-            let pks = res.packages;
-            let html = "";
+            var pks = res.packages;
+            var html = "";
             $('#searchlist').html(html);
-            Array.from(pks).forEach(element => {
-                let name = element.name;
-                let version = element.version;
-                let entry = name + " - " + version;
+            for (var i = 0; i < pks.length; i++) {
+                var element = pks[i];
+                var name = element.name;
+                var version = element.version;
+                var entry = name + " - " + version;
                 html += "<option value='" + entry + "'>";
                 html += entry;
                 html += "</option>";
-            });
+            }
             $('#searchicon').toggleClass('fa-search fa-dot-circle-o').removeClass('Blink');
             $('#searchlist').html(html);
 
             $('input[list="searchlist"]').each(function () {
-                let elem = $(this),
+                var elem = $(this),
                     list = $('#searchlist');
                 elem[0].value = elem[0].value.split('=')[0];
                 elem.autocomplete({
@@ -81,7 +70,7 @@ function search_view() {
                     }).get()
                 });
             });
-        });
+        })
     }, 1000));
 
     /*
@@ -91,17 +80,17 @@ function search_view() {
     function add_to_install(val) {
         $('#package-name').val("");
         $('#package-name').blur();
-        let a = val.split(' - ');
-        let pkg = {
+        var a = val.split(' - ');
+        var pkg = {
             'name': a[0],
             'version': a[1],
             'staus': ''
         };
-        let data = [];
+        var data = [];
         data.push(pkg);
-        let output = views.to_install(data);
+        var output = views.to_install(data);
         $('#to-install').append(output);
-        let toInstall = common.get_to_install();
+        var toInstall = common.get_to_install();
         views.select_to_install(toInstall);
         $('#to-install-main').css("display", "initial");
     }
@@ -118,7 +107,7 @@ function search_view() {
 
 }
 
-export default{
+export default {
     package_view: package_view,
     search_view: search_view
 }
