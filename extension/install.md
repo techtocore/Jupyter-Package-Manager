@@ -8,8 +8,15 @@ Install directly from source
 ```
 git clone https://github.com/techtocore/Jupyter-Package-Manager.git
 cd Jupyter-Package-Manager/extension
+```
+
+- Build and Install Prerequisites
+```bash
+yarn install
+yarn run webpack
 python -m pip install -e .
 ```
+
 - Install and enable `nbextension` in Jupyter Namespace
 ```bash
 jupyter nbextension install --py packagemanager --system --symlink

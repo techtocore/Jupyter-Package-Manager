@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import endpoints from './api_endpoints.json';
 
-var api_url = base_url + "api/packagemanager/";
+var api_url = (Jupyter.notebook_list || Jupyter.notebook).base_url + "api/packagemanager/";
 
 /*
 This function makes the API calls to the specified endpoint with the corresponding headers
