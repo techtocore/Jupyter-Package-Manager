@@ -1,12 +1,10 @@
 import Jupyter from 'base/js/namespace';
 import $ from 'jquery';
 import dialog from 'base/js/dialog';
-import utils from 'base/js/utils';
 import scripts from './scripts';
 import methods from './methods';
-
-var base_url = (Jupyter.notebook_list || Jupyter.notebook).base_url;
-var static_url = base_url + "nbextensions/packagemanagerextension/";
+import baseHTML from './templates/sidebar.html';
+import './templates/sidebar.css';
 
 /*
 This function populates all the data onto the sidebar and registers appropriate event handlers.
@@ -21,18 +19,11 @@ function init(dir) {
 };
 
 /*
-This function is the entry point to the extension. It loads the custom CSS files.
+This function is the entry point to the extension.
 */
 
 function load_ipython_extension() {
     if (!Jupyter.notebook_list) return;
-
-    $('head').append(
-        $('<link>')
-            .attr('rel', 'stylesheet')
-            .attr('type', 'text/css')
-            .attr('href', static_url + 'templates/sidebar.css')
-    );
 }
 
 /*
@@ -41,23 +32,17 @@ A new sidebar will be created each time corresponding to the project from where 
 */
 
 function show_button(project) {
-    utils.ajax(static_url + 'templates/sidebar.html', {
-        dataType: 'html',
-        success: function (env_html) {
-            // Configure Sidebar
-            modal = dialog.modal({
-                draggable: false,
-                title: 'Configure Project',
-                body: $.parseHTML(env_html)
-            }).attr('id', 'package-manager-modal').addClass('right full-body');
+    // Configure Sidebar
+    modal = dialog.modal({
+        draggable: false,
+        title: 'Configure Project',
+        body: $.parseHTML(baseHTML)
+    }).attr('id', 'package-manager-modal').addClass('right full-body');
 
-            modal.find(".modal-header").unbind("mousedown");
+    modal.find(".modal-header").unbind("mousedown");
 
-            modal.on('shown.bs.modal', function (e) {
-                init(project);
-            });
-
-        }
+    modal.on('shown.bs.modal', function (e) {
+        init(project);
     });
 }
 

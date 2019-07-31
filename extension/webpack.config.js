@@ -11,12 +11,23 @@ module.exports = {
     module: {
         rules: [{
             test: /\.html$/,
-            use: [ {
+            use: [{
                 loader: 'html-loader',
                 options: {
                     minimize: true
                 }
-            }],
+            }
+            ],
+        },
+        {
+            test: /\.css$/,
+            use: [{
+                loader: 'css-loader',
+                options: {
+                    minimize: true
+                }
+            }
+            ],
         }]
     }
 };

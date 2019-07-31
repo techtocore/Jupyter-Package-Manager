@@ -43,7 +43,7 @@ Auxiliary function for checking the DOM for selected packages.
 
 function get_from_list(list) {
     var arr = [];
-    for (var i = 0; i< list.length; i++) {
+    for (var i = 0; i < list.length; i++) {
         var element = list[i];
         var val = $(element).children(".two").find('i');
         var classes = $(val).attr('class').split(' ');
@@ -71,7 +71,7 @@ function get_selected_packages() {
     return get_from_list(list);
 }
 
-export default{
+export default {
     confirm: confirm,
     get_selected_packages: get_selected_packages,
     get_to_install: get_to_install,

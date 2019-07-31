@@ -85,7 +85,7 @@ function search(query, success) {
     api_call(endpoints.search, query, {}, success);
 }
 
-export default{
+export default {
     update_packages: update_packages,
     install_packages: install_packages,
     delete_packages: delete_packages,
