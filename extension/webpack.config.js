@@ -21,13 +21,10 @@ module.exports = {
         },
         {
             test: /\.css$/,
-            use: [{
-                loader: 'css-loader',
-                options: {
-                    minimize: true
-                }
-            }
-            ],
+            use: [
+                'style-loader',
+                'css-loader'
+            ]
         }]
     }
 };

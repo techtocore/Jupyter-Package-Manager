@@ -24,6 +24,7 @@ This function is the entry point to the extension.
 
 function load_ipython_extension() {
     if (!Jupyter.notebook_list) return;
+    console.log('[PACKAGE MANAGER] Loading nbextension');
 }
 
 /*

@@ -5,12 +5,14 @@
   "keywords": [
     "Jupyter",
     "Extension",
-    "Notebook"
+    "SWAN",
+    "Package Manager"
   ],
   "author": "Akash Ravi",
   "devDependencies": {
     "html-loader": "^0.5.1",
     "css-loader": "^0.28.4",
+    "style-loader": "^0.18.2",
     "webpack": "^3.3.0",
     "webpack-cli": "^3.3.6"
   },
