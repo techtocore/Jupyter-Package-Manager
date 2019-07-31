@@ -105,3 +105,4 @@ venv.bak/
 extension/packagemanagerextension/.vscode/settings.json
 extension/.vscode/settings.json
 extension/node_modules/
+extension/packagemanager/js/extension.js

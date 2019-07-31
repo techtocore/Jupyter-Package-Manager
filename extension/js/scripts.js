@@ -37,41 +37,53 @@ This function populates the dropdown datalist when something is searched.
 function search_view() {
 
     $('#package-name').unbind();
-    $('#package-name').keyup(setTimeout(function () {
-        var query = this.value;
-        if (query.length <= 1) {
-            // Do not query if the string size is too small. This will save a lot of time.
-            return;
-        }
-        $('#searchicon').toggleClass('fa-search fa-dot-circle-o').addClass('Blink');
-        api.search(query, function (res) {
-            var pks = res.packages;
-            var html = "";
-            $('#searchlist').html(html);
-            for (var i = 0; i < pks.length; i++) {
-                var element = pks[i];
-                var name = element.name;
-                var version = element.version;
-                var entry = name + " - " + version;
-                html += "<option value='" + entry + "'>";
-                html += entry;
-                html += "</option>";
-            }
-            $('#searchicon').toggleClass('fa-search fa-dot-circle-o').removeClass('Blink');
-            $('#searchlist').html(html);
 
-            $('input[list="searchlist"]').each(function () {
-                var elem = $(this),
-                    list = $('#searchlist');
-                elem[0].value = elem[0].value.split('=')[0];
-                elem.autocomplete({
-                    source: list.children().map(function () {
-                        return $(this).text();
-                    }).get()
+    var typingTimer;                //timer identifier
+    var doneTypingInterval = 1000;  //time in ms, 5 second for example
+
+    $('#package-name').on('keyup', function () {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(function () {
+            var query = $('#package-name').val();
+            if (query.length <= 1) {
+                // Do not query if the string size is too small. This will save a lot of time.
+                return;
+            }
+            $('#searchicon').toggleClass('fa-search fa-dot-circle-o').addClass('Blink');
+            api.search(query, function (res) {
+                var pks = res.packages;
+                var html = "";
+                $('#searchlist').html(html);
+                for (var i = 0; i < pks.length; i++) {
+                    var element = pks[i];
+                    var name = element.name;
+                    var version = element.version;
+                    var entry = name + " - " + version;
+                    html += "<option value='" + entry + "'>";
+                    html += entry;
+                    html += "</option>";
+                }
+                $('#searchicon').toggleClass('fa-search fa-dot-circle-o').removeClass('Blink');
+                $('#searchlist').html(html);
+
+                $('input[list="searchlist"]').each(function () {
+                    var elem = $(this),
+                        list = $('#searchlist');
+                    elem[0].value = elem[0].value.split('=')[0];
+                    elem.autocomplete({
+                        source: list.children().map(function () {
+                            return $(this).text();
+                        }).get()
+                    });
                 });
-            });
-        })
-    }, 1000));
+            })
+        }, doneTypingInterval);
+    });
+
+    //on keydown, clear the countdown 
+    $('#package-name').on('keydown', function () {
+        clearTimeout(typingTimer);
+    });
 
     /*
     This function adds the selected package to the list display.

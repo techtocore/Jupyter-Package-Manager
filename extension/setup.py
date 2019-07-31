@@ -7,7 +7,7 @@ with open('VERSION') as version_file:
 
 setup(name='packagemanagerextension',
       version=version,
-      description='Package Manager for Jupyter Notebook',
+      description='Jupyter notebook extension to manage packages in SWAN projects',
       author='Akash Ravi',
       author_email='akashkravi@gmail.com',
       url='https://github.com/techtocore/Jupyter-Package-Manager',

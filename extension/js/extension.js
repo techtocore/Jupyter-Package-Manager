@@ -34,7 +34,7 @@ A new sidebar will be created each time corresponding to the project from where 
 
 function show_button(project) {
     // Configure Sidebar
-    modal = dialog.modal({
+    var modal = dialog.modal({
         draggable: false,
         title: 'Configure Project',
         body: $.parseHTML(baseHTML)

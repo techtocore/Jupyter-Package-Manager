@@ -55,8 +55,8 @@ function update_packages(project) {
                 html += "<ul>";
                 for (var i = 0; i < list.length; i++) {
                     var element = list[i];
-                    var pkg = $(item).find('.value-name')[0].innerText;
-                    var ver = $(item).find('.value-version')[0].innerText;
+                    var pkg = $(element).find('.value-name')[0].innerText;
+                    var ver = $(element).find('.value-version')[0].innerText;
                     var nver = check_new_version(updates, pkg, ver);
                     if (nver != ver) {
                         packages.push(pkg);
