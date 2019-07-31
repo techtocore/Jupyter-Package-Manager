@@ -18,6 +18,12 @@ Each project is internally mapped to a separate conda environment. This helps ab
 
 - Please find the API Specification [here](docs/API_docs.md)
 
+
+## Screenshot
+
+![Alt text](/docs/ui.png?raw=true "Package Management UI")
+
+
 ## About
 
 This extension is made for the purpose of fulfilment of the GSoC 2019 project at CERN ([Read Proposal Here](https://summerofcode.withgoogle.com/projects/4999527885438976))
