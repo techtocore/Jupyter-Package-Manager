@@ -1,9 +1,9 @@
 var path = require('path');
 
 module.exports = {
-    entry: './nbextension/extension.js',
+    entry: './js/extension.js',
     output: {
-        path: path.resolve(__dirname, 'packagemanagerextension/nbextension'),
+        path: path.resolve(__dirname, 'packagemanager/js'),
         filename: 'extension.js',
         libraryTarget: 'umd'
     },

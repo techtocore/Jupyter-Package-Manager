@@ -5,11 +5,11 @@ def _jupyter_nbextension_paths():
     return [dict(
         section="tree",
         # the path is relative to the `extension` directory
-        src="nbextension",
+        src="js",
         # directory in the `nbextension/` namespace
-        dest="packagemanagerextension",
+        dest="packagemanager",
         # _also_ in the `nbextension/` namespace
-        require="packagemanagerextension/extension")]
+        require="packagemanager/extension")]
 
 
 def _jupyter_server_extension_paths():
@@ -17,5 +17,5 @@ def _jupyter_server_extension_paths():
     Used by 'jupyter serverextension' command to install web server extension
     '''
     return [{
-        "module": "packagemanagerextension.serverextension"
+        "module": "packagemanager.serverextension"
     }]

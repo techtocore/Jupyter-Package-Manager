@@ -12,11 +12,11 @@ python -m pip install -e .
 ```
 - Install and enable `nbextension` in Jupyter Namespace
 ```bash
-jupyter nbextension install --py packagemanagerextension --sys-prefix --symlink
-jupyter nbextension enable packagemanagerextension --sys-prefix --py
+jupyter nbextension install --py packagemanager --system --symlink
+jupyter nbextension enable packagemanager --system --py
 ```
 
 - Enable Jupyter Server Extension
 ```bash
-jupyter serverextension enable --py --sys-prefix packagemanagerextension
+jupyter serverextension enable --py --system packagemanager
 ```
