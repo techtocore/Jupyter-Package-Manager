@@ -30,7 +30,6 @@ function update_packages(project) {
             $('#updatebtn').toggleClass('fa-wrench fa-spinner').removeClass('fa-spin');
             var updates = resp.updates;
             var packages = [];
-            var ct = 0;
 
             if (selectedPackages.length > 0) {
                 html.append($('<ul/>'));
@@ -44,7 +43,6 @@ function update_packages(project) {
                     if (nver != ver) {
                         packages.push(pkg);
                         html.append("<li>" + pkg + " &nbsp; " + ver + " -> " + nver + "</li>");
-                        ct += 1;
                     }
                 }
             }
@@ -59,11 +57,10 @@ function update_packages(project) {
                     if (nver != ver) {
                         packages.push(pkg);
                         html.append("<li>" + pkg + " &nbsp; " + ver + " -> " + nver + "</li>");
-                        ct += 1;
                     }
                 }
             }
-            if (ct === 0) {
+            if (packages.length === 0) {
                 html = $("<p> There are no updates available </p>");
                 common.dispay_msg("Install Packages", html);
             }
