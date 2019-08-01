@@ -15,9 +15,9 @@ function package_view(dir) {
         var output = views.installed(data);
         $('#installed-packages').replaceWith(output);
 
-        output = views.to_install(data, []);
+        output = views.to_install(data);
         $('#to-install').replaceWith(output);
-        if (output === "") {
+        if ($(output).children().length === 0) {
             $('#to-install-main').css("display", "none");
         }
 

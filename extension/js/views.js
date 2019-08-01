@@ -6,16 +6,16 @@ This function generates the DOM for displaying packages that are selected for in
 */
 
 function to_install(data) {
-    var output = $("");
+    var output = $("<div/>");
     for (var i = 0; i < data.length; i++) {
         var val = data[i];
         if (val.status != "installed") {
             var item = $.parseHTML(list_item);
             $(item).addClass('to-install-values');
             $(item).find('.list_icon').addClass('fa-check');
-            $(item).find('.value-name').val(val.name);
-            $(item).find('.value-version').val(val.version);
-            output.append(item);
+            $(item).find('.value-name').text(val.name);
+            $(item).find('.value-version').text(val.version);
+            $(output).append(item);
         }
     }
     return output;
@@ -26,16 +26,16 @@ This function generates the DOM for displaying packages that are currently insta
 */
 
 function installed(data) {
-    var output = $("");
+    var output = $("<div/>");
     for (var i = 0; i < data.length; i++) {
         var val = data[i];
         if (val.status === "installed") {
             var item = $.parseHTML(list_item);
             $(item).addClass('installed-values');
             $(item).find('.list_icon').addClass('fa-cube');
-            $(item).find('.value-name').val(val.name);
-            $(item).find('.value-version').val(val.version);
-            output.append(item);
+            $(item).find('.value-name').text(val.name);
+            $(item).find('.value-version').text(val.version);
+            $(output).append(item);
         }
 
     }
@@ -49,6 +49,12 @@ function remove_element(array, elem) {
     }
 }
 
+function get_pkg(element) {
+    var packageName = $(element).find(".one .two .value-name").text();
+    var version = $(element).find(".one .three .value-version").text();
+    return packageName + "=" + version;
+}
+
 /*
 This function add an eventlistener to the DOM for handling packages that are selected for installation.
 */
@@ -59,9 +65,7 @@ function select_to_install(toInstall) {
         $(this).find(".one .two i").toggleClass('fa-close');
     });
     $('.to-install-values').click(function () {
-        var packageName = $(this).find(".one .two .value-name").text();
-        var version = $(this).find(".one .three .value-version").text();
-        var pkg = packageName + "=" + version;
+        var pkg = get_pkg(this);
         if (toInstall.includes(pkg)) {
             remove_element(toInstall, pkg);
             $(this).remove();
@@ -79,9 +83,7 @@ This function add an eventlistener to the DOM for handling packages that are cur
 function select_installed(selectedPackages) {
     $('.installed-values').unbind();
     $('.installed-values').click(function () {
-        var packageName = $(this).find(".one .two .value-name").text();
-        var version = $(this).find(".one .three .value-version").text();
-        var pkg = packageName + "=" + version;
+        var pkg = get_pkg(this);
         if (selectedPackages.includes(pkg)) {
             remove_element(selectedPackages, pkg);
             $(this).find(".one .two i").toggleClass('fa-cube fa-check');

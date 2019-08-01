@@ -43,7 +43,7 @@ function update_packages(project) {
                     var nver = check_new_version(updates, pkg, ver);
                     if (nver != ver) {
                         packages.push(pkg);
-                        html.append("<li>" + pkg + "    " + ver + " -> " + nver + "</li>");
+                        html.append("<li>" + pkg + " &nbsp; " + ver + " -> " + nver + "</li>");
                         ct += 1;
                     }
                 }
@@ -58,7 +58,7 @@ function update_packages(project) {
                     var nver = check_new_version(updates, pkg, ver);
                     if (nver != ver) {
                         packages.push(pkg);
-                        html.append("<li>" + pkg + "    " + ver + " -> " + nver + "</li>");
+                        html.append("<li>" + pkg + " &nbsp; " + ver + " -> " + nver + "</li>");
                         ct += 1;
                     }
                 }
