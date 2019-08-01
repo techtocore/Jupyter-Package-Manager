@@ -10,8 +10,10 @@ jupyter nbextension install --py --system swancontents
 RUN git clone https://github.com/techtocore/Jupyter-Package-Manager.git
 RUN cd Jupyter-Package-Manager/extension && \
 git checkout swan-integration && \
+yarn install && \
+yarn run webpack && \
 python -m pip install -e . && \
-jupyter nbextension install --py packagemanagerextension --system --symlink && \
-jupyter nbextension enable packagemanagerextension --system --py && \
-jupyter serverextension enable --py --system packagemanagerextension
+jupyter nbextension install --py packagemanager --system --symlink && \
+jupyter nbextension enable packagemanager --system --py && \
+jupyter serverextension enable --py --system packagemanager
 USER $NB_UID
