@@ -1,25 +1,21 @@
 import $ from 'jquery';
+import list_item from './templates/list_item.html'
 
 /*
 This function generates the DOM for displaying packages that are selected for installation.
 */
 
 function to_install(data) {
-    var output = "";
+    var output = $("");
     for (var i = 0; i < data.length; i++) {
         var val = data[i];
         if (val.status != "installed") {
-            output += "<div class='to-install-values'>";
-            output += "<div class='row one'>";
-            output += "<div class='col-sm-9 two'>";
-            output += "<i class='fa fa-check'></i> &nbsp;"
-            output += '<span class="value-name">' + val.name + '</span>';
-            output += "</div>";
-            output += "<div class='col-sm-3 three'>";
-            output += '<span class="value-version">' + val.version + '</span>'
-            output += "</div>";
-            output += "</div>";
-            output += "</div>";
+            var item = $.parseHTML(list_item);
+            $(item).addClass('to-install-values');
+            $(item).find('.list_icon').addClass('fa-check');
+            $(item).find('.value-name').val(val.name);
+            $(item).find('.value-version').val(val.version);
+            output.append(item);
         }
     }
     return output;
@@ -30,21 +26,16 @@ This function generates the DOM for displaying packages that are currently insta
 */
 
 function installed(data) {
-    var output = "";
+    var output = $("");
     for (var i = 0; i < data.length; i++) {
         var val = data[i];
         if (val.status === "installed") {
-            output += "<div class='installed-values'>";
-            output += "<div class='row one'>";
-            output += "<div class='col-sm-9 two'>";
-            output += "<i class='fa fa-cube'></i> &nbsp;"
-            output += '<span class="value-name">' + val.name + '</span>';
-            output += "</div>";
-            output += "<div class='col-sm-3 three'>";
-            output += '<span class="value-version">' + val.version + '</span>'
-            output += "</div>";
-            output += "</div>";
-            output += "</div>";
+            var item = $.parseHTML(list_item);
+            $(item).addClass('installed-values');
+            $(item).find('.list_icon').addClass('fa-cube');
+            $(item).find('.value-name').val(val.name);
+            $(item).find('.value-version').val(val.version);
+            output.append(item);
         }
 
     }
