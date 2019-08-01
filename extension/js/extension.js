@@ -16,7 +16,7 @@ function init(dir) {
     methods.update_packages(dir);
     methods.delete_packages(dir);
     methods.install_packages(dir);
-};
+}
 
 /*
 This function is the entry point to the extension.
@@ -47,7 +47,33 @@ function show_button(project) {
     });
 }
 
+/*
+This function filters the avaialble kernels and displays only the one corresponding to the current project.
+*/
+
+function filter_kernel(project) {
+    api.get_info(project, function (info) {
+        var env = info.env;
+
+        var arr = $("#new-menu > li").map(function () { return this.id });
+        var idList = arr.get();
+        for (var i = 0; i < idList.length; i++) {
+            if (idList[i].startsWith('kernel-conda-env-swanproject')) {
+                var name = idList[i].substring(17);
+                // The first 17 characters correspond to 'kernel-conda-env-'
+                name = name.slice(0, -3);
+                // This will remove the '-py' at the end of the string
+                if (env != name) {
+                    $('#' + idList[i]).css("display", "none");
+                }
+            }
+        }
+    });
+}
+
+
 export {
     load_ipython_extension,
-    show_button
+    show_button,
+    filter_kernel
 }
