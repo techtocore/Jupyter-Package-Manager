@@ -13,10 +13,10 @@ function package_view(dir) {
         var data = info.packages;
 
         var output = views.installed(data);
-        $('#installed-packages').replaceWith(output);
+        $('#installed-packages').append(output);
 
         output = views.to_install(data);
-        $('#to-install').replaceWith(output);
+        $('#to-install').append(output);
         if ($(output).children().length === 0) {
             $('#to-install-main').css("display", "none");
         }

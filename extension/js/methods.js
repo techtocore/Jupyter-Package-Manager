@@ -62,7 +62,7 @@ function update_packages(project) {
             }
             if (packages.length === 0) {
                 html = $("<p> There are no updates available </p>");
-                common.dispay_msg("Install Packages", html);
+                common.display_msg("Update Packages", html);
             }
             else
                 common.confirm("Update Packages", html, "Confirm", function () {
@@ -91,14 +91,9 @@ function delete_packages(project) {
             packages.push(element);
             html.append("<li>" + element + "</li>");
         }
-        if (packages.length === 0) {
-            html = $("<p> No packages selected </p>");
-            common.dispay_msg("Install Packages", html);
-        }
-        else
-            common.confirm("Delete Packages", html, "Confirm", function () {
-                api.delete_packages(packages, project);
-            });
+        common.confirm("Delete Packages", html, "Confirm", function () {
+            api.delete_packages(packages, project);
+        });
     });
 }
 
@@ -118,14 +113,9 @@ function install_packages(project) {
             element = element.split('=')[0];
             html.append("<li>" + element + "</li>");
         }
-        if (toInstall.length === 0) {
-            html = $("<p> No packages selected </p>");
-            common.dispay_msg("Install Packages", html);
-        }
-        else
-            common.confirm("Install Packages", html, "Confirm", function () {
-                api.install_packages(toInstall, project);
-            });
+        common.confirm("Install Packages", html, "Confirm", function () {
+            api.install_packages(toInstall, project);
+        });
     });
 }
 
