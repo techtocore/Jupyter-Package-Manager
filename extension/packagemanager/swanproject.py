@@ -5,8 +5,11 @@ import yaml
 
 from traitlets.config.configurable import LoggingConfigurable
 from os.path import expanduser
-from .envmanager import EnvManager
 
+try:
+    from .envmanager import EnvManager
+except:
+    from envmanager import EnvManager
 
 class SwanProject(LoggingConfigurable):
     '''

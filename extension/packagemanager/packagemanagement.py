@@ -9,8 +9,12 @@ from tempfile import TemporaryFile
 from pkg_resources import parse_version
 from tornado import web, escape
 
-from .envmanager import EnvManager, package_map
-from .swanproject import SwanProject
+try:
+    from .envmanager import EnvManager, package_map
+    from .swanproject import SwanProject
+except:
+    from envmanager import EnvManager, package_map
+    from swanproject import SwanProject
 
 env_manager = EnvManager()
 
