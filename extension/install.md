@@ -2,9 +2,31 @@
 
 ## Docker Setup
 
-This lets you try out this extension on a local containerized setup of SWAN. This includes a preview of the integration with SWAN contents. 
+This lets you try out this extension on a local containerized setup of SWAN. This includes a preview of the integration with SWAN contents.
 
-*TODO: Add instructions*
+- Create a container from the Dockerfile
+```bash
+docker build . -t swanimage
+docker create -t --name swancontainer -p 8888:8888 swanimage
+```
+
+- Start or stop the container
+```bash
+docker start swancontainer
+docker stop swancontainer
+```
+
+- The logs of the container can be checked using 
+```bash 
+docker logs swancontainer 
+```
+
+- The root shell of the container can be accessed using
+```bash 
+docker exec -u root -it swancontainer /bin/bash
+```
+
+- By default, the application will run on port 8888
 
 ## Development Setup
 - Prerequisites
