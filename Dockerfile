@@ -7,6 +7,12 @@ cp -rl templates /opt/conda/lib/python3.7/site-packages/notebook/ && \
 ls && \
 cd SwanContents && pip install --no-deps . && \
 jupyter nbextension install --py --system swancontents
+RUN git clone https://github.com/Anaconda-Platform/nb_conda_kernels.git
+RUN cd nb_conda_kernels && \
+pip install -r requirements.txt && \
+pip install -e . && \
+python -m nb_conda_kernels.install --enable && \
+cd ..
 RUN git clone https://github.com/techtocore/Jupyter-Package-Manager.git
 RUN cd Jupyter-Package-Manager/extension && \
 git checkout swan-integration && \
