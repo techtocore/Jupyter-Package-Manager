@@ -4,6 +4,7 @@ import dialog from 'base/js/dialog';
 import scripts from './scripts';
 import methods from './methods';
 import baseHTML from './templates/sidebar.html';
+import api from './api';
 import './templates/sidebar.css';
 
 /*
@@ -59,6 +60,7 @@ function filter_kernel(project) {
         var idList = arr.get();
         for (var i = 0; i < idList.length; i++) {
             if (idList[i].startsWith('kernel-conda-env-swanproject')) {
+                $('#' + idList[i]).css("display", "block");
                 var name = idList[i].substring(17);
                 // The first 17 characters correspond to 'kernel-conda-env-'
                 name = name.slice(0, -3);
@@ -67,7 +69,15 @@ function filter_kernel(project) {
                     $('#' + idList[i]).css("display", "none");
                 }
             }
+            if (idList[i].startsWith('kernel-python')) {
+                // This hides the default python kernels that might appear
+                // TODO: Check for any exceptions and handle accordingly
+                $('#' + idList[i]).css("display", "none");
+            }
         }
+        // This hides the conda root environment
+        $('#kernel-conda-root-py').css("display", "none");
+        //TODO: Change the display name for the visible kernel to make it user friendly.
     });
 }
 
