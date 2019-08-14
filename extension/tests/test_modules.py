@@ -22,8 +22,22 @@ class TestPackageManager(unittest.TestCase):
 
     def test_list_projects(self):
         a = pkg_manager.list_projects()
-        print(a)
         self.assertIsNotNone(a)
+    
+    def test_create_project(self):
+        a = pkg_manager.create_project('/SWAN_TEST', 'python3')
+        flag = True
+        try:
+            if len(a['error']) > 0:
+                flag = False
+                print(a['error'])
+        except:
+            pass
+        self.assertTrue(flag)
+
+    # def test_search(self):
+    #     a = pkg_manager.search('pyyaml')
+    #     self.assertGreater()
 
 
 if __name__ == '__main__':
