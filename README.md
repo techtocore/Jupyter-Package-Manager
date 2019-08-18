@@ -1,6 +1,6 @@
 # Package manager for SWAN and Jupyter Notebooks 
 
-[![Build status](https://ci.appveyor.com/api/projects/status/wo9msinix7vtotn3?svg=true)](https://ci.appveyor.com/project/techtocore/jupyter-package-manager) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=techtocore_Jupyter-Package-Manager&metric=alert_status)](https://sonarcloud.io/dashboard?id=techtocore_Jupyter-Package-Manager)
+[![Build Status](https://travis-ci.org/techtocore/Jupyter-Package-Manager.svg?branch=swan-integration)](https://travis-ci.org/techtocore/Jupyter-Package-Manager) [![Build status](https://ci.appveyor.com/api/projects/status/wo9msinix7vtotn3?svg=true)](https://ci.appveyor.com/project/techtocore/jupyter-package-manager) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=techtocore_Jupyter-Package-Manager&metric=alert_status)](https://sonarcloud.io/dashboard?id=techtocore_Jupyter-Package-Manager)
 
 
 This Jupyter notebook extension will allow the users to specify python modules (and their respective versions) via a user interface and make them available automatically inside the corresponding project.
