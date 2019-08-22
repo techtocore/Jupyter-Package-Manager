@@ -3,6 +3,28 @@ import endpoints from './api_endpoints.json';
 
 var api_url = (Jupyter.notebook_list || Jupyter.notebook).base_url + "api/packagemanager/";
 
+
+/*
+This function retrives the content of a cookie and returns the value for a matching key
+This is used to retrive the xsrf token for making API calls
+*/
+
+function get_cookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = $.trim(cookies[i]);
+            // Check if this cookie string begin with the name we want
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 /*
 This function makes the API calls to the specified endpoint with the corresponding headers
 */
@@ -15,6 +37,7 @@ function api_call(endpoint, url, payload, success) {
         headers: {
             "Content-Type": "application/json",
             "cache-control": "no-cache",
+            "X-CSRFToken": get_cookie('_xsrf')
         },
         processData: false,
         success: success
@@ -33,12 +56,12 @@ function api_call(endpoint, url, payload, success) {
 This function updates all the selected packages.
 */
 
-function update_packages(packages, project) {
+function update_packages(packages, project, success) {
     var payload = {
         'project': project,
         'packages': packages
     };
-    api_call(endpoints.update_packages, "", payload);
+    api_call(endpoints.update_packages, "", payload, success);
 }
 
 /*
@@ -53,20 +76,20 @@ function check_update(project, success) {
 This function removes all the selected packages.
 */
 
-function delete_packages(packages, project) {
+function delete_packages(packages, project, success) {
     var payload = {
         'project': project,
         'packages': packages
     };
-    api_call(endpoints.delete_packages, "", payload);
+    api_call(endpoints.delete_packages, "", payload, success);
 }
 
-function install_packages(packages, project) {
+function install_packages(packages, project, success) {
     var payload = {
         'project': project,
         'packages': packages
     };
-    api_call(endpoints.install_packages, "", payload);
+    api_call(endpoints.install_packages, "", payload, success);
 }
 
 /*

@@ -9,6 +9,11 @@ This function populates the sidebar each time it is opened.
 
 function package_view(dir) {
 
+    $('#loadingview').show();
+    $('#packageview').hide();
+    $('#installed-packages').empty();
+    $('#to-install').empty();
+
     api.get_info(dir, function (info) {
         var data = info.packages;
 
@@ -26,6 +31,9 @@ function package_view(dir) {
 
         var toInstall = [];
         views.select_to_install(toInstall);
+
+        $('#packageview').show();
+        $('#loadingview').hide();
     });
 }
 
