@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import common from './common';
 import api from './api';
+import scripts from './scripts';
 
 /*
 This function returns the latest version of a package.
@@ -66,7 +67,9 @@ function update_packages(project) {
             }
             else
                 common.confirm("Update Packages", html, "Confirm", function () {
-                    api.update_packages(packages, project);
+                    api.update_packages(packages, project, function () {
+                        scripts.package_view(project)
+                    });
                 });
         });
 
@@ -92,7 +95,9 @@ function delete_packages(project) {
             html.append("<li>" + element + "</li>");
         }
         common.confirm("Delete Packages", html, "Confirm", function () {
-            api.delete_packages(packages, project);
+            api.delete_packages(packages, project, function () {
+                scripts.package_view(project)
+            });
         });
     });
 }
@@ -114,7 +119,9 @@ function install_packages(project) {
             html.append("<li>" + element + "</li>");
         }
         common.confirm("Install Packages", html, "Confirm", function () {
-            api.install_packages(toInstall, project);
+            api.install_packages(toInstall, project, function () {
+                scripts.package_view(project)
+            });
         });
     });
 }
