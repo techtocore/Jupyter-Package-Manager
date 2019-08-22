@@ -3,6 +3,9 @@
 [![Build Status](https://travis-ci.org/techtocore/Jupyter-Package-Manager.svg?branch=swan-integration)](https://travis-ci.org/techtocore/Jupyter-Package-Manager) [![Build status](https://ci.appveyor.com/api/projects/status/wo9msinix7vtotn3?svg=true)](https://ci.appveyor.com/project/techtocore/jupyter-package-manager) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=techtocore_Jupyter-Package-Manager&metric=alert_status)](https://sonarcloud.io/dashboard?id=techtocore_Jupyter-Package-Manager)
 
 
+**[Link to Final Report](https://akashravi.github.io/SWAN-Package-Manager/)**
+
+
 This Jupyter notebook extension will allow the users to specify python modules (and their respective versions) via a user interface and make them available automatically inside the corresponding project.
 
 Each project is internally mapped to a separate conda environment. This helps abstract the processing part, while providing an independent environment for each project. 
