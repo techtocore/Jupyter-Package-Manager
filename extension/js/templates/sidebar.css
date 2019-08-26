@@ -23,6 +23,7 @@
 #packageview {
   padding-left: 10px;
   width: 410px;
+  display:none;
 }
 
 .value-name {

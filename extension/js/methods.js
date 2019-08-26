@@ -69,9 +69,14 @@ function update_packages(project) {
                 common.confirm("Update Packages", html, "Confirm", function () {
                     api.update_packages(packages, project, function () {
                         scripts.package_view(project)
+                    }, function () {
+                        common.display_msg("Server Error", "The selected packages could not be updated. Please try again.");
                     });
                 });
-        });
+        },
+            function () {
+                common.display_msg("Server Error", "Error in checking for new updates. Please try again.");
+            });
 
     });
 }
@@ -97,6 +102,8 @@ function delete_packages(project) {
         common.confirm("Delete Packages", html, "Confirm", function () {
             api.delete_packages(packages, project, function () {
                 scripts.package_view(project)
+            }, function () {
+                common.display_msg("Server Error", "The selected packages could not be removed. Please try again.");
             });
         });
     });
@@ -121,6 +128,8 @@ function install_packages(project) {
         common.confirm("Install Packages", html, "Confirm", function () {
             api.install_packages(toInstall, project, function () {
                 scripts.package_view(project)
+            }, function () {
+                common.display_msg("Server Error", "The selected packages could not be installed. Please try again.");
             });
         });
     });
