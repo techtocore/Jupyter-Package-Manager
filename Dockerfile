@@ -10,8 +10,7 @@ rm -rf /opt/conda/lib/python3.7/site-packages/notebook/templates && \
 cp -rl templates /opt/conda/lib/python3.7/site-packages/notebook/ && \
 ls && \
 cd SwanContents && pip install --no-deps . && \
-jupyter nbextension install --py swancontents --system --symlink && \
-jupyter nbextension enable swancontents --system --py
+jupyter nbextension install --py swancontents --system --symlink
 
 RUN git clone https://github.com/Anaconda-Platform/nb_conda_kernels.git
 RUN cd nb_conda_kernels && \
