@@ -34,6 +34,9 @@ function package_view(dir) {
 
         $('#packageview').show();
         $('#loadingview').hide();
+    }, function () {
+        common.display_msg("Server Error", "The project configuration could not be retrived. Please try again.");
+        $('#loadingtext').text("Server Error");
     });
 }
 
@@ -71,6 +74,8 @@ function search_view() {
                 }
                 $('#searchicon').toggleClass('fa-search fa-dot-circle-o').removeClass('Blink');
 
+            }, function () {
+                common.display_msg("Server Error", "The package information could not be searched. Please try again.");
             })
         }, doneTypingInterval);
     });

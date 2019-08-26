@@ -29,7 +29,7 @@ function get_cookie(name) {
 This function makes the API calls to the specified endpoint with the corresponding headers
 */
 
-function api_call(endpoint, url, payload, success) {
+function api_call(endpoint, url, payload, success, error) {
 
     var settings = {
         url: api_url + endpoint.uri + url,
@@ -40,7 +40,8 @@ function api_call(endpoint, url, payload, success) {
             "X-CSRFToken": get_cookie('_xsrf')
         },
         processData: false,
-        success: success
+        success: success,
+        error: error
     };
 
     // Send the payload only if it is not empty
@@ -56,56 +57,56 @@ function api_call(endpoint, url, payload, success) {
 This function updates all the selected packages.
 */
 
-function update_packages(packages, project, success) {
+function update_packages(packages, project, success, error) {
     var payload = {
         'project': project,
         'packages': packages
     };
-    api_call(endpoints.update_packages, "", payload, success);
+    api_call(endpoints.update_packages, "", payload, success, error);
 }
 
 /*
 This function checks for updates in the selected project.
 */
 
-function check_update(project, success) {
-    api_call(endpoints.checkupdate, project, {}, success);
+function check_update(project, success, error) {
+    api_call(endpoints.checkupdate, project, {}, success, error);
 }
 
 /*
 This function removes all the selected packages.
 */
 
-function delete_packages(packages, project, success) {
+function delete_packages(packages, project, success, error) {
     var payload = {
         'project': project,
         'packages': packages
     };
-    api_call(endpoints.delete_packages, "", payload, success);
+    api_call(endpoints.delete_packages, "", payload, success, error);
 }
 
-function install_packages(packages, project, success) {
+function install_packages(packages, project, success, error) {
     var payload = {
         'project': project,
         'packages': packages
     };
-    api_call(endpoints.install_packages, "", payload, success);
+    api_call(endpoints.install_packages, "", payload, success, error);
 }
 
 /*
 This function returns the status of all the packages in a project.
 */
 
-function get_info(dir, success) {
-    api_call(endpoints.getinfo, dir, {}, success);
+function get_info(dir, success, error) {
+    api_call(endpoints.getinfo, dir, {}, success, error);
 }
 
 /*
 This function lets users search using any input query.
 */
 
-function search(query, success) {
-    api_call(endpoints.search, query, {}, success);
+function search(query, success, error) {
+    api_call(endpoints.search, query, {}, success, error);
 }
 
 export default {
