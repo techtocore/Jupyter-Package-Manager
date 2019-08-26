@@ -10,7 +10,6 @@ This function populates the sidebar each time it is opened.
 function package_view(dir) {
 
     $('#loadingview').show();
-    $('#packageview').hide();
     $('#installed-packages').empty();
     $('#to-install').empty();
 
