@@ -60,4 +60,4 @@ jupyter nbextension enable packagemanager --system --py
 jupyter serverextension enable --py --system packagemanager
 ```
 
-- For the purpose of API testing and development, please allow cross-site requests by adding c.NotebookApp.disable_check_xsrf = True (in ~/.jupyter/jupyter_notebook_config.py)
+- For the purpose of API testing and development, please allow cross-site requests by adding `c.NotebookApp.disable_check_xsrf = True` (in ~/.jupyter/jupyter_notebook_config.py)
