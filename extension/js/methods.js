@@ -67,9 +67,13 @@ function update_packages(project) {
             }
             else
                 common.confirm("Update Packages", html, "Confirm", function () {
+                    $('#loadingtext').text("Updating Packages");
+                    $('#loadingview').show();
                     api.update_packages(packages, project, function () {
-                        scripts.package_view(project)
+                        $('#loadingview').hide();
+                        scripts.package_view(project);
                     }, function () {
+                        $('#loadingview').hide();
                         common.display_msg("Server Error", "The selected packages could not be updated. Please try again.");
                     });
                 });
@@ -100,9 +104,13 @@ function delete_packages(project) {
             html.append("<li>" + element + "</li>");
         }
         common.confirm("Delete Packages", html, "Confirm", function () {
+            $('#loadingtext').text("Removing Packages");
+            $('#loadingview').show();
             api.delete_packages(packages, project, function () {
-                scripts.package_view(project)
+                $('#loadingview').hide();
+                scripts.package_view(project);
             }, function () {
+                $('#loadingview').hide();
                 common.display_msg("Server Error", "The selected packages could not be removed. Please try again.");
             });
         });
@@ -126,9 +134,13 @@ function install_packages(project) {
             html.append("<li>" + element + "</li>");
         }
         common.confirm("Install Packages", html, "Confirm", function () {
+            $('#loadingtext').text("Removing Packages");
+            $('#loadingview').show();
             api.install_packages(toInstall, project, function () {
-                scripts.package_view(project)
+                $('#loadingview').hide();
+                scripts.package_view(project);
             }, function () {
+                $('#loadingview').hide();
                 common.display_msg("Server Error", "The selected packages could not be installed. Please try again.");
             });
         });
