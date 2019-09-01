@@ -24,64 +24,65 @@ This function lists down all the updates and requires a user confirmation.
 function update_packages(project) {
     $('#updatebtn').unbind();
     $('#updatebtn').click(function () {
-        var selectedPackages = common.get_selected_packages();
-        var html = $('<p> The following packages are about to be updated: </p> </br>');
-        $('#updatebtn').toggleClass('fa-wrench fa-spinner').addClass('fa-spin');
-        api.check_update(project, function (resp) {
-            $('#updatebtn').toggleClass('fa-wrench fa-spinner').removeClass('fa-spin');
-            var updates = resp.updates;
-            var packages = [];
+        if ($('#updatebtn').hasClass('fa-wrench')) {
+            var selectedPackages = common.get_selected_packages();
+            var html = $('<p> The following packages are about to be updated: </p> </br>');
+            $('#updatebtn').toggleClass('fa-wrench fa-spinner').addClass('fa-spin');
+            api.check_update(project, function (resp) {
+                $('#updatebtn').toggleClass('fa-wrench fa-spinner').removeClass('fa-spin');
+                var updates = resp.updates;
+                var packages = [];
 
-            if (selectedPackages.length > 0) {
-                html.append($('<ul/>'));
+                if (selectedPackages.length > 0) {
+                    html.append($('<ul/>'));
 
-                for (var i = 0; i < selectedPackages.length; i++) {
-                    var element = selectedPackages[i];
-                    element = element.split('=');
-                    var pkg = element[0];
-                    var ver = element[1];
-                    var nver = check_new_version(updates, pkg, ver);
-                    if (nver != ver) {
-                        packages.push(pkg);
-                        html.append("<li>" + pkg + " &nbsp; " + ver + " -> " + nver + "</li>");
+                    for (var i = 0; i < selectedPackages.length; i++) {
+                        var element = selectedPackages[i];
+                        element = element.split('=');
+                        var pkg = element[0];
+                        var ver = element[1];
+                        var nver = check_new_version(updates, pkg, ver);
+                        if (nver != ver) {
+                            packages.push(pkg);
+                            html.append("<li>" + pkg + " &nbsp; " + ver + " -> " + nver + "</li>");
+                        }
                     }
                 }
-            }
-            else {
-                var list = $('.installed-values');
-                html.append($('<ul/>'));
-                for (var i = 0; i < list.length; i++) {
-                    var element = list[i];
-                    var pkg = $(element).find('.value-name')[0].innerText;
-                    var ver = $(element).find('.value-version')[0].innerText;
-                    var nver = check_new_version(updates, pkg, ver);
-                    if (nver != ver) {
-                        packages.push(pkg);
-                        html.append("<li>" + pkg + " &nbsp; " + ver + " -> " + nver + "</li>");
+                else {
+                    var list = $('.installed-values');
+                    html.append($('<ul/>'));
+                    for (var i = 0; i < list.length; i++) {
+                        var element = list[i];
+                        var pkg = $(element).find('.value-name')[0].innerText;
+                        var ver = $(element).find('.value-version')[0].innerText;
+                        var nver = check_new_version(updates, pkg, ver);
+                        if (nver != ver) {
+                            packages.push(pkg);
+                            html.append("<li>" + pkg + " &nbsp; " + ver + " -> " + nver + "</li>");
+                        }
                     }
                 }
-            }
-            if (packages.length === 0) {
-                html = $("<p> There are no updates available </p>");
-                common.display_msg("Update Packages", html);
-            }
-            else
-                common.confirm("Update Packages", html, "Confirm", function () {
-                    $('#loadingtext').text("Updating Packages");
-                    $('#loadingview').show();
-                    api.update_packages(packages, project, function () {
-                        $('#loadingview').hide();
-                        scripts.package_view(project);
-                    }, function () {
-                        $('#loadingview').hide();
-                        common.display_msg("Server Error", "The selected packages could not be updated. Please try again.");
+                if (packages.length === 0) {
+                    html = $("<p> There are no updates available </p>");
+                    common.display_msg("Update Packages", html);
+                }
+                else
+                    common.confirm("Update Packages", html, "Confirm", function () {
+                        $('#loadingtext').text("Updating Packages");
+                        $('#loadingview').show();
+                        api.update_packages(packages, project, function () {
+                            $('#loadingview').hide();
+                            scripts.package_view(project);
+                        }, function () {
+                            $('#loadingview').hide();
+                            common.display_msg("Server Error", "The selected packages could not be updated. Please try again.");
+                        });
                     });
+            },
+                function () {
+                    common.display_msg("Server Error", "Error in checking for new updates. Please try again.");
                 });
-        },
-            function () {
-                common.display_msg("Server Error", "Error in checking for new updates. Please try again.");
-            });
-
+        }
     });
 }
 
@@ -108,6 +109,7 @@ function delete_packages(project) {
             $('#loadingview').show();
             api.delete_packages(packages, project, function () {
                 $('#loadingview').hide();
+                $('#deletebtn').css("display", "none");
                 scripts.package_view(project);
             }, function () {
                 $('#loadingview').hide();
