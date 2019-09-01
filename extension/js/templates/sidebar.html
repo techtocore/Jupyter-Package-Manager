@@ -1,21 +1,22 @@
 <div id="mySidenav" class="sidenav">
     <div class="sidenavcontent">
-        <label for="package-name">Install Packages</label>
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" id="package-name" list="searchlist" autocomplete="off"
-                placeholder="Search for available packages">
-            <span id="searchicon" class="fa fa-search form-control-feedback"></span>
-            <datalist id="searchlist">
-            </datalist>
-        </div>
-        <br>
         <div id="loadingview">
-            <br>
             <h2 id="loadingtext">Loading</h2>
-            <br>
+            &nbsp;&nbsp;
+            <i class="fa-spinner fa-spin fa"></i>
+            <hr>
         </div>
         <div id="packageview">
             <div class="main-content">
+                <label for="package-name">Install Packages</label>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" id="package-name" list="searchlist" autocomplete="off"
+                        placeholder="Search for available packages">
+                    <span id="searchicon" class="fa fa-search form-control-feedback"></span>
+                    <datalist id="searchlist">
+                    </datalist>
+                </div>
+                <br>
                 <div id="to-install-main">
                     <h2>Packages To Install</h2>
                     <br>

@@ -12,7 +12,7 @@ function package_view(dir) {
     $('#loadingview').show();
     $('#installed-packages').empty();
     $('#to-install').empty();
-    $('#loadingtext').text("Loading Environment Information");
+    $('#loadingtext').text("Loading Project Details");
 
     api.get_info(dir, function (info) {
         var data = info.packages;

@@ -134,7 +134,7 @@ function install_packages(project) {
             html.append("<li>" + element + "</li>");
         }
         common.confirm("Install Packages", html, "Confirm", function () {
-            $('#loadingtext').text("Removing Packages");
+            $('#loadingtext').text("Adding Packages");
             $('#loadingview').show();
             api.install_packages(toInstall, project, function () {
                 $('#loadingview').hide();
