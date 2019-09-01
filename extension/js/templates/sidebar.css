@@ -17,7 +17,7 @@
 }
 
 #package-name {
-  width: 390px;
+  width: 380px;
 }
 
 #packageview {
@@ -33,6 +33,14 @@
 
 .value-version {
   font-size: larger;
+}
+
+#loadingview {
+  padding-left: 10px;
+}
+
+#loadingtext {
+  display: inline;
 }
 
 .installed-values, .to-install-values {

@@ -1,19 +1,22 @@
 <div id="mySidenav" class="sidenav">
     <div class="sidenavcontent">
-        <label for="package-name">Install Packages</label>
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" id="package-name" list="searchlist" autocomplete="off"
-                placeholder="Search for available packages">
-            <span id="searchicon" class="fa fa-search form-control-feedback"></span>
-            <datalist id="searchlist">
-            </datalist>
-        </div>
-        <br>
         <div id="loadingview">
             <h2 id="loadingtext">Loading</h2>
+            &nbsp;&nbsp;
+            <i class="fa-spinner fa-spin fa" aria-hidden="true" />
+            <hr>
         </div>
         <div id="packageview">
             <div class="main-content">
+                <label for="package-name">Install Packages</label>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" id="package-name" list="searchlist" autocomplete="off"
+                        placeholder="Search for available packages">
+                    <span id="searchicon" class="fa fa-search form-control-feedback"></span>
+                    <datalist id="searchlist">
+                    </datalist>
+                </div>
+                <br>
                 <div id="to-install-main">
                     <h2>Packages To Install</h2>
                     <br>
@@ -30,9 +33,9 @@
                         <h2>Installed Packages</h2>
                     </div>
                     <div class="col-sm-2">
-                        <i class="faicon fa fa-wrench" id="updatebtn"></i>
+                        <i class="faicon fa fa-wrench" id="updatebtn" aria-hidden="true" />
                         &nbsp;
-                        <i class="faicon fa fa-trash-o" id="deletebtn"></i>
+                        <i class="faicon fa fa-trash-o" id="deletebtn" aria-hidden="true" />
                     </div>
                 </div>
                 <br>
