@@ -68,6 +68,10 @@ function filter_kernel(project) {
                 if (env != name) {
                     $('#' + idList[i]).css("display", "none");
                 }
+                else {
+                    $('#' + idList[i]).find('a').text('Python 3');
+                    $('#' + idList[i]).find('a').attr('title', 'Create a new notebook with the Python 3 kernel corresponding to this project');
+                }
             }
             if (idList[i].startsWith('kernel-python')) {
                 // This hides the default python kernels that might appear
