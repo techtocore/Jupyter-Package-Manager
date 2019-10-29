@@ -23,7 +23,7 @@ Each project is internally mapped to a separate conda environment. This helps ab
 
 - This project assumes a SWAN setup. The APIs require certain actions as prerequisites, which are already fulfilled by SWAN. 
 
-- Please find the install instructions [here](https://github.com/techtocore/Jupyter-Package-Manager/blob/swan-integration/extension/install.md)
+- Please find the install instructions [here](extension/install.md)
 
 
 ## Usage Instructions
@@ -38,12 +38,12 @@ Each project is internally mapped to a separate conda environment. This helps ab
 
 - Users can check for updates, for all or only the selected packages, by clicking the small cog button beside the list of installed packages. A pop-up modal will list the packages that need to be updated, along with their versions. Similarly, users can select one or more packages and uninstall them by clicking the bin icon.
 
-- In order to create a notebook, click on the **`+`** button from inside a project or a regular folder. A list will then appear with the available languages. Users will be able to launch notebooks only using the kernel corresponding to that project. Any external notebook placed under the project will also be using the same kernel.
+- In order to create a notebook, click on the **`+`** button from inside a project or a regular folder. A list will then appear with the available kernels. Users will be able to launch notebooks only using the kernel corresponding to that project. Any external notebook (requiring a python kernel) placed under the project will also be using the same kernel.
 
 
 ## Documentation
 
-- Please find the API Specification [here](https://github.com/techtocore/Jupyter-Package-Manager/blob/swan-integration/docs/API_docs.md)
+- Please find the API Specification [here](docs/API_docs.md)
 - The code is documented with necessary inline comments and docstrings
 
 

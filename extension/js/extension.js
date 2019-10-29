@@ -69,8 +69,14 @@ function filter_kernel(project) {
                     $('#' + idList[i]).css("display", "none");
                 }
                 else {
-                    $('#' + idList[i]).find('a').text('Python 3');
-                    $('#' + idList[i]).find('a').attr('title', 'Create a new notebook with the Python 3 kernel corresponding to this project');
+                    var toRem = "[conda env:" + name + "]";
+                    // Substring to remove from the entry
+                    var kernelText = $('#' + idList[i]).find('a').text();
+                    kernelText = kernelText.replace(toRem, '');
+                    $('#' + idList[i]).find('a').text(kernelText);
+                    var kernelTitle = $('#' + idList[i]).find('a').attr('title');
+                    kernelTitle = kernelTitle.replace(toRem, '');
+                    $('#' + idList[i]).find('a').attr('title', kernelTitle);
                 }
             }
             if (idList[i].startsWith('kernel-python')) {
@@ -81,7 +87,6 @@ function filter_kernel(project) {
         }
         // This hides the conda root environment
         $('#kernel-conda-root-py').css("display", "none");
-        //TODO: Change the display name for the visible kernel to make it user friendly.
     });
 }
 
