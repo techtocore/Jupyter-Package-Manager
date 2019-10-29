@@ -23,7 +23,7 @@ Each project is internally mapped to a separate conda environment. This helps ab
 
 - This project assumes a SWAN setup. The APIs require certain actions as prerequisites, which are already fulfilled by SWAN. 
 
-- Please find the install instructions [here](https://github.com/techtocore/Jupyter-Package-Manager/blob/swan-integration/extension/install.md)
+- Please find the install instructions [here](extension/install.md)
 
 
 ## Usage Instructions
